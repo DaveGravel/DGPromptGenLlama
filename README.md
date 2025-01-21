@@ -84,6 +84,7 @@ If this option is turned off, you need to connect a text box to the agent pin to
   
 - output mix_styles: These are the styles used in this node, and it has an output in case you want to use the same styles in other nodes. It returns an empty value when the styles are disabled in the node.
 
+# OX3DKSamplerAdvLTX
 ![Screenshot 2025-01-20 210404x](https://github.com/user-attachments/assets/6f1c62ce-989d-4f86-9379-e77b5842a5de)
 
 ![Screenshot 2025-01-20 211902](https://github.com/user-attachments/assets/a5a9aaff-1797-4846-9f1d-c87e8b01f51f)
