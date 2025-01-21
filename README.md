@@ -3,7 +3,7 @@ Hello, I’m Dave Gravel. By trade, I’m a C++ programmer specializing in 3D an
 
 A year ago, or maybe a little more, I had created a Llama 3.1 node. However, since it was difficult to get it working due to the size of the Llama 3.1 8B model and because some tools for loading the Llama model at the time conflicted with other tools in ComfyUI, I decided not to make it public.
 
-When Llama 3.2 was released, I tested the tools again, and the conflicts seem to be resolved now, and Llama works very well. So, I decided to update my node, LlamaPromptGen, and while building it, I realized that some cool options could be added, like styles and a few other features I’ll discuss below.
+When Llama 3.2 was released, I tested the tools again, and the conflicts seem to be resolved now, and Llama works very well. So, I decided to update my node, DGPromptGenLlama, and while building it, I realized that some cool options could be added, like styles and a few other features I’ll discuss below.
 
 Since everything seems to be working well for me now, I decided to share it with the public. This way, it might be useful for others as well. It’s a great tool if you’re running out of ideas for writing your prompts.
 
