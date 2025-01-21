@@ -124,4 +124,6 @@ This is a special node with a simple internal agent for translating prompts or o
 ![Screenshot 2025-01-20 211153](https://github.com/user-attachments/assets/3b2b13ea-387d-4396-9bbd-9786af143da9)
 
 # DGLlamaAgentCorrection
+This node is similar to the translate node. It’s a quick and simple agent for applying corrections or modifications to your prompt. Again, in this node, the agent is not modifiable. While it’s possible to do translations or corrections with the DGLlamaChatUser node, both of these nodes work well for me. Sometimes, the model performs better in certain situations without the memory buffer. Both of these nodes do not have memory.
+
 ![Screenshot 2025-01-20 211635](https://github.com/user-attachments/assets/0a53ab11-a553-412e-a3b7-55037bab1374)
