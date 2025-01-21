@@ -102,6 +102,9 @@ In this node, I’ve implemented an agent system, and this agent has a memory bu
 ![Screenshot 2025-01-20 210612x](https://github.com/user-attachments/assets/a971e8a5-3828-4c50-afcb-35016ed1321b)
 
 # DGLlamaAgentUserEdit
+This node is very similar to the DGLlamaChatUser node, but it’s not implemented in exactly the same way. It’s functional, but still under construction. This node is primarily used for creating agents and saving their configurations, and it’s possible to load the saved agent into the DGLlamaChatUser node.
+It’s also possible to use this node as a simple prompt generator, but I recommend using DGLlamaChatUser if you only need to generate prompts. It may also change if I have time to update my project.
+
 ![Screenshot 2025-01-20 210750](https://github.com/user-attachments/assets/98068944-a287-491b-bbd1-618d9cade7a2)
 
 # DGLlamaStyles
