@@ -9,7 +9,40 @@ Since everything seems to be working well for me now, I decided to share it with
 
 With this, you’ll be able to create amazing images and videos. Or you can simply use Llama like ChatGPT, as it’s possible to configure and create your own agents for anything, not just for prompts.
 
-![Screenshot 2025-01-20 205531x](https://github.com/user-attachments/assets/788dc40e-0bc0-45ae-a8d6-d5e5432d2aee) f
+![Screenshot 2025-01-20 205531x](https://github.com/user-attachments/assets/788dc40e-0bc0-45ae-a8d6-d5e5432d2aee)
+- input seeder:
+- input mix_styles:
+- input agent:
+- input external_suject:
+- input assistant:
+- input remove_from_prompt:
+- model_file:
+- styles_variation:
+- prompt_styles:
+- reset_model:
+- use_bit_mode:
+- prompt_mode:
+- only_english:
+- use_seeder:
+- use_mix_styles:
+- use_custom_prompt:
+- use_external_suject:
+- max_token:
+- top_p:
+- top_k:
+- temperature:
+- repetition_penality:
+- clear_extra_mem_gpu:
+- suject:
+- custom_prompt:
+- use_uncensored_agent:
+- use_internal_agent:
+- use_internal_remove:
+- use_assistant:
+- disable_generation:
+- output prompt:
+- output llama3_pipe:
+- output mix_styles:
 
 ![Screenshot 2025-01-20 210404x](https://github.com/user-attachments/assets/6f1c62ce-989d-4f86-9379-e77b5842a5de)
 
