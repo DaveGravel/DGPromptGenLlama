@@ -1,4 +1,6 @@
 # OX3DLlamaPromptGen
+Hello, I’m Dave Gravel. By trade, I’m a C++ programmer specializing in 3D and Physics, along with anything related to this field. I have a basic understanding of almost all programming languages, but the two I’ve used the most and in which I excel are Pascal and C++. I’m familiar with the logic of most other languages, though I haven’t worked with them extensively. As a result, my code may include some repetitive logic and certain methods that could be better implemented, but overall, everything should still work pretty well, hehe.
+
 ![Screenshot 2025-01-20 205531x](https://github.com/user-attachments/assets/788dc40e-0bc0-45ae-a8d6-d5e5432d2aee)
 
 ![Screenshot 2025-01-20 210404x](https://github.com/user-attachments/assets/6f1c62ce-989d-4f86-9379-e77b5842a5de)
