@@ -113,6 +113,9 @@ This is a large list of styles to use with my Llama nodes. It adds a bit more "i
 ![Screenshot 2025-01-20 210919](https://github.com/user-attachments/assets/9baf023b-29d6-4ab8-be89-463c7a667875)
 
 # Multiple node styles
+The DGLlamaStyles node contains all the styles in one large list, and it’s quite extensive. I’ve separated some styles to make them easier to use, but there are many more style nodes than what this screenshot shows. The style nodes work exactly the same way as the main DGLlamaStyles node.
+There’s also a DGLlamaMixStylesMulti node, which allows you to connect several style nodes that combine into one large final style.
+
 ![Screenshot 2025-01-20 211347](https://github.com/user-attachments/assets/6be249e1-a96d-40a6-b88e-b6c8afffd82e)
 
 # DGLlamaAgentTranslate
