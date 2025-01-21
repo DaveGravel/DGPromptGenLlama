@@ -108,6 +108,8 @@ It’s also possible to use this node as a simple prompt generator, but I recomm
 ![Screenshot 2025-01-20 210750](https://github.com/user-attachments/assets/98068944-a287-491b-bbd1-618d9cade7a2)
 
 # DGLlamaStyles
+This is a large list of styles to use with my Llama nodes. It adds a bit more "ingredients" to the big soup that Llama will prepare for us as a prompt, hehe.
+
 ![Screenshot 2025-01-20 210919](https://github.com/user-attachments/assets/9baf023b-29d6-4ab8-be89-463c7a667875)
 
 # Multiple node styles
