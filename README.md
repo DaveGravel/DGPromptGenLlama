@@ -17,7 +17,7 @@ With this, you’ll be able to create amazing images and videos. Or you can simp
   
 - input agent: With this node, there are two possible methods for the agent: either you connect a text window with the agent instructions, or you use the node's internal agent. This internal agent does not have memory, ensuring that it behaves completely randomly. For agents with memory, you need to use the DGLlamaChatUser node.
   
-- input external_suject: This pin is used to connect external text to add to your Llama prompt request. For example, I sometimes use it with Florence2: I provide an image to Florence, and it generates a prompt from the image, which I then pass to Llama to create a new prompt based on my instructions or the added styles.
+- input external_subject: This pin is used to connect external text to add to your Llama prompt request. For example, I sometimes use it with Florence2: I provide an image to Florence, and it generates a prompt from the image, which I then pass to Llama to create a new prompt based on my instructions or the added styles.
   
 - input assistant: This pin is used to provide text to the assistant, but for random prompt generation, it’s not a particularly useful option. I included it anyway in case someone absolutely wants to send a message to the assistant, but I recommend not using it if it’s solely for prompts.
   
@@ -30,30 +30,59 @@ Sometimes Llama can go its own way and use or repeat words you don’t want. Thi
   
 - prompt_styles: This variable is used to add styles to your prompt. For example, if you make a request to Llama with "a woman" or "a dog," you can activate the styles and add the styles you want. Llama will then mix your request with the provided styles.
   
-- reset_model:
-- use_bit_mode:
-- prompt_mode:
-- only_english:
-- use_seeder:
-- use_mix_styles:
-- use_custom_prompt:
-- use_external_suject:
-- max_token:
-- top_p:
-- top_k:
-- temperature:
-- repetition_penality:
-- clear_extra_mem_gpu:
-- suject:
-- custom_prompt:
-- use_uncensored_agent:
-- use_internal_agent:
-- use_internal_remove:
-- use_assistant:
-- disable_generation:
-- output prompt:
-- output llama3_pipe:
-- output mix_styles:
+- reset_model: This option is for resetting the Llama model in case there’s an issue. It’s very, very rare to need this option, but it’s available just in case.
+  
+- use_bit_mode: Okay, this option is an important one in my opinion. It’s the compression model used for the Llama model. With my node, it’s possible to load both GGUF models and the original SafeTensors models. Personally, I use the 4-bit mode with the original models.
+In general, GGUF models are very good and help a lot with memory usage, but for my part, with Llama, the original models in 4-bit mode work much better than GGUF. They seem to cause fewer memory issues and appear to be faster as well. It’s up to you to decide which works better in your configuration, whether it’s GGUF or the original models.
+
+- prompt_mode: This changes the mode of the prompt, whether it’s for images, videos, or other types of requests.
+  
+- only_english: This option forces Llama to operate only in English. However, to be honest, sometimes Llama can do its own thing, so it might not always follow this instruction. But in general, it works.
+This issue is especially noticeable if you try using the nodes with Llama 3.2 1B. I don’t recommend the 1B model because it’s smaller, generates many more errors, and doesn’t understand everything very well. In my opinion, the best models are the 3.1 8B and 3.2 3B or larger.
+
+- use_seeder: This option is used to activate Llama’s samples mode and enable my seeder implementation to provide a simple seed, similar to how it's done in ComfyUI.
+  
+- use_mix_styles: This option activates or deactivates all styles connected or selected in the node. It also disables the mix_styles output.
+ 
+- use_custom_prompt: In the node, there is a text box named custom_prompt. This option is used to activate the use of a custom prompt. Llama will not modify this prompt. It’s the same as writing a prompt yourself in standard ComfyUI. Llama will never alter this prompt, and styles will not be applied, nor will the external subject be applied to this custom prompt.
+It’s a way to bypass Llama and test a custom prompt.
+
+- use_external_subject: This activates the external subject if the use_external_subject option is enabled.
+ 
+- max_token: This option is for setting the maximum tokens to use in Llama. Currently, it is locked to 4096 because with all options active, it can require a large token buffer. I’ll see if I can implement a better solution later. Currently, it’s not really causing issues with the 3B model or larger, but it might cause problems with the 1B model. Personally, I don’t recommend using the 1B model with this node. It’s supposed to work, but the 1B model often gives poor results and doesn’t understand the instructions very well.
+  
+- top_p: Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses.
+ 
+- top_k: Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises.
+  
+- temperature: Controls the randomness of the output; higher values produce more random results.
+  
+- repetition_penality: Penalty for repeated tokens; higher values discourage repetition.
+  
+- clear_extra_mem_gpu: This option attempts to free up some GPU memory at the end of using the Llama model. It can help for systems with limited VRAM.
+  
+- subject: This option text box is where you make a prompt request to Llama. Normally, you use a simple prompt, such as "a woman at the beach," and then apply styles to enhance it. Alternatively, instead of using styles, you can write your own request.
+But keep in mind, the main node is random and has no memory. So, if you make a prompt request, it won’t remember your previous prompt in the next request. If you want to interact with Llama and have it remember your previous questions and prompts, you must use the DGLlamaChatUser node. Afterward, you can copy the result into the custom_prompt of the main node to generate the image.
+
+- custom_prompt: This is the text box for writing a custom prompt without using Llama. It can be very useful for prompts that you modify yourself, or if there's an issue with the DGLlamaChatUser node, or simply for testing a simple prompt. When you use custom_prompt, the styles are also disabled, as well as the external_subject.
+  
+- use_uncensored_agent: This option is for enabling the uncensored mode of the Llama model. It doesn’t work with the original models; you need to use finetuned uncensored models. However, even with those, some uncensored models might not be 100% uncensored, so it’s possible the model may refuse to use this option.
+That said, there are models that are nearly 100% uncensored, and with those, it works well. Otherwise, the original Llama model can also do things that are usually censored, depending on how you ask. Often, the regular model can seem more uncensored than the finetuned uncensored models, hehe. The best approach is to try it with or without and see if there’s a difference, and what the model is willing or not willing to do.
+
+- use_internal_agent: This uses the internal agent that I implemented. This agent is not modifiable unless you modify it directly in the code. It’s the default agent for the DGPromptGenLlama node, and it’s typically very good for generating random prompts mixed with styles, which can be quite surprising.
+If this option is turned off, you need to connect a text box to the agent pin to use your own instructions for the agent.
+  
+- use_internal_remove: This activates or disables the remove_from_prompt option if you're using it to remove text from the generated prompt in Llama.
+  
+- use_assistant: This is used to activate or deactivate the assistant. Normally, this option is never needed for prompt generation in this node, as the agent is configured in such a way that it doesn’t require the assistant.
+  
+- disable_generation: This disables the Llama generation for this node. It’s not really needed, but just in case, I’ve added the possibility.
+  
+- output prompt: This is the output prompt generated by Llama or the output from your custom_prompt.
+  
+- output llama3_pipe: This is the Llama pipe used to share the Llama model with my other nodes.
+  
+- output mix_styles: These are the styles used in this node, and it has an output in case you want to use the same styles in other nodes. It returns an empty value when the styles are disabled in the node.
 
 ![Screenshot 2025-01-20 210404x](https://github.com/user-attachments/assets/6f1c62ce-989d-4f86-9379-e77b5842a5de)
 
