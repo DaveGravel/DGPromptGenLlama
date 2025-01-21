@@ -85,11 +85,12 @@ If this option is turned off, you need to connect a text box to the agent pin to
 - output mix_styles: These are the styles used in this node, and it has an output in case you want to use the same styles in other nodes. It returns an empty value when the styles are disabled in the node.
 
 # OX3DKSamplerAdvLTX
-This node has no direct connection with the Llama nodes. It comes from another one of my projects, but it’s very useful with Llama. Essentially, it’s a multi-pass sampler. It performs a simple pass followed by a second pass to refine the result, with or without upscaling. I won’t explain all the details here, but if you watch my demo for the Llama node, I use it in the video, so you can see how it works and what it’s useful for.
-This node originates from a sampler project I made for the Video LTX model, but it works with all image models compatible with ComfyUI samplers.
+This node has no direct connection with the Llama nodes. It comes from another one of my projects, but it’s very useful with Llama. Essentially, it’s a multi-pass sampler. It performs a simple pass followed by a second pass to refine the result, with or without upscaling. I won’t explain all the details here, but if you watch my video for the Llama node, I use it in the video, so you can see how it works and what it’s useful for.
+This node originates from a node sampler project I made for the Video LTX model, but it works with all image models compatible with ComfyUI samplers.
 ![Screenshot 2025-01-20 210404x](https://github.com/user-attachments/assets/6f1c62ce-989d-4f86-9379-e77b5842a5de)
 
 # OX3DKSamplerLTX
+Again, this node has no relation with the Llama node, but it can be useful with the Video LTX model. My Llama node is also well-suited for use with the LTX model.
 ![Screenshot 2025-01-20 211902](https://github.com/user-attachments/assets/a5a9aaff-1797-4846-9f1d-c87e8b01f51f)
 
 # DGLlamaChatUser
