@@ -99,6 +99,20 @@ Again, this node has no relation with the Llama node, but it can be useful with 
 This node is one of my favorites; it’s the one I have the most fun with.
 In this node, I’ve implemented an agent system, and this agent has a memory buffer, so it remembers the conversation or prompts. The memory isn’t very large, but it’s enough to make the experience more enjoyable and even fun at times. Personally, I often use this node to create my prompts, and then I use them in the custom_prompt text box of my main node. Sometimes, I pass the full prompt back to Llama to let it modify it.
 
+- prompt_mode: This is used to choose whether the prompt is for an image, a video, or "Other." When the option is set to "Other," it doesn’t use anything specific. If you want to specify the type of prompt or something else yourself, select "Other."
+
+- llama3_reset: This resets the Llama agent completely and clears its memory. You should use this option when you change the type of agent.
+As of now, when you reset the agent, it clears the memory. However, when the project is released, I may change the functionality so that it doesn’t erase the memory, since there is already another option to simply clear the memory.
+
+- llama3_agent_type: This option is for selecting your agent. You can create your agents using the DGLlamaAgentUserEdit node, or manually create the agent as an .agt file within the folder of my custom node. The .agt is just a format I’ve given, but it’s still a simple text file.
+  
+- llama3_agent_clear: This clears the chat memory with the Llama agent. It can be useful if Llama is relying too much on the history or if it refuses to do something. You may need to clear the memory if you want to try again, as sometimes it will say no, but in another generation, it might say yes.
+Occasionally, the model might view the prompt as violent or explicit and refuse to carry out the prompt for your request. Clearing the memory can help in this case. Also, sometimes the normal mode is more open than the uncensored mode. This is because, in the uncensored configuration, if you use certain words, the model might set a flag and refuse to process anything related to those words.
+  
+- use_external_subject: Same as with other nodes.
+  
+- use_mix_styles: Same as with other nodes.
+
 ![Screenshot 2025-01-20 210612x](https://github.com/user-attachments/assets/a971e8a5-3828-4c50-afcb-35016ed1321b)
 
 # DGLlamaAgentUserEdit
