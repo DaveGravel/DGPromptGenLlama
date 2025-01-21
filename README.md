@@ -9,7 +9,7 @@ Since everything seems to be working well for me now, I decided to share it with
 
 With this, you’ll be able to create amazing images and videos. Or you can simply use Llama like ChatGPT, as it’s possible to configure and create your own agents for anything, not just for prompts.
 
-![Screenshot 2025-01-20 205531x](https://github.com/user-attachments/assets/788dc40e-0bc0-45ae-a8d6-d5e5432d2aee)
+![Screenshot 2025-01-20 205531x](https://github.com/user-attachments/assets/788dc40e-0bc0-45ae-a8d6-d5e5432d2aee) f
 
 ![Screenshot 2025-01-20 210404x](https://github.com/user-attachments/assets/6f1c62ce-989d-4f86-9379-e77b5842a5de)
 
