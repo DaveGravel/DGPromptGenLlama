@@ -119,6 +119,8 @@ There’s also a DGLlamaMixStylesMulti node, which allows you to connect several
 ![Screenshot 2025-01-20 211347](https://github.com/user-attachments/assets/6be249e1-a96d-40a6-b88e-b6c8afffd82e)
 
 # DGLlamaAgentTranslate
+This is a special node with a simple internal agent for translating prompts or other text. The agent is not modifiable, unless you change it directly in the code. It’s just a very simple tool to assist with translations.
+
 ![Screenshot 2025-01-20 211153](https://github.com/user-attachments/assets/3b2b13ea-387d-4396-9bbd-9786af143da9)
 
 # DGLlamaAgentCorrection
