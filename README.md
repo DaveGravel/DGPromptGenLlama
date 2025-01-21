@@ -1,2 +1,2 @@
 # OX3DLlamaPromptGen
-![Screenshot 2025-01-20 205531](https://github.com/user-attachments/assets/95977608-eb91-48f6-852e-2616fd4802c0)
+![Screenshot 2025-01-20 205531x](https://github.com/user-attachments/assets/788dc40e-0bc0-45ae-a8d6-d5e5432d2aee)
