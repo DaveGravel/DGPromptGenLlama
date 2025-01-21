@@ -96,6 +96,9 @@ Again, this node has no relation with the Llama node, but it can be useful with 
 ![Screenshot 2025-01-20 211902](https://github.com/user-attachments/assets/a5a9aaff-1797-4846-9f1d-c87e8b01f51f)
 
 # DGLlamaChatUser
+This node is one of my favorites; it’s the one I have the most fun with.
+In this node, I’ve implemented an agent system, and this agent has a memory buffer, so it remembers the conversation or prompts. The memory isn’t very large, but it’s enough to make the experience more enjoyable and even fun at times. Personally, I often use this node to create my prompts, and then I use them in the custom_prompt text box of my main node. Sometimes, I pass the full prompt back to Llama to let it modify it.
+
 ![Screenshot 2025-01-20 210612x](https://github.com/user-attachments/assets/a971e8a5-3828-4c50-afcb-35016ed1321b)
 
 # DGLlamaAgentUserEdit
