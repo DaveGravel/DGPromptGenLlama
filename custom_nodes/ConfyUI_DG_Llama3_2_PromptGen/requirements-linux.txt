@@ -1,0 +1,10 @@
+gc
+re
+torch
+itertools
+typing
+json
+gguf>=0.10.0
+transformers
+flash-attn
+configparser

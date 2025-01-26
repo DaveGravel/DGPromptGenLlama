@@ -1,0 +1,9 @@
+gc
+re
+itertools
+typing
+torch
+json
+gguf>=0.10.0
+transformers
+configparser

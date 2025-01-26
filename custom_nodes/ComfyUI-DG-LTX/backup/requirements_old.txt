@@ -1,0 +1,2 @@
+torch
+diffusers==0.33.0.dev0

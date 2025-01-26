@@ -1,0 +1,5163 @@
+{
+  "last_node_id": 357,
+  "last_link_id": 1251,
+  "nodes": [
+    {
+      "id": 58,
+      "type": "Text Find and Replace",
+      "pos": [
+        23.672607421875,
+        -781.165771484375
+      ],
+      "size": [
+        245.1999969482422,
+        142
+      ],
+      "flags": {},
+      "order": 67,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 74,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result_text",
+          "type": "STRING",
+          "links": [
+            73
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "replacement_count_number",
+          "type": "NUMBER",
+          "links": null
+        },
+        {
+          "name": "replacement_count_float",
+          "type": "FLOAT",
+          "links": null
+        },
+        {
+          "name": "replacement_count_int",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Text Find and Replace"
+      },
+      "widgets_values": [
+        "",
+        "illustration",
+        "cinematic"
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 60,
+      "type": "Text Find and Replace",
+      "pos": [
+        23.672607421875,
+        -973.2503051757812
+      ],
+      "size": [
+        245.1999969482422,
+        142
+      ],
+      "flags": {},
+      "order": 52,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 76,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result_text",
+          "type": "STRING",
+          "links": [
+            74
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "replacement_count_number",
+          "type": "NUMBER",
+          "links": null
+        },
+        {
+          "name": "replacement_count_float",
+          "type": "FLOAT",
+          "links": null
+        },
+        {
+          "name": "replacement_count_int",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Text Find and Replace"
+      },
+      "widgets_values": [
+        "",
+        "image",
+        "video"
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 63,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -303.6768493652344,
+        -433.69635009765625
+      ],
+      "size": [
+        294.836669921875,
+        130
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            78
+          ],
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        1049042307030612,
+        null,
+        null,
+        null
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 57,
+      "type": "Text Find and Replace",
+      "pos": [
+        22.33684730529785,
+        -591.1660766601562
+      ],
+      "size": [
+        245.1999969482422,
+        142
+      ],
+      "flags": {},
+      "order": 70,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 73,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result_text",
+          "type": "STRING",
+          "links": [
+            79
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "replacement_count_number",
+          "type": "NUMBER",
+          "links": null
+        },
+        {
+          "name": "replacement_count_float",
+          "type": "FLOAT",
+          "links": null
+        },
+        {
+          "name": "replacement_count_int",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Text Find and Replace"
+      },
+      "widgets_values": [
+        "",
+        "photo",
+        "video"
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 92,
+      "type": "FluxGuidance",
+      "pos": [
+        3834.384765625,
+        -1447.7191162109375
+      ],
+      "size": [
+        262,
+        58
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 66,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 135
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxGuidance"
+      },
+      "widgets_values": [
+        3.5
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 91,
+      "type": "easy cleanGpuUsed",
+      "pos": [
+        3836.232421875,
+        -1495.33984375
+      ],
+      "size": [
+        210,
+        26
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 51,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "anything",
+          "type": "*",
+          "link": 134
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "*",
+          "links": [
+            135
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "easy cleanGpuUsed"
+      },
+      "widgets_values": [],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 100,
+      "type": "easy cleanGpuUsed",
+      "pos": [
+        3895.61181640625,
+        -1167.61669921875
+      ],
+      "size": [
+        210,
+        26
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 49,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "anything",
+          "type": "*",
+          "link": 156
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "*",
+          "links": [
+            157
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "easy cleanGpuUsed"
+      },
+      "widgets_values": [],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 59,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        291.0695495605469,
+        -972.7444458007812
+      ],
+      "size": [
+        402.71240234375,
+        238.9195098876953
+      ],
+      "flags": {},
+      "order": 78,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 75,
+          "dir": 3
+        }
+      ],
+      "outputs": [],
+      "title": "Final Florence Prompt No Modifiable",
+      "properties": {
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 163,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        4168.802734375,
+        -1598.2437744140625
+      ],
+      "size": [
+        762.2787475585938,
+        147.15487670898438
+      ],
+      "flags": {},
+      "order": 42,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1217
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 164,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        758.9921875,
+        -1300.6072998046875
+      ],
+      "size": [
+        486.5237121582031,
+        197.54635620117188
+      ],
+      "flags": {},
+      "order": 82,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1215
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "Une image de haute qualité d'une femme debout seule sur une plage calme au coucher du soleil, entourée de vagues douces et d'un éclairage doré chaud ; elle porte un costume de pyjama noir avec des accents métalliques, orné d'une ceinture de robotique avec divers outils et gadgets ; le style guerrière et robotique humaine se fondent sans problème dans l'esthétique cyberpunk, complétée par des tatouages néon-lité et une affichette holographique à la poignet ; l'air est rempli du bruit des vagues qui heurtent et de lointains ronflements de machines ; une légère brume monte de l'eau, portant l'odeur de sel et d'électricité statique ; la caméra capture chaque détail, depuis l'expression déterminée de la femme jusqu'aux mécanismes complexes de son équipement."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 83,
+      "type": "easy cleanGpuUsed",
+      "pos": [
+        3858.571533203125,
+        -897.9183959960938
+      ],
+      "size": [
+        210,
+        26
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 50,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "anything",
+          "type": "*",
+          "link": 115
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "*",
+          "links": [
+            114
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "easy cleanGpuUsed"
+      },
+      "widgets_values": [],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 82,
+      "type": "FluxGuidance",
+      "pos": [
+        3861.204345703125,
+        -956.8804321289062
+      ],
+      "size": [
+        262,
+        58
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 65,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 114
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxGuidance"
+      },
+      "widgets_values": [
+        3.5
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 65,
+      "type": "DownloadAndLoadFlorence2Model",
+      "pos": [
+        -304.0787048339844,
+        -968.9746704101562
+      ],
+      "size": [
+        296.493896484375,
+        106
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "lora",
+          "type": "PEFTLORA",
+          "link": null,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "florence2_model",
+          "type": "FL2MODEL",
+          "links": [
+            81
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DownloadAndLoadFlorence2Model"
+      },
+      "widgets_values": [
+        "microsoft/Florence-2-base",
+        "fp16",
+        "sdpa"
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 101,
+      "type": "FluxGuidance",
+      "pos": [
+        3895.89794921875,
+        -1223.7203369140625
+      ],
+      "size": [
+        262,
+        58
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 64,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 157
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxGuidance"
+      },
+      "widgets_values": [
+        3.5
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 99,
+      "type": "CLIPTextEncode",
+      "pos": [
+        3895.85107421875,
+        -1107.4884033203125
+      ],
+      "size": [
+        210,
+        54
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 37,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": null
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 1218,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            156
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 81,
+      "type": "CLIPTextEncode",
+      "pos": [
+        3855.319580078125,
+        -855.2042236328125
+      ],
+      "size": [
+        210,
+        54
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 39,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": null
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 1220,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            115
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 90,
+      "type": "CLIPTextEncode",
+      "pos": [
+        3835.72119140625,
+        -1543.504150390625
+      ],
+      "size": [
+        210,
+        54
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 41,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": null
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 1216,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            134
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 169,
+      "type": "OX3DKSamplersSettingsLTX",
+      "pos": [
+        697.791259765625,
+        446.141357421875
+      ],
+      "size": [
+        262.0147705078125,
+        102
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "links": [
+            514
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "links": [
+            515
+          ],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OX3DKSamplersSettingsLTX"
+      },
+      "widgets_values": [
+        "euler",
+        "normal"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 34,
+      "type": "ModelSamplingFlux",
+      "pos": [
+        -270.6094055175781,
+        657.35986328125
+      ],
+      "size": [
+        224.78790283203125,
+        122
+      ],
+      "flags": {},
+      "order": 54,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 929
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 1062,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 1063,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            930
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ModelSamplingFlux"
+      },
+      "widgets_values": [
+        1.1500000000000001,
+        0.5,
+        1024,
+        1024
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 102,
+      "type": "Reroute",
+      "pos": [
+        683.138671875,
+        538.4879760742188
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 179
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            1225,
+            1231
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": true,
+        "horizontal": false
+      },
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 51,
+      "type": "VAELoader",
+      "pos": [
+        448.00982666015625,
+        523.8682250976562
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            179
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ae.sft"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 138,
+      "type": "Switch any [Crystools]",
+      "pos": [
+        818.73046875,
+        791.1807861328125
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_true",
+          "type": "*",
+          "link": 514
+        },
+        {
+          "name": "on_false",
+          "type": "*",
+          "link": 516
+        },
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "link": 373,
+          "widget": {
+            "name": "boolean"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "*",
+          "type": "*",
+          "links": [
+            1242
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "🪛 Switch Sampler Name",
+      "properties": {
+        "Node name for S&R": "Switch any [Crystools]"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 146,
+      "type": "FloatConstant",
+      "pos": [
+        1039.7431640625,
+        856.812255859375
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            1245
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Refiner Upscale",
+      "properties": {
+        "Node name for S&R": "FloatConstant"
+      },
+      "widgets_values": [
+        1.5000000000000002
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 142,
+      "type": "Switch any [Crystools]",
+      "pos": [
+        839.908447265625,
+        897.657470703125
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 47,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_true",
+          "type": "*",
+          "link": 357
+        },
+        {
+          "name": "on_false",
+          "type": "*",
+          "link": 360
+        },
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "link": 375,
+          "widget": {
+            "name": "boolean"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "*",
+          "type": "*",
+          "links": [
+            1244
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "🪛 Switch Scheduler",
+      "properties": {
+        "Node name for S&R": "Switch any [Crystools]"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 140,
+      "type": "Switch any [Crystools]",
+      "pos": [
+        841.3040161132812,
+        844.4119873046875
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_true",
+          "type": "*",
+          "link": 515
+        },
+        {
+          "name": "on_false",
+          "type": "*",
+          "link": 517
+        },
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "link": 374,
+          "widget": {
+            "name": "boolean"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "*",
+          "type": "*",
+          "links": [
+            1243
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "🪛 Switch Scheduler",
+      "properties": {
+        "Node name for S&R": "Switch any [Crystools]"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 39,
+      "type": "easy cleanGpuUsed",
+      "pos": [
+        849.6097412109375,
+        694.44482421875
+      ],
+      "size": [
+        210,
+        26
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 79,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "anything",
+          "type": "*",
+          "link": 864
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "*",
+          "links": [
+            1226,
+            1227,
+            1229,
+            1230
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "easy cleanGpuUsed"
+      },
+      "widgets_values": [],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 46,
+      "type": "EmptyLatentImage",
+      "pos": [
+        804.2132568359375,
+        562.2413330078125
+      ],
+      "size": [
+        212.79217529296875,
+        78
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 53,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 1060,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 1061,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            1228
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        512,
+        512,
+        1
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 54,
+      "type": "INTConstant",
+      "pos": [
+        445.2118225097656,
+        286.60614013671875
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links": [
+            1066,
+            1070
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Image Width",
+      "properties": {
+        "Node name for S&R": "INTConstant"
+      },
+      "widgets_values": [
+        1216
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 287,
+      "type": "Switch any [Crystools]",
+      "pos": [
+        -190.42166137695312,
+        594.39111328125
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 45,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_true",
+          "type": "*",
+          "link": 1068
+        },
+        {
+          "name": "on_false",
+          "type": "*",
+          "link": 1070
+        },
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "link": 1064,
+          "widget": {
+            "name": "boolean"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "*",
+          "type": "*",
+          "links": [
+            1060,
+            1062
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Switch any [Crystools]"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 288,
+      "type": "Switch any [Crystools]",
+      "pos": [
+        -193.19021606445312,
+        531.0753173828125
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 46,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "on_true",
+          "type": "*",
+          "link": 1066
+        },
+        {
+          "name": "on_false",
+          "type": "*",
+          "link": 1069
+        },
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "link": 1065,
+          "widget": {
+            "name": "boolean"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "*",
+          "type": "*",
+          "links": [
+            1061,
+            1063
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Switch any [Crystools]"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 53,
+      "type": "INTConstant",
+      "pos": [
+        443.6441955566406,
+        405.6546630859375
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links": [
+            1068,
+            1069
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Image Height",
+      "properties": {
+        "Node name for S&R": "INTConstant"
+      },
+      "widgets_values": [
+        832
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 144,
+      "type": "FloatConstant",
+      "pos": [
+        1041.10986328125,
+        628.4686889648438
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            360
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Denoise Refiner Mode 2",
+      "properties": {
+        "Node name for S&R": "FloatConstant"
+      },
+      "widgets_values": [
+        1
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 252,
+      "type": "CLIPTextEncodeFlux",
+      "pos": [
+        449.25311279296875,
+        634.6063232421875
+      ],
+      "size": [
+        313.89892578125,
+        98
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 74,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 861
+        },
+        {
+          "name": "clip_l",
+          "type": "STRING",
+          "link": 1195,
+          "widget": {
+            "name": "clip_l"
+          }
+        },
+        {
+          "name": "t5xxl",
+          "type": "STRING",
+          "link": 1196,
+          "widget": {
+            "name": "t5xxl"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            864
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncodeFlux"
+      },
+      "widgets_values": [
+        "",
+        "",
+        3.5
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 170,
+      "type": "OX3DKSamplersSettingsLTX",
+      "pos": [
+        697.6702880859375,
+        502.7732849121094
+      ],
+      "size": [
+        270.8455810546875,
+        102
+      ],
+      "flags": {
+        "collapsed": true
+      },
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "links": [
+            516
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "links": [
+            517
+          ],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OX3DKSamplersSettingsLTX"
+      },
+      "widgets_values": [
+        "euler",
+        "sgm_uniform"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 145,
+      "type": "easy boolean",
+      "pos": [
+        1039.009521484375,
+        740.8257446289062
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "links": [
+            373,
+            374,
+            375
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Refiner Mode 1 & Mode 2",
+      "properties": {
+        "Node name for S&R": "easy boolean"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 296,
+      "type": "DGLlamaStyleWeapons",
+      "pos": [
+        -23.513870239257812,
+        1416.6737060546875
+      ],
+      "size": [
+        376.7557678222656,
+        322
+      ],
+      "flags": {},
+      "order": 58,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1102,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1091
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleWeapons"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 300,
+      "type": "DGLlamaStyleVehicles",
+      "pos": [
+        384.2152404785156,
+        1566.47509765625
+      ],
+      "size": [
+        384.0130310058594,
+        322
+      ],
+      "flags": {},
+      "order": 59,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1103,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1095
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleVehicles"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 301,
+      "type": "DGLlamaStyleHumanHybrid",
+      "pos": [
+        367.21630859375,
+        1949.33251953125
+      ],
+      "size": [
+        403.20001220703125,
+        226
+      ],
+      "flags": {},
+      "order": 62,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1106,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1096
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleHumanHybrid"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 299,
+      "type": "DGLlamaStyleColorExt",
+      "pos": [
+        386.9449768066406,
+        1181.262451171875
+      ],
+      "size": [
+        378,
+        322
+      ],
+      "flags": {},
+      "order": 57,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1101,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1094
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleColorExt"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 295,
+      "type": "DGLlamaStyleColors",
+      "pos": [
+        386.902099609375,
+        796.552734375
+      ],
+      "size": [
+        378.84814453125,
+        322
+      ],
+      "flags": {},
+      "order": 56,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1100,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1090
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleColors"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 178,
+      "type": "DGLlamaMixStylesMulti",
+      "pos": [
+        861.0751342773438,
+        979.3920288085938
+      ],
+      "size": [
+        386.3999938964844,
+        242
+      ],
+      "flags": {},
+      "order": 69,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_1",
+          "type": "STRING",
+          "link": 1089,
+          "widget": {
+            "name": "style_1"
+          }
+        },
+        {
+          "name": "style_2",
+          "type": "STRING",
+          "link": 1091,
+          "widget": {
+            "name": "style_2"
+          }
+        },
+        {
+          "name": "style_3",
+          "type": "STRING",
+          "link": 1090
+        },
+        {
+          "name": "style_4",
+          "type": "STRING",
+          "link": 1094
+        },
+        {
+          "name": "style_5",
+          "type": "STRING",
+          "link": 1095
+        },
+        {
+          "name": "style_6",
+          "type": "STRING",
+          "link": 1092
+        },
+        {
+          "name": "style_7",
+          "type": "STRING",
+          "link": 1096
+        },
+        {
+          "name": "style_8",
+          "type": "STRING",
+          "link": 1093
+        },
+        {
+          "name": "style_9",
+          "type": "STRING",
+          "link": 1097
+        }
+      ],
+      "outputs": [
+        {
+          "name": "styles",
+          "type": "STRING",
+          "links": [
+            1192
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaMixStylesMulti"
+      },
+      "widgets_values": [
+        9,
+        "",
+        "",
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 40,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        -25.071693420410156,
+        656.4347534179688
+      ],
+      "size": [
+        284.5342102050781,
+        82
+      ],
+      "flags": {},
+      "order": 68,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 930
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1224,
+            1232
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "schnell_v1.0.safetensors",
+        1
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 303,
+      "type": "Reroute",
+      "pos": [
+        -126.834716796875,
+        795.6229858398438
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 48,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 1115,
+          "widget": {
+            "name": "value"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            1099,
+            1100,
+            1101,
+            1102,
+            1103,
+            1104,
+            1105,
+            1106,
+            1107
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": true,
+        "horizontal": false
+      },
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 297,
+      "type": "DGLlamaStyleHairs",
+      "pos": [
+        -14.005317687988281,
+        1793.3184814453125
+      ],
+      "size": [
+        352.79998779296875,
+        226
+      ],
+      "flags": {},
+      "order": 60,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1104,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1092
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleHairs"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 298,
+      "type": "DGLlamaStyleGods",
+      "pos": [
+        -18.262481689453125,
+        2082.009765625
+      ],
+      "size": [
+        350.9768371582031,
+        226
+      ],
+      "flags": {},
+      "order": 61,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1105,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1093
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleGods"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 328,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        3852.8193359375,
+        216.02593994140625
+      ],
+      "size": [
+        497.7369689941406,
+        326.57708740234375
+      ],
+      "flags": {},
+      "order": 81,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1212
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "I'm Gino, your go-to agent for crafting bespoke text prompts that bring anime-inspired visuals to life. I'll work closely with you to create unique and captivating concepts that transport viewers into immersive worlds. Let's collaborate on a project that pushes the boundaries of creativity. What genre or theme would you like to explore first?"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 111,
+      "type": "DualCLIPLoaderGGUF",
+      "pos": [
+        -23.06328582763672,
+        490.97406005859375
+      ],
+      "size": [
+        283.89117431640625,
+        106
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            197
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DualCLIPLoaderGGUF"
+      },
+      "widgets_values": [
+        "clip_l.safetensors",
+        "t5xxl_fp8_e4m3fn.safetensors",
+        "flux"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 255,
+      "type": "UpscaleModelLoader",
+      "pos": [
+        1285.7669677734375,
+        77.49102020263672
+      ],
+      "size": [
+        337.2281494140625,
+        58
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "UPSCALE_MODEL",
+          "type": "UPSCALE_MODEL",
+          "links": [
+            1233
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UpscaleModelLoader"
+      },
+      "widgets_values": [
+        "4xPurePhoto-Span.pth"
+      ],
+      "color": "#9f4514",
+      "bgcolor": "#8b3100"
+    },
+    {
+      "id": 284,
+      "type": "Note",
+      "pos": [
+        1285.47119140625,
+        -55.450984954833984
+      ],
+      "size": [
+        336.8887023925781,
+        72.69235229492188
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Refiner value infos",
+      "properties": {},
+      "widgets_values": [
+        "You can change the on_false value from 1 to 2 or 3 to get more refiner effects, but 1 is usually the best. Values greater than 1 can become excessive."
+      ],
+      "color": "#891414",
+      "bgcolor": "#750000"
+    },
+    {
+      "id": 62,
+      "type": "Text Find and Replace",
+      "pos": [
+        23.672607421875,
+        -395.3210144042969
+      ],
+      "size": [
+        245.1999969482422,
+        142
+      ],
+      "flags": {},
+      "order": 72,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 79,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result_text",
+          "type": "STRING",
+          "links": [
+            75
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "replacement_count_number",
+          "type": "NUMBER",
+          "links": null
+        },
+        {
+          "name": "replacement_count_float",
+          "type": "FLOAT",
+          "links": null
+        },
+        {
+          "name": "replacement_count_int",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Text Find and Replace"
+      },
+      "widgets_values": [
+        "",
+        "photo",
+        "video"
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 61,
+      "type": "Florence2Run",
+      "pos": [
+        -308.1144104003906,
+        -799.7598876953125
+      ],
+      "size": [
+        302.27099609375,
+        304
+      ],
+      "flags": {},
+      "order": 44,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 77
+        },
+        {
+          "name": "florence2_model",
+          "type": "FL2MODEL",
+          "link": 81
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": 78,
+          "widget": {
+            "name": "seed"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null
+        },
+        {
+          "name": "caption",
+          "type": "STRING",
+          "links": [
+            76,
+            1200
+          ],
+          "slot_index": 2
+        },
+        {
+          "name": "data",
+          "type": "JSON",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Florence2Run"
+      },
+      "widgets_values": [
+        "",
+        "more_detailed_caption",
+        true,
+        false,
+        256,
+        3,
+        true,
+        "",
+        149797606808917,
+        "randomize"
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 162,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        4168.4140625,
+        -1082.47509765625
+      ],
+      "size": [
+        758.646728515625,
+        198.59523010253906
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1219
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 351,
+      "type": "DGLlamaAgentCorrection",
+      "pos": [
+        4167.75390625,
+        -1348.3985595703125
+      ],
+      "size": [
+        752.2596435546875,
+        201.1039276123047
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "prompt"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "corrected_prompt",
+          "type": "STRING",
+          "links": [
+            1218,
+            1219
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentCorrection"
+      },
+      "widgets_values": [
+        "Correct any errors in the prompt, replace woman by a realistic creature from medieval RPG aventure, if you can improve the effects, lighting, or colors, please do so, respond only with the text prompt",
+        "No",
+        true,
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 352,
+      "type": "DGLlamaAgentCorrection",
+      "pos": [
+        4172.7744140625,
+        -813.0956420898438
+      ],
+      "size": [
+        740.71923828125,
+        225.0877227783203
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "prompt"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "corrected_prompt",
+          "type": "STRING",
+          "links": [
+            1220,
+            1221
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentCorrection"
+      },
+      "widgets_values": [
+        "Correct any errors in the prompt, if you can improve the effects and lighting, or colors, please do so, try to keep same prompt idea, respond only with the text prompt",
+        "No",
+        true,
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 350,
+      "type": "DGLlamaAgentCorrection",
+      "pos": [
+        4173.3251953125,
+        -1870.8802490234375
+      ],
+      "size": [
+        753.3634643554688,
+        207.05052185058594
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": null,
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "prompt"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "corrected_prompt",
+          "type": "STRING",
+          "links": [
+            1216,
+            1217
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentCorrection"
+      },
+      "widgets_values": [
+        "Correct any errors in the prompt, if you can improve the effects, lighting, or colors, please do so, respond only with the text prompt, correct the lips color with painted blue color, add fire flames in background, try to keep same prompt idea",
+        "No",
+        true,
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 213,
+      "type": "Note",
+      "pos": [
+        -314.47491455078125,
+        -1379.009033203125
+      ],
+      "size": [
+        455.88397216796875,
+        313.1568298339844
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "a sickening video of a stunning model twerking in a bright neon-lit room, with razor-sharp angles and a dash of edgy vibes, think Dua Lipa meets Cardi B, with a hint of Kylie Jenner's sass, and a whole lot of sex appeal, let's get this twerk party started with a supermodel like Bella Hadid or Gigi Hadid bringing the heat, in a bold, eye-searing red latex bodysuit, hair on point, and a face that's a work of art, we're talkin' 4K resolution, cinematic quality, and a style that's straight fire, so are you ready to get turnt up?\n\nA seductive, otherworldly Xantheian female wraps herself around you, her slender yet athletic frame glistening in the soft, ethereal light of your bedroom. Her skin has a subtle, iridescent sheen, as if kissed by stardust, and her long, raven hair cascades down her back like a waterfall of night, adorned with delicate, swirling patterns that shimmer and glow under the bedside lamp. She's dressed in a flowing, crystal-encrusted jumpsuit that hugs her curves in all the right places, its intricate, pulsing design seeming to shift and change color as she moves, casting an otherworldly glow over the room. A delicate, gemstone-encrusted choker glimmers at her throat, and a pair of supple, scaled boots adds a touch of feline elegance to her overall appearance. Her full, plump lips part ever so slightly, revealing a hint of razor-sharp teeth, a subtle reminder of her Xantheian heritage. Her eyes burn with an inner fire, a fierce, feral intensity that draws you in, making your pulse quicken with anticipation. As she leans in closer, her breath whispers against your ear, sending shivers down your spine, and you can't help but wonder - what secrets will Zephyrine reveal to you, and at what cost?  Note: I replaced woman with Xantheian female, added a new name Zephyrine to maintain consistency, and made some minor adjustments to the wording to make it more engaging and sensual."
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 161,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        4173.2705078125,
+        -518.689697265625
+      ],
+      "size": [
+        742.7396240234375,
+        192.78524780273438
+      ],
+      "flags": {},
+      "order": 40,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1221
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 258,
+      "type": "Note",
+      "pos": [
+        1654.60546875,
+        -1146.625
+      ],
+      "size": [
+        286.9237976074219,
+        98.20018768310547
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "a woman hybrid standing in a futuristic spaceship, close-up half body\n832\n1216\n\na woman hybrid standing in a futuristic spaceship, close-up half body"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 335,
+      "type": "Seed (rgthree)",
+      "pos": [
+        1286.0364990234375,
+        607.651611328125
+      ],
+      "size": [
+        360.47735595703125,
+        130
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            1177
+          ],
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        329436961521159,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 64,
+      "type": "LoadImage",
+      "pos": [
+        295.073486328125,
+        -678.4296875
+      ],
+      "size": [
+        393.9259948730469,
+        417.21099853515625
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            77
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "llama_AA_img_02770_.png",
+        "image"
+      ],
+      "color": "#1f4714",
+      "bgcolor": "#0b3300"
+    },
+    {
+      "id": 334,
+      "type": "DGLlamaStyles",
+      "pos": [
+        1269.06298828125,
+        798.2599487304688
+      ],
+      "size": [
+        377.2890625,
+        562
+      ],
+      "flags": {},
+      "order": 43,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1177,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1208
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyles"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 248,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        -59.515724182128906,
+        340.8841857910156
+      ],
+      "size": [
+        315,
+        82
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 2,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "mix_dg_gg_lora_weights_11000_v2.safetensors",
+        0.8
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 112,
+      "type": "Reroute",
+      "pos": [
+        313.6862487792969,
+        536.0220336914062
+      ],
+      "size": [
+        75,
+        26
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "",
+          "type": "*",
+          "link": 197
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            861
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "showOutputText": true,
+        "horizontal": false
+      },
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 165,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        753.6719970703125,
+        -1028.759521484375
+      ],
+      "size": [
+        499.0061340332031,
+        270.2915954589844
+      ],
+      "flags": {},
+      "order": 73,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1193
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "A high-quality, cinematic still image of a woman with an ethereal quality, dressed in a long, flowing white gown with intricate golden embroidery, standing alone in a dimly lit, atmospheric room with old, worn wooden furniture and rich, velvety soft crimson walls; the woman's facial expression is one of deep contemplation, with a hint of sadness in her eyes; her dark hair is pulled back, revealing a slender neck and a small, delicate silver pendant around her neck; the camera captures every detail with razor-sharp clarity, using a high-end DSLR camera with a 100mm macro lens, resulting in a crystal-clear, 4K resolution image."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 349,
+      "type": "DGLlamaAgentTranslate",
+      "pos": [
+        762.8427734375,
+        -1545.886474609375
+      ],
+      "size": [
+        480.2525634765625,
+        187.9578857421875
+      ],
+      "flags": {},
+      "order": 77,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 1213,
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 1214,
+          "widget": {
+            "name": "prompt"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "translated_prompt",
+          "type": "STRING",
+          "links": [
+            1215
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentTranslate"
+      },
+      "widgets_values": [
+        "Translate the prompt into French",
+        "No",
+        true,
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 323,
+      "type": "Note",
+      "pos": [
+        1273.97314453125,
+        314.11053466796875
+      ],
+      "size": [
+        376.8320007324219,
+        234.5070037841797
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "J'écris en français, tu peux me répondre en français aussi, mais il est important que le prompt soit entièrement en anglais.\n\n[Replace: -> ]"
+      ],
+      "color": "#891414",
+      "bgcolor": "#750000"
+    },
+    {
+      "id": 312,
+      "type": "Note",
+      "pos": [
+        836.413818359375,
+        1582.775634765625
+      ],
+      "size": [
+        495.2422790527344,
+        327.9369201660156
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "A woman, played by a talented actress, stands alone on a deserted beach at dusk. The sun is setting behind her, casting long shadows across the sand. She is dressed in a white sundress, her hair blown back by the wind. Her eyes seem... off, distant, and unblinking. She stares out at the sea, her expression eerily calm. The sound of waves crashing against the shore provides a sense of unease, but the woman remains still, lost in thought. As the camera zooms in on her face, we see the faintest glimmer of a smile playing on her lips. It's a subtle hint at the darkness lurking beneath the surface. The beach is empty, save for a few seagulls circling overhead. The air is thick with an eerie silence. Suddenly, the wind picks up, and the gulls begin to squawk\n\nA sultry, sensual, and futuristic cybernetic being, with glowing blue circuits beneath her translucent skin, and a hint of danger in her piercing green eyes; she's standing at the edge of a dark, rainy cityscape, with neon lights reflecting off her metallic limbs, as the camera zooms in on her face from a close-up, 4K resolution, slow-motion capture, with a gritty, cinematic feel, and the sound design emphasizing the hum of machinery and distant thunder.\n\nA handsome, yet awkward, cyborg trying to pick up a human at a high-end nightclub; he's wearing a tailored tuxedo, but his mechanical arm keeps malfunctioning, causing him to knock over chairs and spill drinks everywhere, as the camera captures the chaos from a hilarious, point-of-view shot, 1080p, fast-motion replay, with a comedic soundtrack featuring embarrassing robot dance moves, and the crowd's reactions ranging from shock to snickering.\n\nA dystopian beachside tableau unfolds as a heavily augmented, cyberpunk-inspired woman, clad in a gleaming white jumpsuit adorned with mirrored panels and circuitry, emerges from the mist-shrouded shoreline; a towering, mechanized exoskeleton rises from the sand behind her, its angular lines and glowing blue accents a testament to her status as a formidable warrior; the camera swoops in for a close-quarters shot, capturing the intricate details of her cybernetic enhancements and the deadly arsenal slung over her shoulder; the air is thick with the acrid smell of smoke and ozone, and the sound of distant thunder rumbles through the air; the beach itself is a battleground, littered with the wreckage of abandoned vehicles and the twisted remnants of previous conflicts; the woman's gaze burns with an inner fire as she surveys her domain, her very presence seeming to command the attention of all who dare approach.\n\nA mesmerizing contrast unfolds as the beautiful woman, still standing alone on the deserted beach, is enveloped in a fiery aura, her slender frame encased in a scarlet coat that seems to pulse with an inner flame; the camera continues to capture the dreamy, ethereal quality, yet the addition of the bold, crimson hue injects a sense of urgency and danger, drawing the viewer's attention to the woman's every move; the air is charged with tension, the only sound the relentless pounding of the waves against the shore; the beach itself becomes a battleground, the woman's presence a defiant statement against the desolate landscape; the surrounding environment is a deep, foreboding shadow, as if night is falling even though the sun still hangs high in the sky; the woman's gaze remains fixed on some point beyond the horizon, her beauty a fierce rebuke to the emptiness that surrounds her."
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 289,
+      "type": "easy boolean",
+      "pos": [
+        1284.0096435546875,
+        194.41094970703125
+      ],
+      "size": [
+        336.8454895019531,
+        58
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "links": [
+            1064,
+            1065
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Resolution switch",
+      "properties": {
+        "Node name for S&R": "easy boolean"
+      },
+      "widgets_values": [
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 50,
+      "type": "UnetLoaderGGUFAdvanced",
+      "pos": [
+        -634.5850830078125,
+        656.970458984375
+      ],
+      "size": [
+        336.632568359375,
+        130
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            929
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UnetLoaderGGUFAdvanced"
+      },
+      "widgets_values": [
+        "flux1-dev-Q4_K_M.gguf",
+        "default",
+        "default",
+        false
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 176,
+      "type": "Fast Groups Muter (rgthree)",
+      "pos": [
+        2460.7900390625,
+        772.214111328125
+      ],
+      "size": [
+        402.9374084472656,
+        130
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "OPT_CONNECTION",
+          "type": "*",
+          "links": null
+        }
+      ],
+      "properties": {
+        "matchColors": "",
+        "matchTitle": "",
+        "showNav": true,
+        "sort": "position",
+        "customSortAlphabet": "",
+        "toggleRestriction": "default"
+      },
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 347,
+      "type": "DGLlamaChatUser",
+      "pos": [
+        1675.69677734375,
+        217.1265411376953
+      ],
+      "size": [
+        516.1424560546875,
+        410.1544189453125
+      ],
+      "flags": {},
+      "order": 75,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 1207
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": 1208,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            1209
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaChatUser"
+      },
+      "widgets_values": [
+        "Other",
+        false,
+        "agent_geraldine_normal.agt",
+        false,
+        "No",
+        "No",
+        "Yes",
+        "",
+        "No",
+        true,
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 84,
+      "type": "SaveImage",
+      "pos": [
+        2549.1142578125,
+        -981.147705078125
+      ],
+      "size": [
+        870.7847290039062,
+        1085.1429443359375
+      ],
+      "flags": {},
+      "order": 84,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1247
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "OX3D_Llama\\llama_AA_img"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 131,
+      "type": "KSampler Config (rgthree)",
+      "pos": [
+        935.8930053710938,
+        215.7183837890625
+      ],
+      "size": [
+        315,
+        234
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STEPS",
+          "type": "INT",
+          "links": [
+            1236
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "REFINER_STEP",
+          "type": "INT",
+          "links": [
+            1241
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "CFG",
+          "type": "FLOAT",
+          "links": [
+            1237,
+            1238
+          ],
+          "slot_index": 2
+        },
+        {
+          "name": "SAMPLER",
+          "type": "COMBO",
+          "links": [
+            1239
+          ],
+          "slot_index": 3
+        },
+        {
+          "name": "SCHEDULER",
+          "type": "COMBO",
+          "links": [
+            1240
+          ],
+          "slot_index": 4
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler Config (rgthree)"
+      },
+      "widgets_values": [
+        4,
+        4,
+        1,
+        "euler",
+        "normal"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 143,
+      "type": "FloatConstant",
+      "pos": [
+        1040.77783203125,
+        510.0621643066406
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            357
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Denoise Refiner Mode 1",
+      "properties": {
+        "Node name for S&R": "FloatConstant"
+      },
+      "widgets_values": [
+        0.53
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 253,
+      "type": "SaveImage",
+      "pos": [
+        1657.319580078125,
+        -981.9146728515625
+      ],
+      "size": [
+        874.4276733398438,
+        1087.5714111328125
+      ],
+      "flags": {},
+      "order": 85,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1248
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "OX3D_Llama\\llama_firstpass_img"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 311,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        2208.109130859375,
+        217.41786193847656
+      ],
+      "size": [
+        646.7581787109375,
+        414.33392333984375
+      ],
+      "flags": {},
+      "order": 80,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1209
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "Geraldine conversation. Waiting for your next instruction. What's on your mind? Need another prompt or want to chat?"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 302,
+      "type": "DGLlamaStyleNationalities",
+      "pos": [
+        828.3902587890625,
+        1279.991455078125
+      ],
+      "size": [
+        420,
+        226
+      ],
+      "flags": {},
+      "order": 63,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1107,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1097
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleNationalities"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 294,
+      "type": "DGLlamaStyles",
+      "pos": [
+        -21.439037322998047,
+        793.54296875
+      ],
+      "size": [
+        377.2890625,
+        562
+      ],
+      "flags": {},
+      "order": 55,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 1099,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            1089
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyles"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 344,
+      "type": "DGPromptGenLlama",
+      "pos": [
+        756.2005615234375,
+        -700.3978881835938
+      ],
+      "size": [
+        494.08770751953125,
+        856.375732421875
+      ],
+      "flags": {},
+      "order": 71,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 1191,
+          "widget": {
+            "name": "seeder"
+          }
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": 1192,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": 1200,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "assistant",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "assistant"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            1193,
+            1195,
+            1196,
+            1214
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": [
+            1207,
+            1210,
+            1213
+          ]
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGPromptGenLlama"
+      },
+      "widgets_values": [
+        "Llama-3.2-3B-Instruct-uncensored\\model-00001-of-00002.safetensors",
+        1,
+        "Other",
+        "No",
+        "4bit",
+        "Image",
+        "Yes",
+        "Yes",
+        -1,
+        "No",
+        "No",
+        "No",
+        4096,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "Yes",
+        "a woman",
+        "",
+        "Yes",
+        "Yes",
+        "Yes",
+        "No",
+        "No",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 354,
+      "type": "OX3DKSamplerAdv",
+      "pos": [
+        1283.1700439453125,
+        -981.3843994140625
+      ],
+      "size": [
+        337.6000061035156,
+        762
+      ],
+      "flags": {},
+      "order": 83,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "ltx_model",
+          "type": "MODEL",
+          "link": 1224
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 1225
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 1226
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 1227
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 1228
+        },
+        {
+          "name": "refiner_positive",
+          "type": "CONDITIONING",
+          "link": 1229
+        },
+        {
+          "name": "refiner_negative",
+          "type": "CONDITIONING",
+          "link": 1230
+        },
+        {
+          "name": "refiner_vae",
+          "type": "VAE",
+          "link": 1231
+        },
+        {
+          "name": "refiner_model",
+          "type": "MODEL",
+          "link": 1232,
+          "shape": 7
+        },
+        {
+          "name": "upscale_model",
+          "type": "UPSCALE_MODEL",
+          "link": 1233,
+          "shape": 7
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": 1234,
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "name": "refiner_seed",
+          "type": "INT",
+          "link": 1235,
+          "widget": {
+            "name": "refiner_seed"
+          }
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": 1236,
+          "widget": {
+            "name": "steps"
+          }
+        },
+        {
+          "name": "cfg",
+          "type": "FLOAT",
+          "link": 1237,
+          "widget": {
+            "name": "cfg"
+          }
+        },
+        {
+          "name": "refiner_cfg",
+          "type": "FLOAT",
+          "link": 1238,
+          "widget": {
+            "name": "refiner_cfg"
+          }
+        },
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "link": 1239,
+          "widget": {
+            "name": "sampler_name"
+          }
+        },
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "link": 1240,
+          "widget": {
+            "name": "scheduler"
+          }
+        },
+        {
+          "name": "refiner_steps",
+          "type": "INT",
+          "link": 1241,
+          "widget": {
+            "name": "refiner_steps"
+          }
+        },
+        {
+          "name": "refiner_sampler_name",
+          "type": "COMBO",
+          "link": 1242,
+          "widget": {
+            "name": "refiner_sampler_name"
+          }
+        },
+        {
+          "name": "refiner_scheduler",
+          "type": "COMBO",
+          "link": 1243,
+          "widget": {
+            "name": "refiner_scheduler"
+          }
+        },
+        {
+          "name": "refiner_denoise",
+          "type": "FLOAT",
+          "link": 1244,
+          "widget": {
+            "name": "refiner_denoise"
+          }
+        },
+        {
+          "name": "refiner_scale_by",
+          "type": "FLOAT",
+          "link": 1245,
+          "widget": {
+            "name": "refiner_scale_by"
+          }
+        },
+        {
+          "name": "refiner_count",
+          "type": "INT",
+          "link": 1246,
+          "widget": {
+            "name": "refiner_count"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "latent_out",
+          "type": "LATENT",
+          "links": null
+        },
+        {
+          "name": "latent_start",
+          "type": "LATENT",
+          "links": null
+        },
+        {
+          "name": "positive_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "negative_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "ref_positive_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "ref_negative_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "video_image_out",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "last_image_out",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "vae_out",
+          "type": "VAE",
+          "links": null
+        },
+        {
+          "name": "ltx_model_out",
+          "type": "MODEL",
+          "links": null
+        },
+        {
+          "name": "first_image_out",
+          "type": "IMAGE",
+          "links": [
+            1247
+          ],
+          "slot_index": 10
+        },
+        {
+          "name": "vae_refiner_out",
+          "type": "VAE",
+          "links": null
+        },
+        {
+          "name": "ref_model_out",
+          "type": "MODEL",
+          "links": null
+        },
+        {
+          "name": "first_pass_img",
+          "type": "IMAGE",
+          "links": [
+            1248
+          ],
+          "slot_index": 13
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OX3DKSamplerAdv"
+      },
+      "widgets_values": [
+        92240500373710,
+        "randomize",
+        10,
+        5,
+        "euler",
+        "normal",
+        1,
+        "euler",
+        "sgm_uniform",
+        0,
+        5,
+        10,
+        0,
+        "Yes",
+        "lanczos",
+        1.5,
+        1,
+        "Yes",
+        512,
+        64,
+        64,
+        8,
+        1.2,
+        "mkl",
+        true,
+        true
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 171,
+      "type": "INTConstant",
+      "pos": [
+        1282.20556640625,
+        -161.39964294433594
+      ],
+      "size": [
+        339.5600280761719,
+        58
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 28,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links": [
+            1246
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Refiner Pass",
+      "properties": {
+        "Node name for S&R": "INTConstant"
+      },
+      "widgets_values": [
+        0
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 329,
+      "type": "DGLlamaTextPrompt",
+      "pos": [
+        2898.77587890625,
+        222.87611389160156
+      ],
+      "size": [
+        512.6420288085938,
+        297.1397399902344
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            1251
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaTextPrompt"
+      },
+      "widgets_values": [
+        "# Use case exemple:\nYou are an agent specialized in creating text prompts for generating anime image, photo, video of all genres and styles.\nAs an expert, you are skilled at inventing original text prompt concepts with inspiration from the works of the greatest anime artists.\nYour expertise allows you to craft text prompts that bring to life vibrant shonen battles, heartwarming slice-of-life moments, or breathtaking fantasy worlds.\nYou excel at capturing the essence of any anime style, making you the perfect guide for designing detailed and visually stunning text prompts.\nDo not use words like Title: or Prompt:\nInstead, when you reply the prompt incorporate the content directly into the sentence as a single paragraph without separation\nInclude in the prompt details about quality, the type of camera or Kodak, angles, perspective, and distance using professional photography terms.\nIf inspired by a known artist, add their name along with any other details needed to reproduce the image.\nDon't attempt to simulate taking a picture; just provide the prompt in text format."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 355,
+      "type": "Note",
+      "pos": [
+        2903.29296875,
+        567.9892578125
+      ],
+      "size": [
+        509.1910400390625,
+        124.52568054199219
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "If you connect an agent text window, it becomes the current agent. If you disconnect it, the agent is loaded from the node loader file. When you use llama3_reset and execute this node, it creates an agent configuration file with the selected name and the text you have added in the agent text window."
+      ],
+      "color": "#891414",
+      "bgcolor": "#750000"
+    },
+    {
+      "id": 348,
+      "type": "DGLlamaAgentUserEdit",
+      "pos": [
+        3426.5205078125,
+        215.86456298828125
+      ],
+      "size": [
+        409.1479797363281,
+        383.3768615722656
+      ],
+      "flags": {},
+      "order": 76,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 1210
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": 1251,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            1212
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentUserEdit"
+      },
+      "widgets_values": [
+        "Gino",
+        false,
+        false,
+        "agent_Gino_normal.agt",
+        "No",
+        "No",
+        "No",
+        "hi",
+        "No",
+        true,
+        "",
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 9,
+      "type": "Seed (rgthree)",
+      "pos": [
+        381.23260498046875,
+        -176.9651336669922
+      ],
+      "size": [
+        323.66192626953125,
+        130
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            1115,
+            1191,
+            1235
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "title": "DG Llama Prompt Gen Seed",
+      "properties": {},
+      "widgets_values": [
+        528685033726900,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 41,
+      "type": "Seed (rgthree)",
+      "pos": [
+        378.5652160644531,
+        16.301881790161133
+      ],
+      "size": [
+        327.5982971191406,
+        130
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            1234
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "title": "DG Sampler Refiner Seed",
+      "properties": {},
+      "widgets_values": [
+        557202438235723,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    }
+  ],
+  "links": [
+    [
+      73,
+      58,
+      0,
+      57,
+      0,
+      "STRING"
+    ],
+    [
+      74,
+      60,
+      0,
+      58,
+      0,
+      "STRING"
+    ],
+    [
+      75,
+      62,
+      0,
+      59,
+      0,
+      "*"
+    ],
+    [
+      76,
+      61,
+      2,
+      60,
+      0,
+      "STRING"
+    ],
+    [
+      77,
+      64,
+      0,
+      61,
+      0,
+      "IMAGE"
+    ],
+    [
+      78,
+      63,
+      0,
+      61,
+      2,
+      "INT"
+    ],
+    [
+      79,
+      57,
+      0,
+      62,
+      0,
+      "STRING"
+    ],
+    [
+      81,
+      65,
+      0,
+      61,
+      1,
+      "FL2MODEL"
+    ],
+    [
+      114,
+      83,
+      0,
+      82,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      115,
+      81,
+      0,
+      83,
+      0,
+      "*"
+    ],
+    [
+      134,
+      90,
+      0,
+      91,
+      0,
+      "*"
+    ],
+    [
+      135,
+      91,
+      0,
+      92,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      156,
+      99,
+      0,
+      100,
+      0,
+      "*"
+    ],
+    [
+      157,
+      100,
+      0,
+      101,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      179,
+      51,
+      0,
+      102,
+      0,
+      "*"
+    ],
+    [
+      197,
+      111,
+      0,
+      112,
+      0,
+      "*"
+    ],
+    [
+      357,
+      143,
+      0,
+      142,
+      0,
+      "*"
+    ],
+    [
+      360,
+      144,
+      0,
+      142,
+      1,
+      "*"
+    ],
+    [
+      373,
+      145,
+      0,
+      138,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      374,
+      145,
+      0,
+      140,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      375,
+      145,
+      0,
+      142,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      514,
+      169,
+      0,
+      138,
+      0,
+      "*"
+    ],
+    [
+      515,
+      169,
+      1,
+      140,
+      0,
+      "*"
+    ],
+    [
+      516,
+      170,
+      0,
+      138,
+      1,
+      "*"
+    ],
+    [
+      517,
+      170,
+      1,
+      140,
+      1,
+      "*"
+    ],
+    [
+      861,
+      112,
+      0,
+      252,
+      0,
+      "CLIP"
+    ],
+    [
+      864,
+      252,
+      0,
+      39,
+      0,
+      "*"
+    ],
+    [
+      929,
+      50,
+      0,
+      34,
+      0,
+      "MODEL"
+    ],
+    [
+      930,
+      34,
+      0,
+      40,
+      0,
+      "MODEL"
+    ],
+    [
+      1060,
+      287,
+      0,
+      46,
+      0,
+      "INT"
+    ],
+    [
+      1061,
+      288,
+      0,
+      46,
+      1,
+      "INT"
+    ],
+    [
+      1062,
+      287,
+      0,
+      34,
+      1,
+      "INT"
+    ],
+    [
+      1063,
+      288,
+      0,
+      34,
+      2,
+      "INT"
+    ],
+    [
+      1064,
+      289,
+      0,
+      287,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      1065,
+      289,
+      0,
+      288,
+      2,
+      "BOOLEAN"
+    ],
+    [
+      1066,
+      54,
+      0,
+      288,
+      0,
+      "*"
+    ],
+    [
+      1068,
+      53,
+      0,
+      287,
+      0,
+      "*"
+    ],
+    [
+      1069,
+      53,
+      0,
+      288,
+      1,
+      "*"
+    ],
+    [
+      1070,
+      54,
+      0,
+      287,
+      1,
+      "*"
+    ],
+    [
+      1089,
+      294,
+      0,
+      178,
+      0,
+      "STRING"
+    ],
+    [
+      1090,
+      295,
+      0,
+      178,
+      2,
+      "STRING"
+    ],
+    [
+      1091,
+      296,
+      0,
+      178,
+      1,
+      "STRING"
+    ],
+    [
+      1092,
+      297,
+      0,
+      178,
+      5,
+      "STRING"
+    ],
+    [
+      1093,
+      298,
+      0,
+      178,
+      7,
+      "STRING"
+    ],
+    [
+      1094,
+      299,
+      0,
+      178,
+      3,
+      "STRING"
+    ],
+    [
+      1095,
+      300,
+      0,
+      178,
+      4,
+      "STRING"
+    ],
+    [
+      1096,
+      301,
+      0,
+      178,
+      6,
+      "STRING"
+    ],
+    [
+      1097,
+      302,
+      0,
+      178,
+      8,
+      "STRING"
+    ],
+    [
+      1099,
+      303,
+      0,
+      294,
+      0,
+      "INT"
+    ],
+    [
+      1100,
+      303,
+      0,
+      295,
+      0,
+      "INT"
+    ],
+    [
+      1101,
+      303,
+      0,
+      299,
+      0,
+      "INT"
+    ],
+    [
+      1102,
+      303,
+      0,
+      296,
+      0,
+      "INT"
+    ],
+    [
+      1103,
+      303,
+      0,
+      300,
+      0,
+      "INT"
+    ],
+    [
+      1104,
+      303,
+      0,
+      297,
+      0,
+      "INT"
+    ],
+    [
+      1105,
+      303,
+      0,
+      298,
+      0,
+      "INT"
+    ],
+    [
+      1106,
+      303,
+      0,
+      301,
+      0,
+      "INT"
+    ],
+    [
+      1107,
+      303,
+      0,
+      302,
+      0,
+      "INT"
+    ],
+    [
+      1115,
+      9,
+      0,
+      303,
+      0,
+      "*"
+    ],
+    [
+      1177,
+      335,
+      0,
+      334,
+      0,
+      "INT"
+    ],
+    [
+      1191,
+      9,
+      0,
+      344,
+      0,
+      "INT"
+    ],
+    [
+      1192,
+      178,
+      0,
+      344,
+      1,
+      "STRING"
+    ],
+    [
+      1193,
+      344,
+      0,
+      165,
+      0,
+      "*"
+    ],
+    [
+      1195,
+      344,
+      0,
+      252,
+      1,
+      "STRING"
+    ],
+    [
+      1196,
+      344,
+      0,
+      252,
+      2,
+      "STRING"
+    ],
+    [
+      1200,
+      61,
+      2,
+      344,
+      3,
+      "STRING"
+    ],
+    [
+      1207,
+      344,
+      1,
+      347,
+      0,
+      "ANY"
+    ],
+    [
+      1208,
+      334,
+      0,
+      347,
+      1,
+      "STRING"
+    ],
+    [
+      1209,
+      347,
+      0,
+      311,
+      0,
+      "*"
+    ],
+    [
+      1210,
+      344,
+      1,
+      348,
+      0,
+      "ANY"
+    ],
+    [
+      1212,
+      348,
+      0,
+      328,
+      0,
+      "*"
+    ],
+    [
+      1213,
+      344,
+      1,
+      349,
+      0,
+      "ANY"
+    ],
+    [
+      1214,
+      344,
+      0,
+      349,
+      1,
+      "STRING"
+    ],
+    [
+      1215,
+      349,
+      0,
+      164,
+      0,
+      "*"
+    ],
+    [
+      1216,
+      350,
+      0,
+      90,
+      1,
+      "STRING"
+    ],
+    [
+      1217,
+      350,
+      0,
+      163,
+      0,
+      "*"
+    ],
+    [
+      1218,
+      351,
+      0,
+      99,
+      1,
+      "STRING"
+    ],
+    [
+      1219,
+      351,
+      0,
+      162,
+      0,
+      "*"
+    ],
+    [
+      1220,
+      352,
+      0,
+      81,
+      1,
+      "STRING"
+    ],
+    [
+      1221,
+      352,
+      0,
+      161,
+      0,
+      "*"
+    ],
+    [
+      1224,
+      40,
+      0,
+      354,
+      0,
+      "MODEL"
+    ],
+    [
+      1225,
+      102,
+      0,
+      354,
+      1,
+      "VAE"
+    ],
+    [
+      1226,
+      39,
+      0,
+      354,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      1227,
+      39,
+      0,
+      354,
+      3,
+      "CONDITIONING"
+    ],
+    [
+      1228,
+      46,
+      0,
+      354,
+      4,
+      "LATENT"
+    ],
+    [
+      1229,
+      39,
+      0,
+      354,
+      5,
+      "CONDITIONING"
+    ],
+    [
+      1230,
+      39,
+      0,
+      354,
+      6,
+      "CONDITIONING"
+    ],
+    [
+      1231,
+      102,
+      0,
+      354,
+      7,
+      "VAE"
+    ],
+    [
+      1232,
+      40,
+      0,
+      354,
+      8,
+      "MODEL"
+    ],
+    [
+      1233,
+      255,
+      0,
+      354,
+      9,
+      "UPSCALE_MODEL"
+    ],
+    [
+      1234,
+      41,
+      0,
+      354,
+      10,
+      "INT"
+    ],
+    [
+      1235,
+      9,
+      0,
+      354,
+      11,
+      "INT"
+    ],
+    [
+      1236,
+      131,
+      0,
+      354,
+      12,
+      "INT"
+    ],
+    [
+      1237,
+      131,
+      2,
+      354,
+      13,
+      "FLOAT"
+    ],
+    [
+      1238,
+      131,
+      2,
+      354,
+      14,
+      "FLOAT"
+    ],
+    [
+      1239,
+      131,
+      3,
+      354,
+      15,
+      "COMBO"
+    ],
+    [
+      1240,
+      131,
+      4,
+      354,
+      16,
+      "COMBO"
+    ],
+    [
+      1241,
+      131,
+      1,
+      354,
+      17,
+      "INT"
+    ],
+    [
+      1242,
+      138,
+      0,
+      354,
+      18,
+      "COMBO"
+    ],
+    [
+      1243,
+      140,
+      0,
+      354,
+      19,
+      "COMBO"
+    ],
+    [
+      1244,
+      142,
+      0,
+      354,
+      20,
+      "FLOAT"
+    ],
+    [
+      1245,
+      146,
+      0,
+      354,
+      21,
+      "FLOAT"
+    ],
+    [
+      1246,
+      171,
+      0,
+      354,
+      22,
+      "INT"
+    ],
+    [
+      1247,
+      354,
+      10,
+      84,
+      0,
+      "IMAGE"
+    ],
+    [
+      1248,
+      354,
+      13,
+      253,
+      0,
+      "IMAGE"
+    ],
+    [
+      1251,
+      329,
+      0,
+      348,
+      3,
+      "STRING"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 6,
+      "title": "DG Llama Translate Prompt",
+      "bounding": [
+        751.4208984375,
+        -1619.4866943359375,
+        501.0126647949219,
+        528.8570556640625
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 7,
+      "title": "DG Image Vision Florence2 Prompt Helper",
+      "bounding": [
+        -318.1143493652344,
+        -1046.8509521484375,
+        1021.8983764648438,
+        803.5293579101562
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 9,
+      "title": "DG Llama3 Agent Editor",
+      "bounding": [
+        2885.01171875,
+        142.14442443847656,
+        1474.2088623046875,
+        569.4682006835938
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 10,
+      "title": "DG Llama3 Agent Chat",
+      "bounding": [
+        1665.69677734375,
+        143.52610778808594,
+        1199.0469970703125,
+        572.5657958984375
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.3719008264462884,
+      "offset": [
+        325.70652297495724,
+        1371.2521372148808
+      ]
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "node_versions": {
+      "was-node-suite-comfyui": "056badacda52e88d29d6a65f9509cd3115ace0f2",
+      "rgthree-comfy": "5d771b8b56a343c24a26e8cea1f0c87c3d58102f",
+      "comfy-core": "0.3.12",
+      "ComfyUI-Easy-Use": "fec464b015e229fecc7b1bfd20399dad97235b80",
+      "ComfyUI-Florence2": "dffd12506d50f0540b8a7f4b36a05d4fb5fed2de",
+      "ComfyUI-KJNodes": "3f141b8f1ca1c832a1c6accd806f2d2f40fd4075",
+      "ComfyUI-GGUF": "5875c52f59baca3a9372d68c43a3775e21846fe0"
+    }
+  },
+  "version": 0.4
+}
