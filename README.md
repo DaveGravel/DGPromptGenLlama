@@ -1,3 +1,6 @@
+# INFORMATION
+I will soon upload a YouTube video to demonstrate how it works and how I use my Llama prompt, sampler, refiner, and upscaler.
+
 # DGPromptGenLlama
 Hello, I’m Dave Gravel. By trade, I’m a C++ programmer specializing in 3D and Physics, along with anything related to this field. I have a basic understanding of almost all programming languages, but the two I’ve used the most and in which I excel are Pascal and C++. I’m familiar with the logic of most other languages, though I haven’t worked with them extensively. As a result, my code may include some repetitive logic and certain methods that could be better implemented, but overall, everything should still work pretty well, hehe.
 
