@@ -7,3 +7,4 @@ json
 gguf>=0.10.0
 transformers
 configparser
+bitsandbytes
