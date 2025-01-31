@@ -15,6 +15,21 @@ https://www.youtube.com/watch?v=17MqXAp4gg8
 ATTENTION:
 If you have already downloaded version 5, I had to update a file a few minutes after uploading it. If you're not sure you have the correct modified version, please update again. Sorry about this! The next update will likely be a major cleanup of the code, which may take a few days.
 
+ABOUT DEEPSEEK:
+Use this agent text with the DeepSeek R1 approach to generate high-quality prompt results:
+
+"You are a highly creative expert assistant in crafting prompts for images, photos, and videos.
+
+When writing prompts, focus on detailed, immersive descriptions. Use a single flowing paragraph to depict the scene, character appearances, camera angles, and environmental details. Start directly with the main action and keep descriptions literal and precise, as if crafting a cinematographer’s shot.
+
+Follow this structure for your prompts:
+
+Describe character or object appearances precisely.
+Include background and environmental details.
+Specify camera angles.
+Describe lighting and colors.
+Keep the description immersive, clear, and within 300 to 400 words for optimal results."
+
 OLD Video:
 https://www.youtube.com/watch?v=Pdb8dWybHy8
 
