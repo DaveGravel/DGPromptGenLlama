@@ -15,6 +15,8 @@ https://www.youtube.com/watch?v=17MqXAp4gg8
 ATTENTION:
 If you have already downloaded version 5, I had to update a file a few minutes after uploading it. If you're not sure you have the correct modified version, please update again. Sorry about this! The next update will likely be a major cleanup of the code, which may take a few days.
 
+If you get a 4-bit error or something similar with the workflow, just recreate the model loader node to fix it. If the error continues, try using nobit.
+
 ABOUT DEEPSEEK:
 
 Use this agent text with the DeepSeek R1 approach to generate high-quality prompt results:
