@@ -490,6 +490,142 @@ app.registerExtension({
 		    return ret;
       };  
     }
+
+	  if (nodeData.name === "DGPromptGenLlama") {	
+      const onCreated = nodeType.prototype.onCreated;
+        
+      nodeType.prototype.onCreated = function() {
+		    const node = this;
+		
+		    const ret = onCreated ? onCreated.apply(node, arguments) : undefined;
+		  
+	      const uWidget = node.widgets.find(w => w.name === "pause_generation");
+		    if (uWidget) {
+		      uWidget.value = true;
+		      //node.setDirtyCanvas(true, true);
+		    }            
+		
+		    return ret;
+	    };
+	  
+	    const onExecuted = nodeType.prototype.onExecuted;
+	  
+      nodeType.prototype.onExecuted = function() {
+		    const node = this;
+
+        const ret = onExecuted ? onExecuted.apply(node, arguments) : undefined;
+
+        const uWidget = node.widgets.find(w => w.name === "pause_generation");         
+        if (uWidget) {
+	        uWidget.value = true;
+		      //node.setDirtyCanvas(true, true);
+		      //node.onResize?.(node.size);             
+        }              
+
+		    return ret;
+      };
+
+	    const onExecutionStart = nodeType.prototype.onExecutionStart;
+	  
+      nodeType.prototype.onExecutionStart = function() {
+		    const node = this;
+
+        const uWidget = node.widgets.find(w => w.name === "pause_generation");         
+        if (uWidget) {
+	          uWidget.value = true;
+		        //node.setDirtyCanvas(true, true);
+		        //node.onResize?.(node.size);  
+        }             
+
+        const ret = onExecutionStart ? onExecutionStart.apply(node, arguments) : undefined;
+
+		    return ret;
+      };
+
+	    const onConfigure = nodeType.prototype.onConfigure;
+ 
+      nodeType.prototype.onConfigure = function() {
+		    const node = this;
+		
+		    const ret = onConfigure ? onConfigure.apply(node, arguments) : undefined;
+			  
+        const uWidget = node.widgets.find(w => w.name === "pause_generation");         
+        if (uWidget) {
+		        uWidget.value = true;
+		        //node.setDirtyCanvas(true, true);
+        }            
+
+		    return ret;
+      };  
+    }   
+    
+	  if (nodeData.name === "DGPromptGenSeepSeekR1") {	
+      const onCreated = nodeType.prototype.onCreated;
+        
+      nodeType.prototype.onCreated = function() {
+		    const node = this;
+		
+		    const ret = onCreated ? onCreated.apply(node, arguments) : undefined;
+		  
+	      const uWidget = node.widgets.find(w => w.name === "pause_generation");
+		    if (uWidget) {
+		      uWidget.value = true;
+		      //node.setDirtyCanvas(true, true);
+		    }            
+		
+		    return ret;
+	    };
+	  
+	    const onExecuted = nodeType.prototype.onExecuted;
+	  
+      nodeType.prototype.onExecuted = function() {
+		    const node = this;
+
+        const ret = onExecuted ? onExecuted.apply(node, arguments) : undefined;
+
+        const uWidget = node.widgets.find(w => w.name === "pause_generation");         
+        if (uWidget) {
+	        uWidget.value = true;
+		      //node.setDirtyCanvas(true, true);
+		      //node.onResize?.(node.size);             
+        }              
+
+		    return ret;
+      };
+
+	    const onExecutionStart = nodeType.prototype.onExecutionStart;
+	  
+      nodeType.prototype.onExecutionStart = function() {
+		    const node = this;
+
+        const uWidget = node.widgets.find(w => w.name === "pause_generation");         
+        if (uWidget) {
+	          uWidget.value = true;
+		        //node.setDirtyCanvas(true, true);
+		        //node.onResize?.(node.size);  
+        }             
+
+        const ret = onExecutionStart ? onExecutionStart.apply(node, arguments) : undefined;
+
+		    return ret;
+      };
+
+	    const onConfigure = nodeType.prototype.onConfigure;
+ 
+      nodeType.prototype.onConfigure = function() {
+		    const node = this;
+		
+		    const ret = onConfigure ? onConfigure.apply(node, arguments) : undefined;
+			  
+        const uWidget = node.widgets.find(w => w.name === "pause_generation");         
+        if (uWidget) {
+		        uWidget.value = true;
+		        //node.setDirtyCanvas(true, true);
+        }            
+
+		    return ret;
+      };  
+    }     
   },
 });
 

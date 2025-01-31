@@ -1,0 +1,516 @@
+{
+  "last_node_id": 59,
+  "last_link_id": 124,
+  "nodes": [
+    {
+      "id": 43,
+      "type": "DGLoadLlamaModel",
+      "pos": [
+        -352.8811950683594,
+        -2633.9033203125
+      ],
+      "size": [
+        529.199951171875,
+        154
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": [
+            91
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLoadLlamaModel"
+      },
+      "widgets_values": [
+        "Llama-3.2-3B-Instruct-uncensored\\model-00001-of-00002.safetensors",
+        "No",
+        "4bit",
+        "gpu",
+        "Yes"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 16,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        795.7568969726562,
+        -2458.62158203125
+      ],
+      "size": [
+        504.5140075683594,
+        408.73968505859375
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 93
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "High Definition 8K video of a woman with medium skin tone, wearing a vintage-style floral dress with a fitted waist and a apron over it, sits alone at a small wooden table in a dimly-lit, rustic café with old-fashioned cups and saucers on the table, surrounded by old books and antique furniture; the camera captures her hands as she slowly takes a sip from a cup, her eyes looking down and to her left, before glancing up and locking gazes with someone across the room; the woman has curly dark hair tied up in a loose bun, and a faint smile on her lips; the background is blurred, with a soft focus effect, capturing the warm glow of the café's interior, and the faint sounds of gentle chatter and clinking cups in the distance."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 57,
+      "type": "DGLlamaStyles",
+      "pos": [
+        -588.8277587890625,
+        -2225.43505859375
+      ],
+      "size": [
+        361.260986328125,
+        538
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 122,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            123
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyles"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Establishment Café",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 56,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -1099.505126953125,
+        -2155.24853515625
+      ],
+      "size": [
+        481.4450988769531,
+        130
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            122
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        645183845846559,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 48,
+      "type": "DGPromptGenLlama",
+      "pos": [
+        287.1028137207031,
+        -2497.828857421875
+      ],
+      "size": [
+        451.0308532714844,
+        740.6993408203125
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 91
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 92,
+          "widget": {
+            "name": "seeder"
+          }
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "assistant",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "assistant"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            93
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGPromptGenLlama"
+      },
+      "widgets_values": [
+        1,
+        "Establishment Café",
+        "Image",
+        "Yes",
+        "Yes",
+        -1,
+        "Yes",
+        "No",
+        "No",
+        2048,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "a woman",
+        "a woman",
+        "No",
+        "Yes",
+        "Yes",
+        "No",
+        "Yes",
+        true,
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 15,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -152.06361389160156,
+        -2414.2001953125
+      ],
+      "size": [
+        327.7876892089844,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            92
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        14319764612765,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 58,
+      "type": "DGLlamaMixStylesMulti",
+      "pos": [
+        -177.64593505859375,
+        -2165.710693359375
+      ],
+      "size": [
+        386.3999938964844,
+        102
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_1",
+          "type": "STRING",
+          "link": 123,
+          "widget": {
+            "name": "style_1"
+          }
+        },
+        {
+          "name": "style_2",
+          "type": "STRING",
+          "link": 124,
+          "widget": {
+            "name": "style_2"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "styles",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaMixStylesMulti"
+      },
+      "widgets_values": [
+        2,
+        "",
+        "",
+        null
+      ],
+      "color": "#a34614",
+      "bgcolor": "#8f3200"
+    },
+    {
+      "id": 59,
+      "type": "DGLlamaStyleColors",
+      "pos": [
+        -592.6380004882812,
+        -1623.020751953125
+      ],
+      "size": [
+        361.20001220703125,
+        298
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            124
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyleColors"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a34614",
+      "bgcolor": "#8f3200"
+    }
+  ],
+  "links": [
+    [
+      91,
+      43,
+      0,
+      48,
+      0,
+      "ANY"
+    ],
+    [
+      92,
+      15,
+      0,
+      48,
+      1,
+      "INT"
+    ],
+    [
+      93,
+      48,
+      0,
+      16,
+      0,
+      "*"
+    ],
+    [
+      122,
+      56,
+      0,
+      57,
+      0,
+      "INT"
+    ],
+    [
+      123,
+      57,
+      0,
+      58,
+      0,
+      "STRING"
+    ],
+    [
+      124,
+      59,
+      0,
+      58,
+      1,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5445000000000005,
+      "offset": [
+        915.2041530489174,
+        2936.852912711127
+      ]
+    },
+    "node_versions": {
+      "rgthree-comfy": "5d771b8b56a343c24a26e8cea1f0c87c3d58102f"
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0
+  },
+  "version": 0.4
+}

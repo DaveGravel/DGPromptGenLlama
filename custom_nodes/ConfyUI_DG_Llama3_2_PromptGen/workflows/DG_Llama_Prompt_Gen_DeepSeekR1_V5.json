@@ -1,0 +1,343 @@
+{
+  "last_node_id": 7,
+  "last_link_id": 6,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        1546.352783203125,
+        320.62530517578125
+      ],
+      "size": [
+        475.7632141113281,
+        327.1794128417969
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 1
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "Certainly! Here's a thoughtfully crafted image prompt:\n\n**\"A high-quality image depicting a well-drawn woman standing confidently in a natural pose. She wears comfortable clothing, with a well-proportioned face, and has visible hair. Her age range is appropriate for the context.\"**\n\nThis prompt focuses on clarity, emphasizing key elements like pose, clothing, and facial features while avoiding unnecessary details."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 6,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        1545.27880859375,
+        715.7084350585938
+      ],
+      "size": [
+        474.1578369140625,
+        384.2337646484375
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 5
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "Okay, so the user is asking for an image prompt that's high quality and specifically about a woman. They want to know how to create such prompts. \n\nFirst, I need to understand what makes an image prompt high quality. Typically, this involves clarity, focus on key elements, and avoiding unnecessary details. The prompt should guide the AI to produce an accurate and visually appealing image.\n\nNext, since they mentioned \"a woman,\" it's important to emphasize her features. This could include her pose, clothing, facial features, or any other relevant details. It might also be good to specify her age range if applicable, as that can influence the portrayal of her character.\n\nI should also consider the context in which the image will be used. For example, whether it's for a work presentation, a professional setting, or something else entirely. This information can help tailor the prompt to better suit the intended purpose.\n\nAdditionally, the language should be clear and unambiguous. There shouldn't be any confusion between different interpretations of the same prompt. It's essential to communicate exactly what is desired without ambiguity.\n\nFinally, after drafting the prompt, it's crucial to review it for clarity and completeness. Any ambiguities or unclear sections should be addressed to ensure that the AI understands exactly what is being requested."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 4,
+      "type": "DGLlamaTextPrompt",
+      "pos": [
+        384.01678466796875,
+        744.1129760742188
+      ],
+      "size": [
+        394.79998779296875,
+        148.5804901123047
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            4
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaTextPrompt"
+      },
+      "widgets_values": [
+        "You are a highly creative expert assistant in creating prompt texts for images, photos, and videos."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 5,
+      "type": "DGPromptGenSeepSeekR1",
+      "pos": [
+        995.6786499023438,
+        367.57281494140625
+      ],
+      "size": [
+        437.5966796875,
+        515.592529296875
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "link": 6
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 3,
+          "widget": {
+            "name": "seeder"
+          }
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": 4,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "think",
+          "type": "STRING",
+          "links": [
+            5
+          ]
+        },
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGPromptGenSeepSeekR1"
+      },
+      "widgets_values": [
+        "Image",
+        "Yes",
+        "No",
+        "No",
+        "No",
+        -1,
+        2048,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "a woman",
+        "a woman",
+        "Yes",
+        true,
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 7,
+      "type": "DGLoadDeepSeekModelR1",
+      "pos": [
+        282.4967346191406,
+        285.69683837890625
+      ],
+      "size": [
+        491.668701171875,
+        154
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLoadDeepSeekModelR1"
+      },
+      "widgets_values": [
+        "DeepSeek-R1-Distill-Qwen-1.5B_GGUF\\DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf",
+        "No",
+        "4bit",
+        "gpu",
+        "Yes"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 3,
+      "type": "Seed (rgthree)",
+      "pos": [
+        408.3852844238281,
+        531.165771484375
+      ],
+      "size": [
+        359.8990783691406,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            3
+          ],
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        848562465662223,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    }
+  ],
+  "links": [
+    [
+      1,
+      5,
+      0,
+      1,
+      0,
+      "*"
+    ],
+    [
+      3,
+      3,
+      0,
+      5,
+      1,
+      "INT"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      2,
+      "STRING"
+    ],
+    [
+      5,
+      5,
+      1,
+      6,
+      0,
+      "*"
+    ],
+    [
+      6,
+      7,
+      0,
+      5,
+      0,
+      "ANY"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7247295000000008,
+      "offset": [
+        -294.7897437669642,
+        -4.178669905793817
+      ]
+    },
+    "node_versions": {
+      "rgthree-comfy": "5d771b8b56a343c24a26e8cea1f0c87c3d58102f"
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0
+  },
+  "version": 0.4
+}

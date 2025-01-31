@@ -45,7 +45,7 @@ from datetime import datetime
 #import nodes
 #import time
 #import copy
-#import numpy as np
+import numpy as np
 import torch.nn.functional as F
 #import comfy.diffusers_load
 #import comfy.samplers
@@ -73,7 +73,7 @@ from .lib.data import generate_prompt_styleMix, generate_prompt_style, get_promp
 from .lib.data import get_prompt_nationalities, get_prompt_gods, get_prompt_hairs, get_prompt_humanhybrides, generate_prompt_nationalities, generate_prompt_gods, generate_prompt_hairs, generate_prompt_humanhybrides
 from .lib.data import remove_leading_spaces, load_text_from_file, process_prompt_v2, get_random_action, generate_prompt_vehicles, remove_spaces, remove_spaces_lines, create_agent_geraldine_text, create_agent_dave_text
 from .lib.data import generate_prompt_colorExt, get_prompt_colorExt, generate_prompt_weapons, get_prompt_weapons, remove_spaces_lines_total, generate_robot_name, insert_line_after_first
-from .lib.data import eng_law, cons_law, ox3d_user_name, DG_LlamaTextBuffer
+from .lib.data import eng_law, cons_law, ox3d_user_name, DG_LlamaTextBuffer, get_filtered_deep_filenames, get_filtered_llama_filenames
 from .lib.data import get_prompt_establishment_objects, get_prompt_room_objects, get_prompt_positive_words_sports, get_prompt_words_sports, get_prompt_positive_signs, get_prompt_positive_words, get_prompt_bad_words_medias, get_prompt_bad_words
 from .lib.data import get_prompt_dishes, get_prompt_beverages, get_prompt_daytime_moments, get_prompt_earth_elements, get_prompt_realism_styles, get_prompt_produce_list, get_prompt_photo_video_styles, get_prompt_cats, get_prompt_dogs
 from .lib.data import get_prompt_birds, get_prompt_dinosaurs, get_prompt_supervillains, get_prompt_superheroes, get_prompt_bubble_keywords, get_prompt_sign_keywords, get_prompt_body_positions, get_prompt_emotion_genres, get_prompt_combat_scenarios
@@ -86,13 +86,13 @@ from .lib.data import generate_prompt_cats, generate_prompt_dogs, generate_promp
 from .lib.data import generate_prompt_emotion_genres, generate_prompt_combat_scenarios, generate_prompt_short_video_scenarios, generate_prompt_clothing_brands_and_styles, generate_prompt_cameras_and_modes, generate_prompt_photographers_and_styles, generate_prompt_film_and_series_creators
 from .lib.data import generate_prompt_art_styles, generate_prompt_render_systems, generate_prompt_art_genres, generate_prompt_gaming_consoles, generate_prompt_alien_species, generate_prompt_nighttime_styles, generate_prompt_daytime_styles, generate_prompt_world_religions
 from .lib.data import generate_prompt_biblical_moments, generate_prompt_time_periods, generate_prompt_professions, generate_prompt_combat_actions, generate_prompt_actions_styles, generate_prompt_wonders_of_the_world, generate_prompt_monsters, generate_prompt_celestial_objects
-from .lib.data import generate_prompt_protection_types, generate_prompt_shield_types, generate_prompt_building_types, get_prompt_art_styles2, generate_prompt_art_styles2
+from .lib.data import generate_prompt_protection_types, generate_prompt_shield_types, generate_prompt_building_types, get_prompt_art_styles2, generate_prompt_art_styles2, extract_think_and_response, format_prompt_gguf, extract_sections_gguf, extract_sections_gguf2, format_prompt_gguf2, format_prompt_gguf3
 #
 import json
 import configparser
 
-from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaForCausalLM
-#import bitsandbytes
+from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaForCausalLM, AutoProcessor
+import bitsandbytes
 
 #from transformers import ToolCollection, ReactCodeAgent
 
@@ -146,6 +146,13 @@ def extract_version(filename):
     if match:
         return match.group(1)  # Retourne "normal" ou "uncensored"
     return "unknown"  # Si le format ne correspond pas
+
+def rand_seeder(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
 
 # I can remove it later since both classes are now the same.
 # I only need one base class.
@@ -244,20 +251,27 @@ class DGLlamaChatAgent:
         else:
             self.load_history(f"ox3d_llama_{self.agent_name}_chat_history.json")
 
-    def chat(self, user_prompt: str, max_new_tokens: int = 512, temperature: float = 0.8, 
+    def chat(self, do_rand, user_prompt: str, max_new_tokens: int = 512, temperature: float = 0.8, 
              top_k: int = 50, top_p: float = 0.9, repetition_penalty: float = 1.1) -> str:
         
+        maxtokens = max_new_tokens - 1000 
+
         self.chat_history.append({"role": "user", "content": user_prompt})
         
         formatted_history = self._build_formatted_history()
 
-        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to("cuda")
+        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
         input_token_count = input_ids.shape[-1]
 
-        if input_token_count > max_new_tokens:
-            self._trim_history(max_new_tokens)
+        if input_token_count > maxtokens:
+            self._trim_history(maxtokens)
             formatted_history = self._build_formatted_history()
-            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to("cuda")
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        if self.model.config.pad_token_id is None:
+            self.model.config.pad_token_id = self.model.config.eos_token_id             
 
         generated_ids = self.model.generate(
             input_ids,
@@ -266,10 +280,36 @@ class DGLlamaChatAgent:
             top_p=top_p,
             temperature=temperature,
             repetition_penalty=repetition_penalty,
-            do_sample=self.llama3_pipe.useseed,
-            eos_token_id=self.tokenizer.eos_token_id
-        )
-        
+            do_sample=do_rand,
+            num_return_sequences=1
+        ) #, eos_token_id=self.tokenizer.eos_token_id
+
+        """
+        if self.llama3_pipe.useseed == True:
+            generated_ids = self.model.generate(
+                input_ids,
+                max_new_tokens=max_new_tokens,
+                top_k=top_k,
+                top_p=top_p,
+                temperature=temperature,
+                repetition_penalty=repetition_penalty,
+                do_sample=self.llama3_pipe.useseed,
+                num_return_sequences=1
+            ) #, eos_token_id=self.tokenizer.eos_token_id
+        else:
+            generated_ids = self.model.generate(
+                input_ids,
+                max_new_tokens=max_new_tokens,
+                top_k=top_k,
+                top_p=top_p,
+                temperature=temperature,
+                repetition_penalty=repetition_penalty,
+                do_sample=self.llama3_pipe.useseed,
+                num_return_sequences=1
+            ) #, eos_token_id=self.tokenizer.eos_token_id    
+        """
+
+        # add_special_tokens=False,
         outputs = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
     
         if outputs.startswith(f"{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}{self.llama3_pipe.codeC}"):
@@ -302,7 +342,7 @@ class DGLlamaChatAgent:
     def _trim_history(self, max_tokens: int):
         while True:
             formatted_history = self._build_formatted_history()
-            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to("cuda")
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
             input_token_count = input_ids.shape[-1]
 
             if input_token_count <= max_tokens:
@@ -364,7 +404,184 @@ class DGLlamaChatAgent:
         }
 
         with open(log_file_path, "w", encoding="utf-8") as log_file:
-            json.dump(log_data, log_file, ensure_ascii=False, indent=4)     
+            json.dump(log_data, log_file, ensure_ascii=False, indent=4)   
+
+#####################################################################################################################
+# DGDeepSeekChatAgent ###############################################################################################
+##################################################################################################################### 
+class DGDeepSeekChatAgent:
+    def __init__(self, deepseek_pipe, agent_name, agent_mode, system_prompt: str):
+        if deepseek_pipe is None:
+            raise ValueError("The pipeline cannot be None.")
+        
+        if system_prompt is None or system_prompt.strip() == '':
+            raise ValueError("The system_prompt must not be empty or contain only whitespace.")
+        
+        self.deepseek_pipe = deepseek_pipe
+        self.tokenizer = deepseek_pipe.tokenizer
+        self.model = deepseek_pipe.model         
+        self.system_prompt = system_prompt
+        self.agent_name = agent_name
+        self.agent_mode_restriction = agent_mode
+
+        self.chat_history = [{"role": "system", "content": self.system_prompt}]
+        
+        #if self.agent_mode_restriction == "uncensored":
+        #    self.load_history(f"ox3d_llama_{self.agent_name}_chat_uncensored_history.json")
+        #else:
+        #    self.load_history(f"ox3d_llama_{self.agent_name}_chat_history.json")
+
+    def chat(self, user_prompt: str, max_new_tokens: int = 512, temperature: float = 0.8, 
+             top_k: int = 50, top_p: float = 0.9, repetition_penalty: float = 1.1) -> str:
+        
+        self.chat_history.append({"role": "user", "content": user_prompt})
+        
+        formatted_history = self._build_formatted_history()
+
+        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.deepseek_pipe.device_name)
+        input_token_count = input_ids.shape[-1]
+
+        if input_token_count > max_new_tokens:
+            self._trim_history(max_new_tokens)
+            formatted_history = self._build_formatted_history()
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.deepseek_pipe.device_name)
+
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        if self.model.config.pad_token_id is None:
+            self.model.config.pad_token_id = self.model.config.eos_token_id   
+
+
+        generated_ids = self.model.generate(
+            input_ids,
+            max_new_tokens=max_new_tokens,
+            top_k=top_k,
+            top_p=top_p,
+            temperature=temperature,
+            repetition_penalty=repetition_penalty,
+            do_sample=True, #self.llama3_pipe.useseed,
+            num_return_sequences=1
+        ) #, eos_token_id=self.tokenizer.eos_token_id                      
+        """
+        if self.llama3_pipe.useseed == True:
+            generated_ids = self.model.generate(
+                input_ids,
+                max_new_tokens=max_new_tokens,
+                top_k=top_k,
+                top_p=top_p,
+                temperature=temperature,
+                repetition_penalty=repetition_penalty,
+                do_sample=True, #self.llama3_pipe.useseed,
+                num_return_sequences=1
+            ) #, eos_token_id=self.tokenizer.eos_token_id
+        else:
+            generated_ids = self.model.generate(
+                input_ids,
+                max_new_tokens=max_new_tokens,
+                top_k=top_k,
+                top_p=top_p,
+                temperature=temperature,
+                repetition_penalty=repetition_penalty,
+                do_sample=False, #self.llama3_pipe.useseed,
+                num_return_sequences=1
+            ) #, eos_token_id=self.tokenizer.eos_token_id            
+        """
+        #add_special_tokens=False,
+        outputs = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
+    
+        #if outputs.startswith(f"{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}{self.llama3_pipe.codeC}"):
+        #    outputs = outputs[len(f"{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}{self.llama3_pipe.codeC}"):].strip()
+
+        #self.chat_history.append({"role": f"{self.llama3_pipe.modeC}", "content": outputs})
+
+        #if self.agent_mode_restriction == "uncensored":
+        #    self.save_history(f"ox3d_llama_{self.agent_name}_chat_uncensored_history.json")
+        #else:
+        #    self.save_history(f"ox3d_llama_{self.agent_name}_chat_history.json")
+
+        self.save_prompt_log(user_prompt, outputs)
+
+        return outputs
+
+    def _update_agent_name(self, agtname):
+        self.agent_name = agtname
+
+    def _update_agent_mode(self, agtmode):
+        self.agent_mode_restriction = agtmode
+
+    def _build_formatted_history(self) -> str:
+        #formatted_history = f"{self.llama3_pipe.codeA}"
+        #for message in self.chat_history:
+        #    formatted_history += f"{self.llama3_pipe.codeB}{message['role']}{self.llama3_pipe.codeC}\n{message['content']}\n{self.llama3_pipe.codeD}"
+        #formatted_history += f"{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}{self.llama3_pipe.codeC}"
+        return "" #formatted_history
+
+    def _trim_history(self, max_tokens: int):
+        while True:
+            formatted_history = self._build_formatted_history()
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.deepseek_pipe.device_name)
+            input_token_count = input_ids.shape[-1]
+
+            if input_token_count <= max_tokens:
+                break
+
+            if len(self.chat_history) > 1:
+                self.chat_history.pop(1)
+
+    def reset_history(self, file_name: str = "chat_history.json", keep_system_prompt: bool = True):
+        #if keep_system_prompt:
+        self.chat_history = [{"role": "system", "content": self.system_prompt}]
+        #else:
+        #    self.chat_history = []
+        self.save_history(file_name)                
+
+    def print_current_history(self):
+        print(json.dumps(self.chat_history, indent=2))  
+
+    def print_current_history_tokens(self):
+        formatted_history = self._build_formatted_history()
+        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids
+        token_count = input_ids.shape[-1]
+        print(f"Chat History (tokens count: {token_count}):")
+        print(json.dumps(self.chat_history, indent=2))
+
+    def save_history(self, file_name: str):
+        file_path = os.path.join(current_dir, file_name)
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(self.chat_history, file, ensure_ascii=False, indent=4)
+
+    def load_history(self, file_name: str):
+        file_path = os.path.join(current_dir, file_name)
+        if not os.path.exists(file_path):
+            print(f"File {file_path} does not exist. Skipping load.")
+            return 
+
+        with open(file_path, 'r', encoding='utf-8') as file:
+            self.chat_history = json.load(file)
+
+        if len(self.chat_history) == 0 or self.chat_history[0]["role"] != "system":
+            raise ValueError("Invalid chat history: missing system prompt.") 
+
+    def save_prompt_log(self, user_prompt: str, assistant_response: str):
+        logs_dir = os.path.join(current_dir, "prompt_logs")
+        os.makedirs(logs_dir, exist_ok=True)
+
+        today_date = datetime.now().strftime("%Y-%m-%d")
+        date_dir = os.path.join(logs_dir, today_date)
+        os.makedirs(date_dir, exist_ok=True)
+
+        timestamp = datetime.now().strftime("%H-%M-%S")
+        log_file_name = f"prompt_{timestamp}.json"
+        log_file_path = os.path.join(date_dir, log_file_name)
+
+        log_data = {
+            "timestamp": datetime.now().isoformat(),
+            "user_prompt": user_prompt,
+            "assistant_response": assistant_response,
+        }
+
+        with open(log_file_path, "w", encoding="utf-8") as log_file:
+            json.dump(log_data, log_file, ensure_ascii=False, indent=4)  
 
 #####################################################################################################################
 # DGLlamaStyles #####################################################################################################
@@ -373,6 +590,8 @@ class DGLlamaChatAgent:
 class DGLlamaStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -414,8 +633,11 @@ class DGLlamaStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_styleMix(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -472,6 +694,8 @@ class DGLlamaStyles:
 class DGLlamaStyleColors:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -503,8 +727,11 @@ class DGLlamaStyleColors:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value)   
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_colors(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -540,6 +767,8 @@ class DGLlamaStyleColors:
 class DGLlamaStyleColorExt:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -571,8 +800,11 @@ class DGLlamaStyleColorExt:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_colorExt(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -608,6 +840,8 @@ class DGLlamaStyleColorExt:
 class DGLlamaStyleWeapons:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -639,8 +873,11 @@ class DGLlamaStyleWeapons:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_weapons(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -677,6 +914,8 @@ class DGLlamaStyleWeapons:
 class DGLlamaStyleVehicles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -708,8 +947,11 @@ class DGLlamaStyleVehicles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_vehicles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -745,6 +987,8 @@ class DGLlamaStyleVehicles:
 class DGLlamaStyleNationalities:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -772,8 +1016,11 @@ class DGLlamaStyleNationalities:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_nationalities(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -801,6 +1048,8 @@ class DGLlamaStyleNationalities:
 class DGLlamaStyleGods:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -828,8 +1077,11 @@ class DGLlamaStyleGods:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_gods(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -857,6 +1109,8 @@ class DGLlamaStyleGods:
 class DGLlamaStyleHairs:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -884,8 +1138,11 @@ class DGLlamaStyleHairs:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_hairs(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -913,6 +1170,8 @@ class DGLlamaStyleHairs:
 class DGLlamaStyleHumanHybrid:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -940,8 +1199,11 @@ class DGLlamaStyleHumanHybrid:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_humanhybrides(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -969,6 +1231,8 @@ class DGLlamaStyleHumanHybrid:
 class DGLlamaStyleEstablishmentObjects:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -996,8 +1260,11 @@ class DGLlamaStyleEstablishmentObjects:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_establishment_objects_media(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1025,6 +1292,8 @@ class DGLlamaStyleEstablishmentObjects:
 class DGLlamaStyleRoomObjects:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1052,8 +1321,11 @@ class DGLlamaStyleRoomObjects:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_room_objects(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1081,6 +1353,8 @@ class DGLlamaStyleRoomObjects:
 class DGLlamaStylePositiveWordsSports:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1108,8 +1382,11 @@ class DGLlamaStylePositiveWordsSports:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_positive_words_sports(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1137,6 +1414,8 @@ class DGLlamaStylePositiveWordsSports:
 class DGLlamaStyleWordsSports:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1164,8 +1443,11 @@ class DGLlamaStyleWordsSports:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_words_sports(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1193,6 +1475,8 @@ class DGLlamaStyleWordsSports:
 class DGLlamaStylePositiveSigns:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1220,8 +1504,11 @@ class DGLlamaStylePositiveSigns:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_positive_signs(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1249,6 +1536,8 @@ class DGLlamaStylePositiveSigns:
 class DGLlamaStylePositiveWords:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1276,8 +1565,11 @@ class DGLlamaStylePositiveWords:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_positive_words(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1306,6 +1598,8 @@ class DGLlamaStylePositiveWords:
 class DGLlamaStyleBadWordsMedias:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1333,8 +1627,11 @@ class DGLlamaStyleBadWordsMedias:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_bad_words_medias(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1362,6 +1659,8 @@ class DGLlamaStyleBadWordsMedias:
 class DGLlamaStyleBadWords:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1389,8 +1688,11 @@ class DGLlamaStyleBadWords:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_bad_words(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1418,6 +1720,8 @@ class DGLlamaStyleBadWords:
 class DGLlamaStyleDishes:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1445,8 +1749,11 @@ class DGLlamaStyleDishes:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_dishes(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1474,6 +1781,8 @@ class DGLlamaStyleDishes:
 class DGLlamaStyleBeverages:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1501,8 +1810,11 @@ class DGLlamaStyleBeverages:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_beverages(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1530,6 +1842,8 @@ class DGLlamaStyleBeverages:
 class DGLlamaStyleDaytimeMoments:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1557,8 +1871,11 @@ class DGLlamaStyleDaytimeMoments:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_daytime_moments(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1586,6 +1903,8 @@ class DGLlamaStyleDaytimeMoments:
 class DGLlamaStyleEarthElements:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1613,8 +1932,11 @@ class DGLlamaStyleEarthElements:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_earth_elements(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1642,6 +1964,8 @@ class DGLlamaStyleEarthElements:
 class DGLlamaStyleRealismStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1669,8 +1993,11 @@ class DGLlamaStyleRealismStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_realism_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1698,6 +2025,8 @@ class DGLlamaStyleRealismStyles:
 class DGLlamaStyleProduceList:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1725,8 +2054,11 @@ class DGLlamaStyleProduceList:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_produce_list(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1754,6 +2086,8 @@ class DGLlamaStyleProduceList:
 class DGLlamaStylePhotoVideo:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1781,8 +2115,11 @@ class DGLlamaStylePhotoVideo:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_photo_video_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1810,6 +2147,8 @@ class DGLlamaStylePhotoVideo:
 class DGLlamaStyleCats:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1837,8 +2176,11 @@ class DGLlamaStyleCats:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_cats(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1866,6 +2208,8 @@ class DGLlamaStyleCats:
 class DGLlamaStyleDogs:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1893,8 +2237,11 @@ class DGLlamaStyleDogs:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_dogs(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1922,6 +2269,8 @@ class DGLlamaStyleDogs:
 class DGLlamaStyleBirds:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -1949,8 +2298,11 @@ class DGLlamaStyleBirds:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_birds(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -1978,6 +2330,8 @@ class DGLlamaStyleBirds:
 class DGLlamaStyleDinosaurs:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2005,8 +2359,11 @@ class DGLlamaStyleDinosaurs:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_dinosaurs(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2034,6 +2391,8 @@ class DGLlamaStyleDinosaurs:
 class DGLlamaStyleSupervillains:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2061,8 +2420,11 @@ class DGLlamaStyleSupervillains:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_supervillains(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2090,6 +2452,8 @@ class DGLlamaStyleSupervillains:
 class DGLlamaStyleSuperheroes:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2117,8 +2481,11 @@ class DGLlamaStyleSuperheroes:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_superheroes(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2146,6 +2513,8 @@ class DGLlamaStyleSuperheroes:
 class DGLlamaStyleBubbleKeywords:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2173,8 +2542,11 @@ class DGLlamaStyleBubbleKeywords:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_bubble_keywords(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2202,6 +2574,8 @@ class DGLlamaStyleBubbleKeywords:
 class DGLlamaStyleSignKeywords:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2229,8 +2603,11 @@ class DGLlamaStyleSignKeywords:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_sign_keywords(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2258,6 +2635,8 @@ class DGLlamaStyleSignKeywords:
 class DGLlamaStyleBodyPositions:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2285,8 +2664,11 @@ class DGLlamaStyleBodyPositions:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_body_positions(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2314,6 +2696,8 @@ class DGLlamaStyleBodyPositions:
 class DGLlamaStyleEmotionGenres:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2341,8 +2725,11 @@ class DGLlamaStyleEmotionGenres:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_emotion_genres(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2370,6 +2757,8 @@ class DGLlamaStyleEmotionGenres:
 class DGLlamaStyleCombatScenarios:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2397,8 +2786,11 @@ class DGLlamaStyleCombatScenarios:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_combat_scenarios(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2426,6 +2818,8 @@ class DGLlamaStyleCombatScenarios:
 class DGLlamaStyleShortVideoScenarios:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2453,8 +2847,11 @@ class DGLlamaStyleShortVideoScenarios:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_short_video_scenarios(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2482,6 +2879,8 @@ class DGLlamaStyleShortVideoScenarios:
 class DGLlamaStyleClothingBrandsAndStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2509,8 +2908,11 @@ class DGLlamaStyleClothingBrandsAndStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_clothing_brands_and_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2538,6 +2940,8 @@ class DGLlamaStyleClothingBrandsAndStyles:
 class DGLlamaStyleCamerasAndModes:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2565,8 +2969,11 @@ class DGLlamaStyleCamerasAndModes:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_cameras_and_modes(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2594,6 +3001,8 @@ class DGLlamaStyleCamerasAndModes:
 class DGLlamaStylePhotographersAndStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2621,8 +3030,11 @@ class DGLlamaStylePhotographersAndStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_photographers_and_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2650,6 +3062,8 @@ class DGLlamaStylePhotographersAndStyles:
 class DGLlamaStyleFilmAndSeriesCreators:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2677,8 +3091,11 @@ class DGLlamaStyleFilmAndSeriesCreators:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_film_and_series_creators(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2707,6 +3124,8 @@ class DGLlamaStyleFilmAndSeriesCreators:
 class DGLlamaStyleArtStyles2:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2734,8 +3153,11 @@ class DGLlamaStyleArtStyles2:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_art_styles2(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2763,6 +3185,8 @@ class DGLlamaStyleArtStyles2:
 class DGLlamaStyleArtStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2790,8 +3214,11 @@ class DGLlamaStyleArtStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_art_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2819,6 +3246,8 @@ class DGLlamaStyleArtStyles:
 class DGLlamaStyleRenderSystems:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2846,8 +3275,11 @@ class DGLlamaStyleRenderSystems:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_render_systems(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2875,6 +3307,8 @@ class DGLlamaStyleRenderSystems:
 class DGLlamaStyleArtGenres:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2902,8 +3336,11 @@ class DGLlamaStyleArtGenres:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_art_genres(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2931,6 +3368,8 @@ class DGLlamaStyleArtGenres:
 class DGLlamaStyleGamingConsoles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -2958,8 +3397,11 @@ class DGLlamaStyleGamingConsoles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_gaming_consoles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -2987,6 +3429,8 @@ class DGLlamaStyleGamingConsoles:
 class DGLlamaStyleAlienSpecies:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3014,8 +3458,11 @@ class DGLlamaStyleAlienSpecies:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_alien_species(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3043,6 +3490,8 @@ class DGLlamaStyleAlienSpecies:
 class DGLlamaStyleNightTimeStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3070,8 +3519,11 @@ class DGLlamaStyleNightTimeStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_nighttime_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3099,6 +3551,8 @@ class DGLlamaStyleNightTimeStyles:
 class DGLlamaStyleDaytimeStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3126,8 +3580,11 @@ class DGLlamaStyleDaytimeStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_daytime_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3155,6 +3612,8 @@ class DGLlamaStyleDaytimeStyles:
 class DGLlamaStyleWorldReligions:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3182,8 +3641,11 @@ class DGLlamaStyleWorldReligions:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_world_religions(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3211,6 +3673,8 @@ class DGLlamaStyleWorldReligions:
 class DGLlamaStyleBiblicalMoments:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3238,8 +3702,11 @@ class DGLlamaStyleBiblicalMoments:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_biblical_moments(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3267,6 +3734,8 @@ class DGLlamaStyleBiblicalMoments:
 class DGLlamaStyleTimePeriods:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3294,8 +3763,11 @@ class DGLlamaStyleTimePeriods:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_time_periods(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3323,6 +3795,8 @@ class DGLlamaStyleTimePeriods:
 class DGLlamaStyleProfessions:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3350,8 +3824,11 @@ class DGLlamaStyleProfessions:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_professions(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3379,6 +3856,8 @@ class DGLlamaStyleProfessions:
 class DGLlamaStyleCombatActions:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3406,8 +3885,11 @@ class DGLlamaStyleCombatActions:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_combat_actions(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3435,6 +3917,8 @@ class DGLlamaStyleCombatActions:
 class DGLlamaStyleActionsStyles:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3462,8 +3946,11 @@ class DGLlamaStyleActionsStyles:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_actions_styles(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3491,6 +3978,8 @@ class DGLlamaStyleActionsStyles:
 class DGLlamaStyleWondersOfTheWorld:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3518,8 +4007,11 @@ class DGLlamaStyleWondersOfTheWorld:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_wonders_of_the_world(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3547,6 +4039,8 @@ class DGLlamaStyleWondersOfTheWorld:
 class DGLlamaStyleMonsters:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3574,8 +4068,11 @@ class DGLlamaStyleMonsters:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_monsters(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3603,6 +4100,8 @@ class DGLlamaStyleMonsters:
 class DGLlamaStyleCelestialObjects:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3630,8 +4129,11 @@ class DGLlamaStyleCelestialObjects:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_celestial_objects(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3659,6 +4161,8 @@ class DGLlamaStyleCelestialObjects:
 class DGLlamaStyleProtectionTypes:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3686,8 +4190,11 @@ class DGLlamaStyleProtectionTypes:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_protection_types(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3715,6 +4222,8 @@ class DGLlamaStyleProtectionTypes:
 class DGLlamaStyleShieldTypes:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3742,8 +4251,11 @@ class DGLlamaStyleShieldTypes:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value)
+        
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_shield_types(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3771,6 +4283,8 @@ class DGLlamaStyleShieldTypes:
 class DGLlamaStyleBuildingTypes:
     def __init__(self):
         self.mixed_style = ""
+        self.seed_value = 0
+
     @classmethod
     def INPUT_TYPES(cls):
         return { 
@@ -3798,8 +4312,11 @@ class DGLlamaStyleBuildingTypes:
         nseed = style_seed
         if nseed == 0:
             nseed = random.randint(1, 100)
-        seed_value = nseed
-        random.seed(seed_value) 
+
+        if self.seed_value != nseed:
+            self.seed_value = nseed
+            random.seed(self.seed_value) 
+
         if prompt_styles_1 != "Other":
             style1 = generate_prompt_building_types(prompt_styles_1, media_type=prompt_mode, num_keywords=styles_variation_1)
         else:
@@ -3862,17 +4379,29 @@ class DGLlamaAgentCorrection:
         self.model = None
         self.prompts = ""
         self.response = ""
+        self.oldseed = -1
+        self.useseed = True
+        self.seed = -1 
+        self.llama3_pipe = None  
 
     @classmethod
     def INPUT_TYPES(cls):
         return { 
-            "required": {
+            "required": {  
             "correction": ('STRING', {"multiline": True, "default": "Correct any errors in the prompt", "tooltip": "Provide the text you would like to correct"}),
-            "always_unpaused": (["No", "Yes"],),
+            "use_seeder": (["Yes", "No"],),
+            "max_token": ("INT", {"default": 4096, "min": 256, "max": 4096, "step": 32}),
+            "top_p": ("FLOAT", {"default": 0.9, "min": 0.0000, "max": 2.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses."}),
+            "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
+            "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
+            "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),            
+            "use_uncensored_agent": (["No", "Yes"],),
+            "always_unpaused": (["Yes", "No"],),
             "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),
             },
             "optional": {
-                "llama3_pipe": ("ANY", {"forceInput": True}),               
+                "llama3_pipe": ("ANY", {"forceInput": True}), 
+                "seeder": ("INT", {"forceInput": True, "default": -1, "min": 0, "max": 0xffffffffffffffff}),            
                 "prompt": ('STRING', {"forceInput": True, "multiline": True, "default": "", "tooltip": "Prompt to correct"}),
                 "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}),
             }
@@ -3886,38 +4415,76 @@ class DGLlamaAgentCorrection:
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
     TITLE = "DGLlamaAgentCorrection (Llama 3.1 & 3.2 - OX3D)"
 
-    def generate_msg(self, correction, prompt, always_unpaused, pause_generation, remove_from_prompt = None, llama3_pipe = None): 
-        if llama3_pipe is not None: 
-            self.tokenizer = llama3_pipe.tokenizer
-            self.model = llama3_pipe.model   
-            if pause_generation == False or always_unpaused == "Yes":
-                if llama3_pipe.use_uncensored_agent == "Yes":
-                    self.prompts = llama3_pipe.code_format_prompt(correction + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the corrected prompt", prompt_correctionsExp, "")
-                else:
-                    self.prompts = llama3_pipe.code_format_prompt(correction + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the corrected prompt", prompt_corrections, "")
+    def generate_msg(self, correction, use_uncensored_agent, use_seeder, max_token, top_p, top_k, temperature, repetition_penalty, prompt, always_unpaused, pause_generation, seeder=None, remove_from_prompt = None, llama3_pipe = None): 
+        self.llama3_pipe = llama3_pipe
+        if self.llama3_pipe is not None: 
 
-                print(f"OrionX3D Llama 3.x prompt correction: {self.prompts}")
-                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to("cuda")
-                generated_ids = self.model.generate(input_ids, max_new_tokens=llama3_pipe.max_new_tokens, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, temperature=llama3_pipe.temperature, repetition_penalty=llama3_pipe.repetition_penalty, do_sample=True, eos_token_id=self.tokenizer.eos_token_id)
+            if seeder is not None:
+                nseed = seeder
+            else:
+                nseed = 0
+
+            if nseed <= 0:
+                nseed = random.randint(1, 100)
+  
+            if self.oldseed != nseed:
+                self.oldseed = nseed
+                random.seed(time.time())   
+        
+            if use_seeder == "Yes":
+                self.useseed = True
+                self.seed = self.oldseed
+
+                rand_seeder(nseed - (nseed // 9999999) * 9999999)
+            else:
+                self.useseed = False
+
+            self.tokenizer = self.llama3_pipe.tokenizer
+            self.model = self.llama3_pipe.model   
+            if pause_generation == False or always_unpaused == "Yes":
+                if use_uncensored_agent == "Yes":
+                    self.prompts = self.code_format_prompt(correction + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the corrected prompt", prompt_correctionsExp, "")
+                else:
+                    self.prompts = self.code_format_prompt(correction + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the corrected prompt", prompt_corrections, "") 
+
+                #print(f"OrionX3D Llama 3.x prompt correction: {self.prompts}")
+
+                if self.tokenizer.pad_token_id is None:
+                    self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+                if self.model.config.pad_token_id is None:
+                    self.model.config.pad_token_id = self.model.config.eos_token_id 
+
+                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+                generated_ids = self.model.generate(input_ids, max_new_tokens=max_token, top_k=top_k, top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=True, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id
                 self.response = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
          
                 self.response = clean_prompt_regex(self.response)
-
+                
+                #"""
                 if remove_from_prompt is not None:
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
+                    self.response = process_prompt_v2(self.response, self.llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
                 else:
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt)
-            
+                    self.response = process_prompt_v2(self.response, self.llama3_pipe.remove_from_prompt)
+                #"""
+
                 self.response = remove_leading_spaces(self.response)
                 self.response = remove_parentheses(self.response)
 
                 self.response = self.response.replace('\n', ' ').replace('\r', ' ').replace('"', '').replace('(', '').replace(')', '') 
 
-            if llama3_pipe.clear_extra_mem_gpu == "Yes":  
+            if self.llama3_pipe.clear_extra_mem_gpu == "Yes":  
                 torch.cuda.empty_cache()
                 empty_cache()
 
         return (self.response, llama3_pipe) 
+    
+    def code_format_prompt(self, user_query, sprompt_text, aprompt_text):
+        if self.llama3_pipe is not None:
+            template = f"""{self.llama3_pipe.codeA}{self.llama3_pipe.codeB}{self.llama3_pipe.modeA}{self.llama3_pipe.codeC}\n\n{sprompt_text}{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeB}{self.llama3_pipe.codeC}\n\n{user_query}{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}\n\n{aprompt_text}{self.llama3_pipe.codeC}\n\n"""
+        else:
+            template = ("")
+
+        return template     
 
 #####################################################################################################################
 # DGLlamaAgentTranslate #############################################################################################
@@ -3930,18 +4497,30 @@ class DGLlamaAgentTranslate:
         self.model = None
         self.prompts = ""
         self.response = ""
+        self.oldseed = -1
+        self.useseed = True
+        self.seed = -1   
+        self.llama3_pipe = None
 
     @classmethod
     def INPUT_TYPES(cls):
         return { 
             "required": {
             "translate": ('STRING', {"multiline": True, "default": "Translate the prompt into French", "tooltip": "Provide the text you would like to translate and specify how"}),
-            "always_unpaused": (["No", "Yes"],),
+            "use_seeder": (["Yes", "No"],),
+            "max_token": ("INT", {"default": 4096, "min": 256, "max": 4096, "step": 32}),
+            "top_p": ("FLOAT", {"default": 0.9, "min": 0.0000, "max": 2.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses."}),
+            "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
+            "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
+            "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),            
+            "use_uncensored_agent": (["No", "Yes"],),
+            "always_unpaused": (["Yes", "No"],),
             "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),
             },
-            "optional": {
-                "llama3_pipe": ("ANY", {"forceInput": True}),                
-                "prompt": ('STRING', {"forceInput": True, "multiline": True, "default": "", "tooltip": "Prompt to correct"}),
+            "optional": {   
+                "llama3_pipe": ("ANY", {"forceInput": True}),  
+                "seeder": ("INT", {"forceInput": True, "default": -1, "min": 0, "max": 0xffffffffffffffff}),           
+                "prompt": ('STRING', {"forceInput": True, "multiline": True, "default": "", "tooltip": "Prompt to translate"}),
                 "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}),
             }
         }
@@ -3954,38 +4533,75 @@ class DGLlamaAgentTranslate:
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
     TITLE = "DGLlamaAgentTranslate (Llama 3.1 & 3.2 - OX3D)"        
 
-    def generate_msg(self, translate, prompt, always_unpaused, pause_generation, remove_from_prompt = None, llama3_pipe = None):  
-        if llama3_pipe is not None: 
-            self.tokenizer = llama3_pipe.tokenizer
-            self.model = llama3_pipe.model 
-            if pause_generation == False or always_unpaused == "Yes":
-                if llama3_pipe.use_uncensored_agent == "Yes":
-                    self.prompts = llama3_pipe.code_format_prompt(translate + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the translated prompt", prompt_translationExp, "")  
-                else:
-                    self.prompts = llama3_pipe.code_format_prompt(translate + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the translated prompt", prompt_translation, "") 
-                print(f"OrionX3D Llama 3.x prompt translation: {self.prompts}")
+    def generate_msg(self, translate, use_seeder, use_uncensored_agent, max_token, top_p, top_k, temperature, repetition_penalty, prompt, always_unpaused, pause_generation, seeder=None, remove_from_prompt = None, llama3_pipe = None):  
+        self.llama3_pipe = llama3_pipe
+        if self.llama3_pipe is not None:
 
-                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to("cuda")
-                generated_ids = self.model.generate(input_ids, max_new_tokens=llama3_pipe.max_new_tokens, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, temperature=llama3_pipe.temperature, repetition_penalty=llama3_pipe.repetition_penalty, do_sample=True, eos_token_id=self.tokenizer.eos_token_id)
+            if seeder is not None:
+                nseed = seeder
+            else:
+                nseed = 0
+
+            if nseed <= 0:
+                nseed = random.randint(1, 100)
+  
+            if self.oldseed != nseed:
+                self.oldseed = nseed
+                random.seed(time.time())   
+        
+            if use_seeder == "Yes":
+                self.useseed = True
+                self.seed = self.oldseed
+
+                rand_seeder(nseed - (nseed // 9999999) * 9999999)
+            else:
+                self.useseed = False
+
+            self.tokenizer = self.llama3_pipe.tokenizer
+            self.model = self.llama3_pipe.model 
+            if pause_generation == False or always_unpaused == "Yes":
+                if use_uncensored_agent == "Yes":
+                    self.prompts = self.code_format_prompt(translate + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the translated prompt", prompt_translationExp, "")  
+                else:
+                    self.prompts = self.code_format_prompt(translate + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the translated prompt", prompt_translation, "") 
+               
+                #print(f"OrionX3D Llama 3.x prompt translation: {self.prompts}")
+
+                if self.tokenizer.pad_token_id is None:
+                    self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+                if self.model.config.pad_token_id is None:
+                    self.model.config.pad_token_id = self.model.config.eos_token_id                  
+
+                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+                generated_ids = self.model.generate(input_ids, max_new_tokens=max_token, top_k=top_k, top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=True, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id
                 self.response = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
          
                 self.response = clean_prompt_regex(self.response)
 
+                #"""
                 if remove_from_prompt is not None:
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
+                    self.response = process_prompt_v2(self.response, self.llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
                 else:
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt)
-
+                    self.response = process_prompt_v2(self.response, self.llama3_pipe.remove_from_prompt)
+                #"""
                 self.response = remove_leading_spaces(self.response)
                 self.response = remove_parentheses(self.response)
 
                 self.response = self.response.replace('\n', ' ').replace('\r', ' ').replace('"', '').replace('(', '').replace(')', '') 
 
-            if llama3_pipe.clear_extra_mem_gpu == "Yes":  
+            if self.llama3_pipe.clear_extra_mem_gpu == "Yes":  
                 torch.cuda.empty_cache()
                 empty_cache()
 
         return (self.response, llama3_pipe)  
+    
+    def code_format_prompt(self, user_query, sprompt_text, aprompt_text):
+        if self.llama3_pipe is not None:
+            template = f"""{self.llama3_pipe.codeA}{self.llama3_pipe.codeB}{self.llama3_pipe.modeA}{self.llama3_pipe.codeC}\n\n{sprompt_text}{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeB}{self.llama3_pipe.codeC}\n\n{user_query}{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}\n\n{aprompt_text}{self.llama3_pipe.codeC}\n\n"""
+        else:
+            template = ("")   
+
+        return template
 
 #####################################################################################################################
 # DGLlamaChatUser ###################################################################################################
@@ -3995,7 +4611,7 @@ class DGLlamaChatUser:
         self.tokenizer = None #llama3_pipe.tokenizer
         self.model = None #llama3_pipe.model
         self.prompts = "" #initial_prompt
-        self.max_tokens = 4096 - 1000 
+        self.max_tokens = 4096 
         self.agent = None
         self.agentchat = None
         self.current_normal_text = ""
@@ -4004,6 +4620,9 @@ class DGLlamaChatUser:
         self.response = ""
         self.agent_mode_restriction = "normal"
         self.old_agent_mode = "normal"
+        self.oldseed = -1
+        self.useseed = True
+        self.seed = -1            
         #self.dave_normal_text = ""
         #self.dave_uncensored_text = ""
         #self.geraldine_normal_text = ""
@@ -4013,29 +4632,38 @@ class DGLlamaChatUser:
     def INPUT_TYPES(cls):
         return { 
             "required": {
-            "llama3_pipe": ("ANY",),
+            "llama3_pipe": ("ANY",), 
+            "use_seeder": (["Yes", "No"],),
             "prompt_mode": (["Other", "Image", "Video", "Chat"], {"tooltip": "Just a quick guidance for the agent."}),
             "llama3_reset": ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}),
+            "llama3_agent_clear_history": ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}),
             "llama3_agent_type": (get_filtered_filenames("dg_llama_agents", extensions=['.agt']), {"tooltip": "agent files."}),
-            "llama3_agent_clear_history": ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}),      
+            "max_token": ("INT", {"default": 4096, "min": 2048, "max": 4096, "step": 32}),
+            "top_p": ("FLOAT", {"default": 0.9, "min": 0.0000, "max": 2.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses."}),
+            "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
+            "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
+            "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),                   
             "use_remove_from_manager": (["No", "Yes"],),      
+            "use_custom_prompt": (["No", "Yes"], {"tooltip": "This option disable the llama model and use the text subject directly."}),
             "use_external_subject": (["No", "Yes"], {"tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
             "use_mix_styles": (["No", "Yes"],),
             #"user_name": ("STRING", {"default": "God", "tooltip": "Just a name for interacting with Orion agent."}),
             "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}), 
-            "always_unpaused": (["No", "Yes"],),
+            "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
+            "always_unpaused": (["Yes", "No"],),
             "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),
             },
-            "optional": {
+            "optional": {            
+                "seeder": ("INT", {"forceInput": True, "default": -1, "min": 0, "max": 0xffffffffffffffff}),   
                 "mix_styles": ("STRING", {"forceInput": True, "multiline": True}), 
                 #"agent": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent, "tooltip": "The agent text to describe the Llama agent."}),
-                "external_subject": ("STRING", {"forceInput": True, "multiline": True}),
+                "external_subject": ("STRING", {"forceInput": True, "multiline": True, "tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
                 "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}), 
             }            
         }   
 
-    RETURN_TYPES = ("STRING","ANY",)
-    RETURN_NAMES = ("prompt","llama3_pipe",)    
+    RETURN_TYPES = ("STRING","ANY","STRING",)
+    RETURN_NAMES = ("prompt","llama3_pipe","mix_styles",)    
 
     FUNCTION = "generate_prompt"  
 
@@ -4043,21 +4671,56 @@ class DGLlamaChatUser:
     TITLE = "DGLlamaChatUser (Llama 3.1 & 3.2 - OX3D)"  
     OUTPUT_NODE = True
 
-    def generate_prompt(self, subject, prompt_mode, always_unpaused, use_remove_from_manager, llama3_reset, llama3_pipe, llama3_agent_type, llama3_agent_clear_history, pause_generation, use_external_subject, use_mix_styles, mix_styles=None, external_subject=None, remove_from_prompt=None): #agent=None,
+    def generate_prompt(self, subject, use_custom_prompt, custom_prompt, max_token, top_p, top_k, temperature, repetition_penalty, use_seeder, prompt_mode, always_unpaused, use_remove_from_manager, llama3_reset, llama3_pipe, llama3_agent_type, llama3_agent_clear_history, pause_generation, use_external_subject, use_mix_styles, seeder=None, mix_styles=None, external_subject=None, remove_from_prompt=None): #agent=None,
         # Currently forcing the size; it likely only works well for the Llama 3B version or larger...
         # Anyway, the Llama 1B is a decent model, but it’s not very good for generating quality prompts or translations. 
         # It requires the 3B version or higher for better performance.
         # I might try to fix this later. The real issue is that I’m using a very large system message, which takes up a lot of space.
-        self.max_tokens = llama3_pipe.max_new_tokens - 1000
-        if self.max_tokens < 0:
-            self.max_tokens = 4096 - 1000
+        self.max_tokens = max_token #llama3_pipe.max_new_tokens - 1000
+        #if self.max_tokens < 0:
+        #    self.max_tokens = 4096 - 1000
+
+        reset_agent = llama3_reset
 
         self.agent_mode_restriction = extract_version(llama3_agent_type)
         pname = extract_person_name(llama3_agent_type)
         
-        print(f"Selected Llama agent: {pname}")            
+        print(f"Selected Llama agent: {pname}")  
 
-        if llama3_reset == True:
+        if pname == "":
+            pname = "geraldine"
+            #if self.agent is None:
+            #    self.agent = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, self.max_tokens)
+            #    self.agent.save_agent_text(f"agent_{pname}_normal.agt", uncensored=False)
+            #    self.agent.save_agent_text(f"agent_{pname}_uncensored.agt", uncensored=True)            
+
+        if self.old_name != pname:
+            self.old_name = pname
+            reset_agent = True
+            if self.agentchat is not None:
+                self.agentchat._update_agent_name(pname)          
+
+        if seeder is not None:
+            nseed = seeder
+        else:
+            nseed = 0
+
+        if nseed <= 0:
+            nseed = random.randint(1, 100)
+
+        if self.oldseed != nseed:
+            self.oldseed = nseed
+            random.seed(time.time())   
+        
+        if use_seeder == "Yes":
+            self.useseed = True
+            self.seed = self.oldseed
+
+            rand_seeder(nseed - (nseed // 9999999) * 9999999)
+        else:
+            self.useseed = False                   
+
+        if reset_agent == True:
             if self.agentchat is not None:
                 #if self.agentchat.agent_mode_restriction == "uncensored":
                 #    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json", False)
@@ -4090,19 +4753,6 @@ class DGLlamaChatUser:
         else:
             print(f"OX3D Llama pause generation - disabled")
 
-        if pname == "":
-            pname = "geraldine"
-            #if self.agent is None:
-            #    self.agent = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, self.max_tokens)
-            #    self.agent.save_agent_text(f"agent_{pname}_normal.agt", uncensored=False)
-            #    self.agent.save_agent_text(f"agent_{pname}_uncensored.agt", uncensored=True)            
-
-        if self.old_name != pname:
-            self.old_name = pname
-            if self.agentchat is not None:
-                self.agentchat._update_agent_name(pname)
-
-
         file_normal = f"agent_{pname}_normal.agt"
         file_uncensored = f"agent_{pname}_uncensored.agt"
 
@@ -4122,7 +4772,7 @@ class DGLlamaChatUser:
             else:
                 self.agentchat = DGLlamaChatAgent(llama3_pipe, pname, self.agent_mode_restriction, self.current_normal_text)
         
-        if pause_generation == False or always_unpaused == "Yes":
+        if use_custom_prompt == "No" and (pause_generation == False or always_unpaused == "Yes"):
             if self.agentchat is not None:
                 #prompt_mode
                 #chat_str = "\n".join(subject)
@@ -4142,35 +4792,37 @@ class DGLlamaChatUser:
                     if mix_styles != "" and external_subject != "":
                         if use_mix_styles == "Yes" and use_external_subject == "Yes":
                             eval_style = True
-                            chat_str = f"{ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject + "\n" + mix_styles
+                            chat_str = f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject + "\n" + mix_styles
                         if use_mix_styles == "Yes" and use_external_subject == "No":
                             eval_style = True
-                            chat_str =  f"{ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + mix_styles
+                            chat_str =  f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + mix_styles
                         if use_mix_styles == "No" and use_external_subject == "Yes":
                             eval_style = True
-                            chat_str = f"{ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject
+                            chat_str = f"user {ox3d_user_name}: main topic " + chat_str + "\n" + "mix with " + external_subject
 
                 if mix_styles is not None and external_subject is None:
                     if mix_styles != "":
                         if use_mix_styles == "Yes":
                             eval_style = True
-                            chat_str = f"{ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + mix_styles 
+                            chat_str = f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + mix_styles 
 
                 if mix_styles is None and external_subject is not None:
                     if external_subject != "":                    
                         if use_external_subject == "Yes":
                             eval_style = True
-                            chat_str = f"{ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject  
+                            chat_str = f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject  
 
                 if eval_style == True:
                     chat_str = chat_str + "\n" + "If styles are similar or mean the same, choose the one that works best for the prompt. Be creative, and try to craft a prompt of 400 tokens maximum or less."                                 
-
-                self.response = self.agentchat.chat(chat_str, max_new_tokens=self.max_tokens, temperature=llama3_pipe.temperature, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, repetition_penalty=llama3_pipe.repetition_penalty)
+                
+                #top_p, top_k, temperature, repetition_penalty
+                self.response = self.agentchat.chat(self.useseed, chat_str, max_new_tokens=self.max_tokens, temperature=temperature, top_k=top_k, top_p=top_p, repetition_penalty=repetition_penalty)
                 #print(f"Response: \n{res}")   
                 #self.agentchat.print_current_history_tokens()
 
                 self.response = clean_prompt_regex(self.response)
 
+                #"""
                 if remove_from_prompt is not None:
                     if use_remove_from_manager == "Yes":
                         self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
@@ -4181,10 +4833,16 @@ class DGLlamaChatUser:
                         self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt)
                     else:
                         self.response = process_prompt_v2(self.response, "")
+                #"""
 
                 self.response = remove_leading_spaces(self.response)
 
                 self.response = self.response.replace('\n', ' ').replace('\r', ' ').replace('"', '').replace('(', '').replace(')', '')   
+        else:
+            if use_custom_prompt == "Yes":
+                self.response = custom_prompt
+            if self.response == "":
+                self.response = custom_prompt
 
         self.old_name = pname
         self.old_agent_mode = self.agent_mode_restriction
@@ -4192,11 +4850,17 @@ class DGLlamaChatUser:
         if llama3_pipe.clear_extra_mem_gpu == "Yes":  
             torch.cuda.empty_cache()
             empty_cache() 
+
+        self.oldseed = nseed
+
+        astyle = ""
+        if mix_styles is not None:
+            astyle = mix_styles            
         
-        return(self.response, llama3_pipe)       
+        return(self.response, llama3_pipe, astyle)       
                                  
 #####################################################################################################################
-# DGLlamaUser #######################################################################################################
+# DGLlamaAgentUserEdit ##############################################################################################
 #####################################################################################################################
 # Very deprecated, I have begin to update it... WIP
 class DGLlamaAgentUserEdit:    
@@ -4208,7 +4872,7 @@ class DGLlamaAgentUserEdit:
         self.response = ""
         self.old_response = ""  
         #self.text_buffer = None   
-        self.max_tokens = 4096 - 1000 
+        self.max_tokens = 4096 
         #self.old_agent = None
         self.new_agent = None
         #self.agent1 = None # AgentGeraldine(ox3d_user_name, current_dir)
@@ -4221,6 +4885,9 @@ class DGLlamaAgentUserEdit:
         self.agent_mode_restriction = "normal"
         self.default_agent_name = ""
         self.default_old_agent_name = ""
+        self.oldseed = -1
+        self.useseed = True
+        self.seed = -1         
           
     @classmethod
     def INPUT_TYPES(cls):
@@ -4228,58 +4895,91 @@ class DGLlamaAgentUserEdit:
             "required": {
             #"user_name": ("STRING", {"default": "God", "tooltip": "Just a name for interacting with Orion agent."}),
             "llama3_pipe": ("ANY",),
+            "use_seeder": (["Yes", "No"],),
             #"llama_agent_type": (extract_person_name(get_filtered_filenames("dg_llama_agents", extensions=['.agt'])), {"tooltip": "agent files."}),
             #"llama_agent_type": (["Geraldine", "Dave"],),
-            #"llama_reset": (["No", "Yes"],),
+            #"llama_reset": (["No", "Yes"],), 
+            "prompt_mode": (["Other", "Image", "Video", "Chat"], {"tooltip": "Just a quick guidance for the agent."}),
             "custom_agent_name": ('STRING', {"multiline": False, "default": "Roberto", "tooltip": "Your custom agent name: If you create a new agent, refresh the ComfyUI window after the first generation to see the agent file in the list."}),
             "llama3_reset": ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}),
             "llama3_agent_clear_history": ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}), 
             "llama3_agent_type": (get_filtered_filenames("dg_llama_agents", extensions=['.agt']), {"tooltip": "Agent files: If you change the agent, activate the llama3_reset button to reset the agent."}),
+            "max_token": ("INT", {"default": 4096, "min": 2048, "max": 4096, "step": 32}),
+            "top_p": ("FLOAT", {"default": 0.9, "min": 0.0000, "max": 2.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses."}),
+            "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
+            "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
+            "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),            
             "use_mix_styles": (["No", "Yes"],),
+            "use_custom_prompt": (["No", "Yes"], {"tooltip": "This option disable the llama model and use the text subject directly."}),
             "use_external_subject": (["No", "Yes"], {"tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
             "use_remove_from_manager": (["No", "Yes"],),
             "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}), 
+            "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
             #"disable_generation": (["No", "Yes"],),
             #"agent_mode": (["Prompt", "Chat"],),
-            "always_unpaused": (["No", "Yes"],),
+            "always_unpaused": (["Yes", "No"],),
             "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),
             },
             "optional": {
+                "seeder": ("INT", {"forceInput": True, "default": -1, "min": 0, "max": 0xffffffffffffffff}),
                 "mix_styles": ("STRING", {"forceInput": True, "multiline": True}),
-                "external_subject": ("STRING", {"forceInput": True, "multiline": True}),  
+                "external_subject": ("STRING", {"forceInput": True, "multiline": True, "tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),  
                 "agent": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent, "tooltip": "The agent text to describe your Llama agent, refresh the ComfyUI window after the first generation to see the agent file in the list."}),
                 "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}), 
             }
         }
     
-    RETURN_TYPES = ("STRING","ANY",)
-    RETURN_NAMES = ("prompt","llama3_pipe",)    
+    RETURN_TYPES = ("STRING","ANY","STRING",)
+    RETURN_NAMES = ("prompt","llama3_pipe","mix_styles",)    
 
     FUNCTION = "generate_prompt"  
 
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
     TITLE = "DGLlamaAgentUserEdit (Llama 3.1 & 3.2 - OX3D)"
     #agent_mode, #llama_agent_type, #llama_reset, #disable_generation
-    def generate_prompt(self, subject, llama3_pipe, custom_agent_name, always_unpaused, llama3_reset, llama3_agent_clear_history, pause_generation, llama3_agent_type, use_remove_from_manager, use_mix_styles, use_external_subject, mix_styles=None, external_subject=None, remove_from_prompt=None, agent = None):
+    def generate_prompt(self, subject, use_custom_prompt, custom_prompt, prompt_mode, max_token, top_p, top_k, temperature, repetition_penalty, use_seeder, llama3_pipe, custom_agent_name, always_unpaused, llama3_reset, llama3_agent_clear_history, pause_generation, llama3_agent_type, use_remove_from_manager, use_mix_styles, use_external_subject, seeder=None, mix_styles=None, external_subject=None, remove_from_prompt=None, agent = None):
         self.prompts = subject #subject #f"User {ox3d_user_name} Chat: " + subject
         self.tokenizer = llama3_pipe.tokenizer
         self.model = llama3_pipe.model 
-
+        self.max_tokens = max_token
+        reset_agent = llama3_reset
         #if llama3_reset == True:
         #    self.old_agent = None
         #    self.new_agent = None 
-        #    self.default_agent_name = ""           
+        #    self.default_agent_name = "" 
+
+        if seeder is not None:
+            nseed = seeder
+        else:
+            nseed = 0 #llama3_pipe.seed
+
+        if nseed <= 0:
+            nseed = random.randint(1, 100)
+
+        if self.oldseed != nseed:
+            self.oldseed = nseed
+            random.seed(time.time())   
+        
+        if use_seeder == "Yes":
+            self.useseed = True
+            self.seed = self.oldseed
+
+            rand_seeder(nseed - (nseed // 9999999) * 9999999)
+        else:
+            self.useseed = False              
 
         self.agent_mode_restriction = extract_version(llama3_agent_type)
         pname = extract_person_name(llama3_agent_type)
 
-        rst = llama3_reset
+        self.default_agent_name = pname
+
+        #rst = llama3_reset
 
         if self.default_old_agent_name != self.default_agent_name:
             self.default_old_agent_name = self.default_agent_name
-            rst = True
+            reset_agent = True
 
-        if rst == True:
+        if reset_agent == True:
             if self.new_agent is not None:
                 #if self.new_agent.agent_mode_restriction == "uncensored":
                 #    self.new_agent.reset_history(f"ox3d_llama_{self.new_agent.agent_name}_chat_uncensored_history.json", False)
@@ -4405,6 +5105,16 @@ class DGLlamaAgentUserEdit:
 
         prompt_only = self.prompts
 
+        #chat_str = subject
+        if prompt_mode == "Image":
+            prompt_only = "An high quality image prompt about - " + self.prompts
+        if prompt_mode == "Video":
+            prompt_only = "A high quality video prompt about - " + self.prompts     
+        if prompt_mode == "Chat":
+            prompt_only = "I'm here for chat - " + self.prompts   
+        if prompt_mode == "Other":
+            prompt_only = self.prompts        
+
         #if agent_mode == "chat":
         #    use_mix_styles_new = "No"
         #else:
@@ -4430,7 +5140,7 @@ class DGLlamaAgentUserEdit:
             #if mix_styles is not None and external_subject is not None:
             #    prompt_only = mix_styles + "\n\nimportant to add this subject and actors: " + prompt_only + "\n" + external_subject            
 
-        if pause_generation == False or always_unpaused == "Yes":
+        if use_custom_prompt == "No" and (pause_generation == False or always_unpaused == "Yes"):
             #if self.text_buffer is None:
             #    self.text_buffer = DG_LlamaTextBuffer(ox3d_user_name, self.tokenizer, self.max_tokens)            
 
@@ -4482,11 +5192,12 @@ class DGLlamaAgentUserEdit:
             """
             #
             #buffer_text + "\n" + 
-            if self.new_agent is not None:
-                self.response = self.new_agent.chat(full_prompt, max_new_tokens=self.max_tokens, temperature=llama3_pipe.temperature, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, repetition_penalty=llama3_pipe.repetition_penalty)
+            if self.new_agent is not None: #top_p, top_k, temperature, repetition_penalty,
+                self.response = self.new_agent.chat(self.useseed, full_prompt, max_new_tokens=self.max_tokens, temperature=temperature, top_k=top_k, top_p=top_p, repetition_penalty=repetition_penalty)
             
                 self.response = clean_prompt_regex(self.response)
-
+                
+                #"""
                 if remove_from_prompt is not None:
                     if use_remove_from_manager == "Yes":
                         self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
@@ -4497,6 +5208,7 @@ class DGLlamaAgentUserEdit:
                         self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt)
                     else:
                         self.response = process_prompt_v2(self.response, "")
+                #"""
 
                 self.response = remove_leading_spaces(self.response)
 
@@ -4512,7 +5224,12 @@ class DGLlamaAgentUserEdit:
             #print(" ")
             #print(f"Buffer size tokens : {self.text_buffer.get_token_count()}") 
             #print("[END]=====================================================================================")      
-        
+        else:
+            if use_custom_prompt == "Yes":
+                self.response = custom_prompt
+            if self.response == "":
+                self.response = custom_prompt                
+
         if self.response == "":
             self.response = self.old_response
 
@@ -4521,9 +5238,15 @@ class DGLlamaAgentUserEdit:
 
         if llama3_pipe.clear_extra_mem_gpu == "Yes":  
             torch.cuda.empty_cache()
-            empty_cache()        
+            empty_cache()  
 
-        return (self.response, llama3_pipe) 
+        self.oldseed = nseed  
+
+        astyle = ""
+        if mix_styles is not None:
+            astyle = mix_styles            
+
+        return (self.response, llama3_pipe, astyle) 
     
 """
 # OLD USER DEPRECATED
@@ -4744,99 +5467,448 @@ class DGLlamaUser:
 
         return (self.response, llama3_pipe)    
 """
-#####################################################################################################################
-# DGPromptGenLlama3_2 ###############################################################################################
-#####################################################################################################################
 
-class DGPromptGenLlama3_2:
+#####################################################################################################################
+# DGLoadDeepSeekModelR1 #############################################################################################
+#####################################################################################################################
+class DGLoadDeepSeekModelR1:
     def __init__(self):
         self.tokenizer = None
         self.model = None
         self.model_id = ""
         self.model_name = ""
-        self.oldseed = -1
-        self.response = ""
-        self.prompts = ""
+        self.model_check = 0
+        self.offload_device = torch.device('cpu')
+        self.device_name = "cpu"
         self.model_file = ""
-        self.agent = ""
-        self.internal_agent = ""
-        self.max_new_tokens = 4096
-        self.codeA = "<|begin_of_text|>"
-        self.codeB = "<|start_header_id|>"
-        self.codeC = "<|end_header_id|>"
-        self.codeD = "<|eot_id|>"       
-        self.remove_from_prompt = ""
-        self.use_uncensored_agent = "Yes"
-        self.temperature = 0.6000
-        self.top_p = 0.9000
-        self.top_k = 1
-        self.repetition_penalty = 1.1
-        self.useseed = True
-        self.seed = -1
-        self.full_mix_styles = ""
-        self.agent1 = None
-        self.agent2 = None
-        self.current_agent = None
-        random.seed(time.time())    
         self.clear_extra_mem_gpu = "Yes" 
 
     @classmethod
     def INPUT_TYPES(cls): # pylint: disable = invalid-name, missing-function-docstring
         return { 
             "required": {
-                "model_file": (get_filtered_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model llama 3.1 too."}),
-                "styles_variation": ("INT", {"default": 1, "min": 1, "max": 10, "step": 1, "tooltip": "Adding more or less words about the topic."}),
-                "prompt_styles": (get_prompt_styles(), {"default": "Other", "tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
-                "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),
+                "model_file": (get_filtered_deep_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model deepseek r1."}), 
+                "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),          
                 "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),
-                "prompt_mode": (["Image", "Video", "Other"],{"tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
-                "only_english": (["Yes", "No"], {"tooltip": "This option try to force English only but it can depend a lot from the model too."}),
-                "use_seeder": (["Yes", "No"],),
-                "seeder": ("INT", {"forceInput": True, "default": -1}),
-                "use_mix_styles": (["No", "Yes"],),
-                "use_custom_prompt": (["No", "Yes"], {"tooltip": "This option disable the llama model and use the text subject directly."}),
-                "use_external_subject": (["No", "Yes"], {"tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
-                "max_token": ("INT", {"default": 4096, "min": 512, "max": 4096, "step": 32}),
-                "top_p": ("FLOAT", {"default": 0.9, "min": 0.0000, "max": 2.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses."}),
-                "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
-                "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
-                "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),
-                #"frequency_penalty": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Decreases the likelihood of the model repeating the same lines verbatim."}),
-                #"presence_penalty": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Increases the likelihood of the model introducing new topics."}),
-                "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}), 
-                "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}),                      
-                "custom_prompt": ('STRING', {"multiline": True, "default": ""}),
-                "use_uncensored_agent": (["No", "Yes"],), 
-                "use_internal_agent": (["Yes", "No"],),  
-                "use_internal_remove": (["Yes", "No"],),
-                "use_assistant": (["No", "Yes"],),
-                "disable_generation": (["No", "Yes"],),
-            },
-            "optional": {
-                "mix_styles": ("STRING", {"forceInput": True, "multiline": True}), 
-                "agent": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent, "tooltip": "The agent text to describe the Llama agent."}),
-                "external_subject": ("STRING", {"forceInput": True, "multiline": True}),     
-                "assistant": ('STRING', {"forceInput": True, "multiline": True, "default": str_assistant, "tooltip": "When the assistant is active, it generates responses based on the user's input; it is preferable to turn off the assistant for prompt generation to ensure only the user's input is used without additional responses."}),      
-                "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}), 
+                "device_mode": (["gpu", "cpu"],),
+                "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}),
             }
         }
     
-    RETURN_TYPES = ("STRING","ANY","STRING",)
-    RETURN_NAMES = ("prompt","llama3_pipe","mix_styles",)
+    RETURN_TYPES = ("ANY",)
+    RETURN_NAMES = ("deepseek_pipe",)
+
+    FUNCTION = "load_deepseek"  
+
+    CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
+    TITLE = "DGLoadDeepSeekModelR1 (DeepSeek R1 - OX3D)" 
+
+    def load_deepseek(self, model_file, device_mode, reset_model, clear_extra_mem_gpu, use_bit_mode):
+        self.clear_extra_mem_gpu = clear_extra_mem_gpu
+        print(f"OrionX3D deepseek r1 Model: {model_file}")
+        self.model_name = os.path.basename(model_file)
+
+        if reset_model == "Yes":
+            self.tokenizer = None
+            self.model = None          
+
+        if self.model_file != model_file: 
+            self.model_file = model_file
+            self.tokenizer = None
+            self.model = None         
+
+        self.model_check = 0
+        # Check the file extension
+        if self.model_file.endswith(".gguf"):
+            print("The Model deepseek r1 is a .gguf file.")
+            self.model_check = 1
+        elif self.model_file.endswith(".safetensors"):
+            print("The Model deepseek r1 is a .safetensors file.")
+            self.model_check = 2
+        else:
+            print("The Model deepseek r1 has a different extension.")  
+            self.model_check = 0         
+
+        if self.tokenizer is None and self.model is None:
+            load_in_4bit = False
+            load_in_8bit = False
+
+            if use_bit_mode == "4bit":
+                load_in_4bit = True
+                load_in_8bit = False
+            if use_bit_mode == "8bit":
+                load_in_4bit = False
+                load_in_8bit = True   
+            if use_bit_mode == "nobit":
+                load_in_4bit = False
+                load_in_8bit = False                
+            #
+            if device_mode == "cpu":
+                self.offload_device = torch.device('cpu')
+                self.device_name = "cpu"
+            else:
+                self.offload_device = torch.device('cuda')
+                self.device_name = "cuda"
+            #
+            if self.model_check == 1:
+                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
+                                                                gguf_file=self.model_name, 
+                                                                trust_remote_code=True)                    
+                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
+                                                                  gguf_file=self.model_name, 
+                                                                  low_cpu_mem_usage=True,
+                                                                  return_dict=True,
+                                                                  torch_dtype=torch.float16, 
+                                                                  device_map=self.offload_device,
+                                                                  local_files_only=True)  
+            elif self.model_check == 2:
+                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
+                                                                trust_remote_code=True)                    
+                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
+                                                                  torch_dtype=torch.float16,
+                                                                  device_map=self.offload_device,
+                                                                  load_in_8bit=load_in_8bit,
+                                                                  load_in_4bit=load_in_4bit,
+                                                                  local_files_only=True)  
+            else:
+                self.tokenizer = None
+                self.model = None   
+
+        return (self,)    
+       
+#####################################################################################################################
+# DGPromptGenSeepSeekR1 #############################################################################################
+#####################################################################################################################
+class DGPromptGenSeepSeekR1:
+    def __init__(self):
+        self.tokenizer = None
+        self.model = None
+        self.model_id = ""
+        self.model_name = ""
+        self.think_section = ""
+        self.final_response = ""
+        self.model_file = ""
+        self.oldseed = -1
+        self.useseed = True
+        self.seed = -1    
+        self.temperature = 0.6000
+        self.top_p = 0.9000
+        self.top_k = 1
+        self.repetition_penalty = 1.1   
+#        self.offload_device = torch.device('cpu')
+        random.seed(time.time())     
+
+    @classmethod
+    def INPUT_TYPES(cls): # pylint: disable = invalid-name, missing-function-docstring
+        return { 
+            "required": {
+#                "model_file": (get_filtered_deep_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model deepseek r1."}),            
+                "deepseek_pipe": ("ANY",),
+                "prompt_mode": (["Image", "Video", "Chat", "Other"],{"tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
+                "use_seeder": (["Yes", "No"],),
+                "use_mix_styles": (["No", "Yes"],),
+                "use_custom_prompt": (["No", "Yes"], {"tooltip": "This option disable the llama model and use the text subject directly."}),
+                "use_external_subject": (["No", "Yes"], {"tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
+                "seeder": ("INT", {"forceInput": True, "default": -1, "min": 0, "max": 0xffffffffffffffff}),
+                "max_token": ("INT", {"default": 2048, "min": 256, "max": 4096, "step": 32}),
+                "top_p": ("FLOAT", {"default": 0.9, "min": 0.0000, "max": 2.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses."}),
+                "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
+                "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
+                "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),                
+                "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}),
+                "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
+                #"device_mode": (["gpu", "cpu"],), # device_mode gpu = cuda, because the most compatible video cards are from nvidia and the most used gpu tool egal cuda.
+                "always_unpaused": (["Yes", "No"],),
+                "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),                
+            },
+            "optional": {
+                "agent": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent, "tooltip": "The agent text to describe the Llama agent."}),    
+                "mix_styles": ("STRING", {"forceInput": True, "multiline": True}),  
+                "external_subject": ("STRING", {"forceInput": True, "multiline": True, "tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),            
+            }
+        }
+    
+    RETURN_TYPES = ("STRING","STRING","ANY","STRING",)
+    RETURN_NAMES = ("prompt","think","deepseek_pipe","mix_styles",)
 
     FUNCTION = "generate_prompt"  
 
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
-    TITLE = "DGPromptGenLlama (Llama 3.1 & 3.2 - OX3D)"  
-    #OUTPUT_NODE = True      
+    TITLE = "DGPromptGenDeepSeekR1 (DeepSeekR1 - OX3D)" 
 
-    #frequency_penalty, presence_penalty,
-    def generate_prompt(self, model_file, styles_variation, prompt_styles, use_bit_mode, prompt_mode, only_english, use_seeder, seeder, use_custom_prompt, subject, use_external_subject, max_token, top_p, top_k, temperature, repetition_penalty, clear_extra_mem_gpu, custom_prompt, reset_model, use_internal_remove, use_internal_agent, use_uncensored_agent, use_assistant, disable_generation, use_mix_styles, remove_from_prompt = None, agent = None, assistant = None, external_subject = None, mix_styles= None):
+    # device_mode, model_file,
+    def generate_prompt(self, deepseek_pipe, always_unpaused, use_custom_prompt, custom_prompt, pause_generation, subject, prompt_mode, use_mix_styles, use_external_subject, max_token, seeder, use_seeder, top_p, top_k, temperature, repetition_penalty, agent=None, mix_styles=None, external_subject=None):
+        
+        self.tokenizer = deepseek_pipe.tokenizer
+        self.model = deepseek_pipe.model
+        self.model_id = deepseek_pipe.model_id
+        self.model_name = deepseek_pipe.model_name        
+        
+        self.temperature = temperature
+        self.top_p = top_p
+        self.top_k = top_k
+        self.repetition_penalty = repetition_penalty     
+    
+        nseed = seeder
+        if nseed <= 0:
+            nseed = random.randint(1, 100)
+
+        if self.oldseed != nseed:
+            self.oldseed = nseed
+            random.seed(time.time())   
+        
+        if use_seeder == "Yes":
+            self.useseed = True
+            self.seed = self.oldseed
+
+            rand_seeder(nseed - (nseed // 9999999) * 9999999)
+        else:
+            self.useseed = False    
+        
+        """
+        print(f"OrionX3D deepseek r1 Model: {model_file}")
+        self.model_name = os.path.basename(model_file)
+
+        if self.model_file != model_file: 
+            self.model_file = model_file
+            self.tokenizer = None
+            self.model = None         
+
+        model_check = 0
+        # Check the file extension
+        if self.model_file.endswith(".gguf"):
+            print("The Model deepseek r1 is a .gguf file.")
+            model_check = 1
+        elif self.model_file.endswith(".safetensors"):
+            print("The Model deepseek r1 is a .safetensors file.")
+            model_check = 2
+        else:
+            print("The Model deepseek r1 has a different extension.")  
+            model_check = 0         
+
+        if self.tokenizer is None and self.model is None:
+            #
+            if device_mode == "cpu":
+                self.offload_device = torch.device('cpu')
+            else:
+                self.offload_device = torch.device('cuda')
+            #
+            if model_check == 1:
+                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
+                                                                gguf_file=self.model_name, 
+                                                                trust_remote_code=True)                    
+                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
+                                                                  gguf_file=self.model_name, 
+                                                                  torch_dtype=torch.float16, 
+                                                                  device_map=self.offload_device,
+                                                                  local_files_only=True)  
+            elif model_check == 2:
+                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
+                                                                trust_remote_code=True)                    
+                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
+                                                                  torch_dtype=torch.float16,
+                                                                  device_map=self.offload_device,
+                                                                  local_files_only=True)  
+            else:
+                self.tokenizer = None
+                self.model = None    
+        """                        
+        #    
+        if use_custom_prompt == "No" and (pause_generation == False or always_unpaused == "Yes"):  
+            if self.tokenizer is not None and self.model is not None:
+                tokenizer = self.tokenizer
+
+                text = ""
+                auser = ""
+
+                if agent is None:
+                    auser = ox3d_user_name
+                    system_prompt = f"You are a highly creative expert assistant for helping user {auser} in creating prompt texts for images, photos, and videos."
+                else:
+                    auser = ""
+                    system_prompt = agent
+
+                chat_str = subject
+                if prompt_mode == "Image":
+                    #if auser != "":
+                    chat_str = "An high quality image prompt about - " + subject
+                    #else:
+                    #    chat_str = "An high quality image prompt about - " + subject
+                if prompt_mode == "Video":
+                    #if auser != "":
+                    chat_str = "A high quality video prompt about - " + subject    
+                    #else:
+                    #    chat_str = "A high quality video prompt about - " + subject  
+                if prompt_mode == "Chat":
+                    #if auser != "":
+                    chat_str = "I'm here for chat - " + subject 
+                    #else:  
+                    #    chat_str = "I'm here for chat - " + subject 
+
+                if prompt_mode == "Other":
+                    chat_str = subject
+
+                eval_style = False   
+
+                if mix_styles is not None and external_subject is not None:
+                    if mix_styles != "" and external_subject != "":
+                        if use_mix_styles == "Yes" and use_external_subject == "Yes":
+                            eval_style = True
+                            chat_str = f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject + "\n" + mix_styles
+                        if use_mix_styles == "Yes" and use_external_subject == "No":
+                            eval_style = True
+                            chat_str =  f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + mix_styles
+                        if use_mix_styles == "No" and use_external_subject == "Yes":
+                            eval_style = True
+                            chat_str = f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject
+
+                if mix_styles is not None and external_subject is None:
+                    if mix_styles != "":
+                        if use_mix_styles == "Yes":
+                            eval_style = True
+                            chat_str = f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + mix_styles 
+
+                if mix_styles is None and external_subject is not None:
+                    if external_subject != "":                    
+                        if use_external_subject == "Yes":
+                            eval_style = True
+                            chat_str = f"user {ox3d_user_name} main topic " + chat_str + "\n" + "mix with " + external_subject  
+
+                if eval_style == True:
+                    chat_str = chat_str + "\n" + "If styles are similar or mean the same, choose the one that works best for the prompt. Be creative, and try to craft a prompt of 500 tokens maximum or less." 
+
+                if deepseek_pipe.model_check == 1:  
+                    #formatted_prompt = format_prompt_gguf3(system_prompt, subject)
+                    #text = formatted_prompt
+                    #"""
+                    system_msg = [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": chat_str},
+                    ]  
+                    text = self.tokenizer.apply_chat_template(
+                        system_msg,
+                        tokenize=False,
+                        add_generation_prompt=True,
+                    )      
+                    #"""            
+
+                if deepseek_pipe.model_check == 2:
+                    system_msg = [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": chat_str},
+                    ]  
+                    text = self.tokenizer.apply_chat_template(
+                        system_msg,
+                        tokenize=False,
+                        add_generation_prompt=True,
+                    )                      
+
+                if not isinstance(text, str):
+                    raise TypeError(f"OX3D error apply_chat_template() a renvoyé {type(text)} au lieu de str.")
+
+                input_ids = tokenizer([text], return_tensors="pt").input_ids.to(deepseek_pipe.device_name)
+
+                if self.tokenizer.pad_token_id is None:
+                    self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+                if self.model.config.pad_token_id is None:
+                    self.model.config.pad_token_id = self.model.config.eos_token_id              
+
+                if use_seeder == "Yes":
+                    generated_ids = self.model.generate(input_ids, max_new_tokens=max_token, top_p=top_p, top_k=top_k, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=True, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id #     
+                else:
+                    generated_ids = self.model.generate(input_ids, max_new_tokens=max_token, top_p=top_p, top_k=top_k, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=False, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id #        
+            
+                #add_special_tokens=False,
+                #self.response = tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)    
+            
+                if deepseek_pipe.model_check == 1:
+                    self.response = tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], add_special_tokens=True, skip_special_tokens=False, clean_up_tokenization_space=True)
+                    #self.think_section = self.response
+                    # The gguf version behaving differently.
+                    # I personally prefered the original model with the chat template...
+                    # I have try to add a better way to deal with the gguf token method, it look to work but surely need a better implementation.
+
+                    self.response = "<think>\n" + self.response
+                    self.think_section, self.final_response = extract_sections_gguf2(self.response)
+
+                    #self.think_section, self.final_response = extract_think_and_response(self.response)
+
+                    #self.think_section, self.final_response = extract_think_and_response(self.response)  
+                    #self.think_section = self.response
+
+                if deepseek_pipe.model_check == 2:
+                    self.response = tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
+                    self.think_section, self.final_response = extract_think_and_response(self.response)            
+            #extract_think_and_response
+            self.oldseed = nseed
+
+            if deepseek_pipe.clear_extra_mem_gpu == "Yes":  
+                torch.cuda.empty_cache()
+                empty_cache()        
+        else:
+            if use_custom_prompt == "Yes":
+                self.final_response = custom_prompt
+            if self.final_response == "":
+                self.final_response = custom_prompt            
+
+        astyle = ""
+        if mix_styles is not None:
+            astyle = mix_styles
+
+        return (self.final_response, self.think_section, deepseek_pipe, astyle)
+    
+#####################################################################################################################
+# DGLoadLlamaModel3_x ###############################################################################################
+#####################################################################################################################
+class DGLoadLlamaModel3_x:
+    def __init__(self):  
+        self.tokenizer = None
+        self.model = None
+        self.model_id = ""
+        self.model_name = ""
+        self.model_file = ""
+        self.current_agent = None
+        self.agent1 = None
+        self.agent2 = None
+        self.codeA = "<|begin_of_text|>"
+        self.codeB = "<|start_header_id|>"
+        self.codeC = "<|end_header_id|>"
+        self.codeD = "<|eot_id|>" 
+        self.remove_from_prompt = ""     
+        self.offload_device = torch.device('cpu')  
+        self.clear_extra_mem_gpu = "Yes"      
+        self.device_name = "cpu"          
+
+    @classmethod
+    def INPUT_TYPES(cls): # pylint: disable = invalid-name, missing-function-docstring
+        return { 
+                "required": {
+                #get_filtered_filenames    
+                "model_file": (get_filtered_llama_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model llama 3.1 too."}),
+                "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),
+                "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),           
+                "device_mode": (["gpu", "cpu"],),
+                "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}), 
+            }
+        }
+    
+    RETURN_TYPES = ("ANY",)
+    RETURN_NAMES = ("llama3_pipe",)
+
+    FUNCTION = "load_llama3"  
+
+    CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
+    TITLE = "DGLoadLlamaModel3 (Llama 3.1 & 3.2 - OX3D)" 
+    
+    def load_llama3(self, model_file, device_mode, reset_model, use_bit_mode, clear_extra_mem_gpu):
         print(f"OrionX3D llama Model: {model_file}")
         self.clear_extra_mem_gpu = clear_extra_mem_gpu
-        #self.max_tokens = max_token - 256 
+        if self.model_file != model_file: 
+            self.model_file = model_file
+            self.tokenizer = None
+            self.model = None 
+
         config_file = os.path.join(current_dir, "dg_llama_managers.cfg")
-        self.use_uncensored_agent = use_uncensored_agent
         #
         if os.path.exists(config_file):
             config = configparser.ConfigParser()
@@ -4859,53 +5931,32 @@ class DGPromptGenLlama3_2:
             except configparser.NoOptionError as e:
                 print(f"OrionX3D llama 3.x Missing option in configuration file: {e}")
         else:
-            print(f"OrionX3D llama 3.x Configuration file '{config_file}' not found. Please ensure it exists or provide default configurations.")
-        #
-        self.agent = agent
+            print(f"OrionX3D llama 3.x Configuration file '{config_file}' not found. Please ensure it exists or provide default configurations.")  
 
-        strA = "Cutting Knowledge Date: December 2023"
-        strB = "Today Date: 04 January 2025"
-        strC = "You are an expert in composing prompts text about video and image, and your agent name are Orion"
-        strD = "Be creative and reconstruct a prompt using the information I provide"
-        strE = "Do not add length information when you create a video prompt"
-        strF = "Try to keep the prompt to a maximum of 256 tokens or less"
-        strG = "It is strictly forbidden for the assistant to respond with text unless it is a prompt; it must only provide the final prompt without any additional text, as this could disrupt the system"
-        strH = "If the prompt style requests a color, option, sign, poster, text, sprite bubble text, action, or anythings more it is important to use it for create the prompt, same about the styles and subjects and actors"
+        filepath = os.path.join(current_dir, "remove_from_prompt.rem")
 
-        if use_uncensored_agent == "Yes":
-            self.internal_agent = f"""{strA}\n{strB}\n\n{strC}\n{strD}\n{strE}\n{strF}\n{strG}\n{strH}\n{prompt_instructionsExp}"""
+        remove_from_promptN = load_text_from_file(filepath)
+
+        """
+        if remove_from_prompt is None:
+            if use_internal_remove == "Yes":
+                remove_from_prompt = remove_from_promptN
+            else:
+                remove_from_prompt = ""
         else:
-            self.internal_agent = f"""{strA}\n{strB}\n\n{strC}\n{strD}\n{strE}\n{strF}\n{strG}\n{strH}\n{prompt_instructions}"""
+            if use_internal_remove == "Yes":
+                remove_from_prompt = remove_from_promptN + "\n" + remove_from_prompt
+            else:
+                remove_from_prompt = ""
+        """
+        remove_from_prompt = remove_from_promptN
 
-        #self.max_new_tokens = max_token
-        # Currently forcing the maximum for using styles and external subjects.
-        # This works fine for Llama 3B and larger models.
-        # With Llama 1B, it could potentially cause problems.
-        # Llama 1B is not very good with prompts and translations; it's better to use the 3B model or larger.
-        self.max_new_tokens = 4096
+        self.remove_from_prompt = remove_from_prompt                      
 
-        if self.model_file != model_file: 
-            self.model_file = model_file
-            self.tokenizer = None
-            self.model = None 
-        #
         if reset_model == "Yes":
             self.tokenizer = None
-            self.model = None 
-        #
-        if self.oldseed != seeder:
-            self.oldseed = seeder
-            random.seed(time.time())   
-        #
-        if use_seeder == "Yes":
-            self.useseed = True
-            self.seed = self.oldseed
-            #np.random.seed(seed)
-            torch.manual_seed(self.seed)
-            torch.cuda.manual_seed(self.seed)
-        else:
-            self.useseed = False
-        #
+            self.model = None             
+
         if self.tokenizer is None and self.model is None:
             load_in_4bit = False
             load_in_8bit = False
@@ -4932,6 +5983,13 @@ class DGPromptGenLlama3_2:
                 load_in_8bit = False                               
 
             self.model_name = os.path.basename(model_file)
+
+            if device_mode == "cpu":
+                self.offload_device = torch.device('cpu')
+                self.device_name = "cpu"
+            else:
+                self.offload_device = torch.device('cuda')  
+                self.device_name = "cuda"          
    
             if model_check == 1:
                 self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
@@ -4939,8 +5997,10 @@ class DGPromptGenLlama3_2:
                                                                trust_remote_code=True)                    
                 self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
                                                                   gguf_file=self.model_name, 
+                                                                  low_cpu_mem_usage=True,
+                                                                  return_dict=True,
                                                                   torch_dtype=torch.float16, 
-                                                                  device_map="auto",
+                                                                  device_map=self.offload_device,
                                                                   local_files_only=True)
             if model_check == 2:
                 self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
@@ -4948,7 +6008,274 @@ class DGPromptGenLlama3_2:
 
                 self.model = LlamaForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
                                                               torch_dtype=torch.float16,
-                                                              device_map="auto",
+                                                              device_map=self.offload_device,
+                                                              load_in_8bit=load_in_8bit,
+                                                              load_in_4bit=load_in_4bit,
+                                                              local_files_only=True,
+                                                              use_flash_attention_2=False)  
+            if model_check == 0:      
+                self.model = None   
+                self.tokenizer = None 
+
+        if self.tokenizer is not None and self.model is not None:
+            # Just use for create the file if it not exist, I can change this later with a better implementation
+            #if self.agent1 is None:
+            #if self.agent1 is None:
+            self.agent1 = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, 4096)
+
+            self.agent1.save_agent_text("agent_geraldine_normal.agt", False, create_agent_geraldine_text(False))
+            self.agent1.save_agent_text("agent_geraldine_uncensored.agt", True, create_agent_geraldine_text(True))
+            self.current_agent = self.agent1 # yes I know it look strange, but it is ok for now...
+            # Just use for create the file if it not exist, I can change this later with a better implementation
+            #if self.agent2 is None:
+            #if self.agent2 is None:
+            self.agent2 = AgentDave(ox3d_user_name, current_dir, self.tokenizer, 4096)
+
+            self.agent2.save_agent_text("agent_dave_normal.agt", False, create_agent_dave_text(False))
+            self.agent2.save_agent_text("agent_dave_uncensored.agt", True, create_agent_dave_text(True)) 
+            #self.current_agent = self.agent2 # yes I know it look strange, but it is ok for now...                             
+
+        return (self,)
+                    
+#####################################################################################################################
+# DGPromptGenLlama3_2 ###############################################################################################
+#####################################################################################################################
+
+class DGPromptGenLlama3_2:
+    def __init__(self):
+        self.tokenizer = None
+        self.model = None
+        self.model_id = ""
+        self.model_name = ""
+        self.oldseed = -1
+        self.response = ""
+        self.prompts = ""
+        self.model_file = ""
+        self.agent = ""
+        self.internal_agent = ""
+        self.max_new_tokens = 4096
+#        self.codeA = "<|begin_of_text|>"
+#        self.codeB = "<|start_header_id|>"
+#        self.codeC = "<|end_header_id|>"
+#        self.codeD = "<|eot_id|>"
+        self.llama3_pipe = None             
+        self.remove_from_prompt = ""
+        self.use_uncensored_agent = "Yes"
+        self.temperature = 0.6000
+        self.top_p = 0.9000
+        self.top_k = 1
+        self.repetition_penalty = 1.1
+        self.useseed = True
+        self.seed = -1
+        self.full_mix_styles = ""
+#        self.agent1 = None
+#        self.agent2 = None
+#        self.current_agent = None
+#        self.clear_extra_mem_gpu = "Yes" 
+        #self.offload_device = torch.device('cpu')        
+        random.seed(time.time())    
+
+    @classmethod
+    def INPUT_TYPES(cls): # pylint: disable = invalid-name, missing-function-docstring
+        return { 
+            "required": {
+                "llama3_pipe": ("ANY",),
+#                "model_file": (get_filtered_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model llama 3.1 too."}),
+                "styles_variation": ("INT", {"default": 1, "min": 1, "max": 10, "step": 1, "tooltip": "Adding more or less words about the topic."}),
+                "prompt_styles": (get_prompt_styles(), {"default": "Other", "tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
+#                "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),
+#                "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),
+                "prompt_mode": (["Image", "Video", "Other"],{"tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
+                "only_english": (["Yes", "No"], {"tooltip": "This option try to force English only but it can depend a lot from the model too."}),
+                "use_seeder": (["Yes", "No"],),
+                "seeder": ("INT", {"forceInput": True, "default": -1, "min": 0, "max": 0xffffffffffffffff}),
+                "use_mix_styles": (["No", "Yes"],),
+                "use_custom_prompt": (["No", "Yes"], {"tooltip": "This option disable the llama model and use the text subject directly."}),
+                "use_external_subject": (["No", "Yes"], {"tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
+                "max_token": ("INT", {"default": 2048, "min": 256, "max": 4096, "step": 32}),
+                "top_p": ("FLOAT", {"default": 0.9, "min": 0.0000, "max": 2.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Adjusts the creativity of the AI's responses by controlling how many possible words it considers. Lower values make outputs more predictable; higher values allow for more varied and creative responses."}),
+                "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
+                "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
+                "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),
+                #"frequency_penalty": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Decreases the likelihood of the model repeating the same lines verbatim."}),
+                #"presence_penalty": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Increases the likelihood of the model introducing new topics."}),
+#                "device_mode": (["gpu", "cpu"],),
+#                "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}), 
+                "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}),                      
+                "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
+                "use_uncensored_agent": (["No", "Yes"],), 
+                "use_internal_agent": (["Yes", "No"],),  
+                "use_internal_remove": (["Yes", "No"],),
+                "use_assistant": (["No", "Yes"],),
+#                "disable_generation": (["No", "Yes"],),
+                "always_unpaused": (["Yes", "No"],),
+                "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),                 
+            },
+            "optional": {
+                "mix_styles": ("STRING", {"forceInput": True, "multiline": True}), 
+                "agent": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent, "tooltip": "The agent text to describe the Llama agent."}),
+                "external_subject": ("STRING", {"forceInput": True, "multiline": True, "tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),     
+                "assistant": ('STRING', {"forceInput": True, "multiline": True, "default": str_assistant, "tooltip": "When the assistant is active, it generates responses based on the user's input; it is preferable to turn off the assistant for prompt generation to ensure only the user's input is used without additional responses."}),      
+                "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}), 
+            }
+        }
+    
+    RETURN_TYPES = ("STRING","ANY","STRING",)
+    RETURN_NAMES = ("prompt","llama3_pipe","mix_styles",)
+
+    FUNCTION = "generate_prompt"  
+
+    CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
+    TITLE = "DGPromptGenLlama (Llama 3.1 & 3.2 - OX3D)"  
+    #OUTPUT_NODE = True      
+
+    #frequency_penalty, presence_penalty, reset_model, use_bit_mode, device_mode, model_file, clear_extra_mem_gpu, disable_generation,
+    def generate_prompt(self, llama3_pipe, always_unpaused, pause_generation, styles_variation, prompt_styles, prompt_mode, only_english, use_seeder, seeder, use_custom_prompt, subject, use_external_subject, max_token, top_p, top_k, temperature, repetition_penalty, custom_prompt, use_internal_remove, use_internal_agent, use_uncensored_agent, use_assistant, use_mix_styles, remove_from_prompt = None, agent = None, assistant = None, external_subject = None, mix_styles= None):
+        #print(f"OrionX3D llama Model: {model_file}")
+        self.llama3_pipe = llama3_pipe
+        self.tokenizer = llama3_pipe.tokenizer
+        self.model = llama3_pipe.model
+        self.model_id = llama3_pipe.model_id
+        self.model_name = llama3_pipe.model_name      
+        
+        self.clear_extra_mem_gpu = llama3_pipe.clear_extra_mem_gpu
+
+        self.use_uncensored_agent = use_uncensored_agent
+        #self.max_tokens = max_token - 256 
+        """
+        config_file = os.path.join(current_dir, "dg_llama_managers.cfg")
+        #
+        if os.path.exists(config_file):
+            config = configparser.ConfigParser()
+            config.read(config_file)
+            try:
+                # I use this code system because some fine-tuned Llama models no longer use the original system code.
+                # With this method, I can change the code through a configuration.
+                # It needs an update later to add the possibility of loading multiple configuration files.
+                # Currently, it only works with the original model code.
+                self.codeA = config.get('prompts', 'codeA')
+                self.codeB = config.get('prompts', 'codeB')
+                self.codeC = config.get('prompts', 'codeC')
+                self.codeD = config.get('prompts', 'codeD')
+                self.modeA = config.get('modes', 'modeA')
+                self.modeB = config.get('modes', 'modeB')
+                self.modeC = config.get('modes', 'modeC')                
+                #print(f"OrionX3D llama 3.x Configurations loaded: \n- Prompt codeA: {self.codeA}\n- Prompt codeB: {self.codeB}\n- Prompt codeC: {self.codeC}\n- Prompt codeD: {self.codeD}\n- Mode modeA: {self.modeA}\n- Mode modeB: {self.modeB}\n- Mode modeC: {self.modeC}")
+            except configparser.NoSectionError as e:
+                print(f"OrionX3D llama 3.x Missing section in configuration file: {e}")
+            except configparser.NoOptionError as e:
+                print(f"OrionX3D llama 3.x Missing option in configuration file: {e}")
+        else:
+            print(f"OrionX3D llama 3.x Configuration file '{config_file}' not found. Please ensure it exists or provide default configurations.")
+        """
+        #
+        self.agent = agent
+
+        strA = "Cutting Knowledge Date: December 2023"
+        strB = "Today Year: 2025"
+        strC = "You are an expert in composing prompts text about video and image, and your agent name are Orion"
+        strD = "Be creative and reconstruct a prompt using the information I provide"
+        strE = "Do not add length information when you create a video prompt"
+        strF = "Try to keep the prompt to a maximum of 256 tokens or less"
+        strG = "It is strictly forbidden for the assistant to respond with text unless it is a prompt; it must only provide the final prompt without any additional text, as this could disrupt the system"
+        strH = "If the prompt style requests a color, option, sign, poster, text, sprite bubble text, action, or anythings more it is important to use it for create the prompt, same about the styles and subjects and actors"
+
+        if use_uncensored_agent == "Yes":
+            self.internal_agent = f"""{strA}\n{strB}\n\n{strC}\n{strD}\n{strE}\n{strF}\n{strG}\n{strH}\n{prompt_instructionsExp}"""
+        else:
+            self.internal_agent = f"""{strA}\n{strB}\n\n{strC}\n{strD}\n{strE}\n{strF}\n{strG}\n{strH}\n{prompt_instructions}"""
+
+        #self.max_new_tokens = max_token
+        # Currently forcing the maximum for using styles and external subjects.
+        # This works fine for Llama 3B and larger models.
+        # With Llama 1B, it could potentially cause problems.
+        # Llama 1B is not very good with prompts and translations; it's better to use the 3B model or larger.
+        self.max_new_tokens = max_token
+
+        """
+        if self.model_file != model_file: 
+            self.model_file = model_file
+            self.tokenizer = None
+            self.model = None 
+        """
+        #
+        """
+        if reset_model == "Yes":
+            self.tokenizer = None
+            self.model = None 
+        """
+        #
+        nseed = seeder
+        if nseed <= 0:
+            nseed = random.randint(1, 100)
+
+        if self.oldseed != nseed:
+            self.oldseed = nseed
+            random.seed(time.time())   
+        
+        if use_seeder == "Yes":
+            self.useseed = True
+            self.seed = self.oldseed
+
+            rand_seeder(nseed - (nseed // 9999999) * 9999999)
+        else:
+            self.useseed = False              
+        #
+        #if self.tokenizer is None and self.model is None:
+            """
+            load_in_4bit = False
+            load_in_8bit = False
+            model_check = 0
+            # Check the file extension
+            if model_file.endswith(".gguf"):
+                print("The Model llama 3.x is a .gguf file.")
+                model_check = 1
+            elif model_file.endswith(".safetensors"):
+                print("The Model llama 3.x is a .safetensors file.")
+                model_check = 2
+            else:
+                print("The Model llama 3.x has a different extension.")  
+                model_check = 0 
+            """
+
+            """
+            if use_bit_mode == "4bit":
+                load_in_4bit = True
+                load_in_8bit = False
+            if use_bit_mode == "8bit":
+                load_in_4bit = False
+                load_in_8bit = True   
+            if use_bit_mode == "nobit":
+                load_in_4bit = False
+                load_in_8bit = False                               
+            """
+            
+            """
+            self.model_name = os.path.basename(model_file)
+
+            if device_mode == "cpu":
+                self.offload_device = torch.device('cpu')
+            else:
+                self.offload_device = torch.device('cuda')            
+   
+            if model_check == 1:
+                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
+                                                               gguf_file=self.model_name, 
+                                                               trust_remote_code=True)                    
+                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
+                                                                  gguf_file=self.model_name, 
+                                                                  low_cpu_mem_usage=True,
+                                                                  return_dict=True,
+                                                                  torch_dtype=torch.float16, 
+                                                                  device_map=self.offload_device,
+                                                                  local_files_only=True)
+            if model_check == 2:
+                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
+                                                               trust_remote_code=True)    
+
+                self.model = LlamaForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
+                                                              torch_dtype=torch.float16,
+                                                              device_map=self.offload_device,
                                                               load_in_8bit=load_in_8bit,
                                                               load_in_4bit=load_in_4bit,
                                                               local_files_only=True,
@@ -4956,6 +6283,7 @@ class DGPromptGenLlama3_2:
             if model_check == 0:      
                 self.model = None   
                 self.tokenizer = None   
+            """
                 
         pMode = ""
         pType = ""
@@ -5016,6 +6344,8 @@ class DGPromptGenLlama3_2:
 
         #if disable_generation == "No":
         if self.tokenizer is not None and self.model is not None:
+
+            """
             # Just use for create the file if it not exist, I can change this later with a better implementation
             #if self.agent1 is None:
             self.agent1 = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, self.max_new_tokens)
@@ -5028,54 +6358,118 @@ class DGPromptGenLlama3_2:
             self.agent2.save_agent_text("agent_dave_normal.agt", False, create_agent_dave_text(False))
             self.agent2.save_agent_text("agent_dave_uncensored.agt", True, create_agent_dave_text(True)) 
             #self.current_agent = self.agent2 # yes I know it look strange, but it is ok for now...         
+            """
+            #if pause_generation == False or always_unpaused == "Yes":
+            if use_custom_prompt == "No" and (pause_generation == False or always_unpaused == "Yes"): 
 
-            if use_custom_prompt == "No" and disable_generation == "No": 
-
+                """
                 if use_assistant == "Yes":          
                     if assistant is not None:                                   
-                        self.prompts = cons_law + self.code_format_prompt(pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent, assistant)  
+                        #self.prompts = cons_law + self.code_format_prompt(pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent, assistant)  
+                        self.prompts = self.code_format_prompt(cons_law + pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent, assistant)
                     else:
-                        self.prompts = cons_law + self.code_format_prompt(pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent, "")  
-                    # 
+                        #self.prompts = cons_law + self.code_format_prompt(pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent, "")  
+                        self.prompts = self.code_format_prompt(cons_law + pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent, "")
                     #print(f"prompt: {self.prompts}")                      
                 else:
-                    self.prompts = cons_law + self.code_format_prompt(pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent,"") 
+                    #self.prompts = cons_law + self.code_format_prompt(pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent,"") 
+                    self.prompts = self.code_format_prompt(cons_law + pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang, self.internal_agent,"") 
                     #
                     #print(f"prompt: {self.prompts}") 
+                """
+                system_msg = []
 
-                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to("cuda")
+                if use_assistant == "Yes": 
+                    if assistant is not None:  
+                        system_msg = [
+                            {"role": "system", "content": self.internal_agent},
+                            {"role": "user", "content": cons_law + pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang},
+                            {"role": "assistant", "content": assistant},
+                        ]  
+                    else:
+                        system_msg = [
+                            {"role": "system", "content": self.internal_agent},
+                            {"role": "user", "content": cons_law + pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang},
+                        ]                        
+                else:
+                    system_msg = [
+                        {"role": "system", "content": self.internal_agent},
+                        {"role": "user", "content": cons_law + pMode + "\n\nimportant to add this subject and actors: " + subject + "\n" + ptext + pLang},
+                    ]  
+
+                input_text = self.tokenizer.apply_chat_template(system_msg, tokenize=False, add_generation_prompt=True)
+
+                if not isinstance(input_text, str):
+                    raise TypeError(f"OX3D error apply_chat_template() a renvoyé {type(input_text)} au lieu de str.")
+                
+                #, padding=True, truncation=True
+                #self.prompts 
+                input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(llama3_pipe.device_name)
                 generated_ids = None
 
+                if self.tokenizer.pad_token_id is None:
+                    self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+                if self.model.config.pad_token_id is None:
+                    self.model.config.pad_token_id = self.model.config.eos_token_id                
+
                 if use_seeder == "Yes":
-                    generated_ids = self.model.generate(input_ids, max_new_tokens=self.max_new_tokens, top_p=top_p, top_k=top_k, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=True, eos_token_id=self.tokenizer.eos_token_id) #frequency_penalty=frequency_penalty, presence_penalty=presence_penalty,
+                    generated_ids = self.model.generate(input_ids, max_new_tokens=self.max_new_tokens, top_p=top_p, top_k=top_k, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=True, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id #frequency_penalty=frequency_penalty, presence_penalty=presence_penalty,
                 else:
-                    generated_ids = self.model.generate(input_ids, max_new_tokens=self.max_new_tokens, top_p=top_p, top_k=top_k, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=False, eos_token_id=self.tokenizer.eos_token_id) #frequency_penalty=frequency_penalty, presence_penalty=presence_penalty,
+                    generated_ids = self.model.generate(input_ids, max_new_tokens=self.max_new_tokens, top_p=top_p, top_k=top_k, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=False, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id #frequency_penalty=frequency_penalty, presence_penalty=presence_penalty,
                 
+                #add_special_tokens=False, 
                 self.response = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
                 self.response = self.response.replace('\n', ' ').replace('\r', ' ').replace('"', '').replace('(', '').replace(')', '')  
                 #self.response = process_prompt(self.response, remove_from_prompt)                    
             else:
-                self.prompts = custom_prompt
+                if self.response == "":
+                    self.prompts = custom_prompt
+                else:
+                    self.prompts = self.response
+
                 self.response = self.prompts
                 #print(f"prompt: {self.prompts}") 
 
             self.oldseed = seeder
 
-            if clear_extra_mem_gpu == "Yes":  
+            if llama3_pipe.clear_extra_mem_gpu == "Yes":  
                 torch.cuda.empty_cache()
                 empty_cache()
 
-            if use_custom_prompt == "No" and disable_generation == "No":      
+            if use_custom_prompt == "No" and (pause_generation == False or always_unpaused == "Yes"):
+
+                """  
                 filepath = os.path.join(current_dir, "remove_from_prompt.rem")
                 remove_from_promptN = load_text_from_file(filepath)
 
                 if remove_from_prompt is None:
-                    remove_from_prompt = remove_from_promptN
+                    if use_internal_remove == "Yes":
+                        remove_from_prompt = remove_from_promptN
+                    else:
+                        remove_from_prompt = ""
                 else:
                     if use_internal_remove == "Yes":
                         remove_from_prompt = remove_from_promptN + "\n" + remove_from_prompt
+                    else:
+                        remove_from_prompt = ""
 
                 self.remove_from_prompt = remove_from_prompt
+                """
+
+                remove_from_promptN = llama3_pipe.remove_from_prompt
+
+                if remove_from_prompt is None:
+                    if use_internal_remove == "Yes":
+                        a_remove_from_prompt = remove_from_promptN
+                    else:
+                        a_remove_from_prompt = ""                
+                else:
+                    if use_internal_remove == "Yes":
+                        a_remove_from_prompt = remove_from_promptN + "\n" + remove_from_prompt
+                    else:
+                        a_remove_from_prompt = ""
+
+                self.remove_from_prompt = a_remove_from_prompt 
 
                 self.response = clean_prompt_regex(self.response)
                 self.response = process_prompt_v2(self.response, self.remove_from_prompt)
@@ -5087,21 +6481,29 @@ class DGPromptGenLlama3_2:
         #        self.response = custom_prompt 
 
 
-        return(self.response, self, rf_mix_styles) #self.full_mix_styles
+        return(self.response, llama3_pipe, rf_mix_styles) #self.full_mix_styles
     
     def code_format_prompt(self, user_query, sprompt_text, aprompt_text):
-        template = f"""{self.codeA}{self.codeB}{self.modeA}{self.codeC}\n\n{sprompt_text}{self.codeD}{self.codeB}{self.modeB}{self.codeC}\n\n{user_query}{self.codeD}{self.codeB}{self.modeC}\n\n{aprompt_text}{self.codeC}\n\n"""
+        if self.llama3_pipe is not None:
+            template = f"""{self.llama3_pipe.codeA}{self.llama3_pipe.codeB}{self.llama3_pipe.modeA}{self.llama3_pipe.codeC}\n\n{sprompt_text}{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeB}{self.llama3_pipe.codeC}\n\n{user_query}{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}\n\n{aprompt_text}{self.llama3_pipe.codeC}\n\n"""
+        else:
+            template = ("")
+
         return template  
     
     def code_format_prompt2(self, user_query=str(""), sprompt_text=str(""), aprompt_text=str("")):
-        template = (
-            f"{self.codeA}{self.codeB}{self.modeA}{self.codeC}\n\n"
-            f"{sprompt_text}"
-            f"{self.codeD}{self.codeB}{self.modeB}{self.codeC}\n\n"
-            f"{user_query}"
-            f"{self.codeD}{self.codeB}{self.modeB}{self.codeC}\n\n"
-            f"{aprompt_text}{self.codeD}{self.codeB}{self.modeC}\n\n"
-        )
+        if self.llama3_pipe is not None:
+            template = (
+                f"{self.llama3_pipe.codeA}{self.llama3_pipe.codeB}{self.llama3_pipe.modeA}{self.llama3_pipe.codeC}\n\n"
+                f"{sprompt_text}"
+                f"{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeB}{self.llama3_pipe.codeC}\n\n"
+                f"{user_query}"
+                f"{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeB}{self.llama3_pipe.codeC}\n\n"
+                f"{aprompt_text}{self.llama3_pipe.codeD}{self.llama3_pipe.codeB}{self.llama3_pipe.modeC}\n\n"
+            )
+        else:
+           template = ("")  
+
         return template
 
 #####################################################################################################################
@@ -5288,7 +6690,10 @@ with the **inputcount** and clicking update.
 #####################################################################################################################    
 
 NODE_CLASS_MAPPINGS = {
+    "DGLoadLlamaModel": DGLoadLlamaModel3_x,
     "DGPromptGenLlama": DGPromptGenLlama3_2,
+    "DGLoadDeepSeekModelR1": DGLoadDeepSeekModelR1,
+    "DGPromptGenSeepSeekR1": DGPromptGenSeepSeekR1,
     "DGLlamaStyles": DGLlamaStyles,
     "DGLlamaStyleColors": DGLlamaStyleColors,
     "DGLlamaStyleColorExt": DGLlamaStyleColorExt,
@@ -5363,7 +6768,10 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "DGLoadLlamaModel //OrionX3D": "DGLoadLlamaModel (💫🅞🅧3🅓)", 
     "DGPromptGenLlama //OrionX3D": "DGPromptGenLlama (💫🅞🅧3🅓)",  
+    "DGLoadDeepSeekModelR1 //OrionX3D": "DGLoadDeepSeekModelR1 (💫🅞🅧3🅓)", 
+    "DGPromptGenSeepSeekR1 //OrionX3D": "DGPromptGenSeepSeekR1 (💫🅞🅧3🅓)", 
     "DGLlamaStyles //OrionX3D": "DGLlamaStyles (💫🅞🅧3🅓)", 
     "DGLlamaStyleColors //OrionX3D": "DGLlamaStyleColors (💫🅞🅧3🅓)",
     "DGLlamaStyleColorExt //OrionX3D": "DGLlamaStyleColorExt (💫🅞🅧3🅓)",

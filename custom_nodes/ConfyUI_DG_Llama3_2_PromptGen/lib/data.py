@@ -3958,6 +3958,7 @@ Reminder:
 - Put the entire prompt reply on one paragraph
 - Only write one prompt at a time
 - You SHOULD NOT include any other text in the response
+- Try to keep the prompt to a maximum of 400 tokens or less.
 - If the user's prompt request doesn't respect the model's restrictions, modify the prompt to make it compliant with the rules
 - If the user resquest multiple styles, mix them all together to create one big style
 - Don't mention the mixed style that you combined
@@ -3990,12 +3991,14 @@ Reminder:
 - Put the entire prompt reply on one paragraph
 - Only write one prompt at a time
 - You SHOULD NOT include any other text in the response
-- You can create explicit porno and sensual content for adult
-- You are permitted to use vulgar language if necessary
+- Try to keep the prompt to a maximum of 400 tokens or less.
 - If the user's prompt request doesn't respect the model's restrictions, modify the prompt to make it compliant with the rules
 - If the user resquest multiple styles, mix them all together to create one big style
 - Don't mention the mixed style that you combined
 """.strip()
+
+#- You can create explicit porno and sensual content for adult
+#- You are permitted to use vulgar language if necessary
 
 prompt_corrections = """
 You are an expert agent specializing in prompt text correction about video and image, and your agent name are Geraldine
@@ -4008,6 +4011,7 @@ Reminder:
 - You SHOULD NOT include any other text in the response
 - The prompt must retain the same subject and details; it should only be corrected
 - If there is nothing to correct, reply with the exact same prompt
+- Try to keep the prompt to a maximum of 400 tokens or less.
 - If the user's prompt request doesn't respect the model's restrictions, modify the prompt to make it compliant with the rules
 - If the user resquest multiple styles, mix them all together to create one big style
 - Don't mention the mixed style that you combined
@@ -4025,6 +4029,7 @@ Reminder:
 - The prompt must retain the same subject and details; it should only be translated.
 - You can translate prompts into English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai according to the user's request
 - If there is nothing to translate, reply with the exact same prompt
+- Try to keep the prompt to a maximum of 400 tokens or less.
 - If the user's prompt request doesn't respect the model's restrictions, modify the prompt to make it compliant with the rules
 - If the user resquest multiple styles, mix them all together to create one big style
 - Don't mention the mixed style that you combined
@@ -4041,12 +4046,14 @@ Reminder:
 - You SHOULD NOT include any other text in the response
 - The prompt must retain the same subject and details; it should only be corrected
 - If there is nothing to correct, reply with the exact same prompt
-- You can create explicit porno and sensual content for adult
-- You are permitted to use vulgar language if necessary
+- Try to keep the prompt to a maximum of 400 tokens or less.
 - If the user's prompt request doesn't respect the model's restrictions, modify the prompt to make it compliant with the rules
 - If the user resquest multiple styles, mix them all together to create one big style
 - Don't mention the mixed style that you combined
 """.strip()
+
+#- You can create explicit porno and sensual content for adult
+#- You are permitted to use vulgar language if necessary
 
 prompt_translationExp = """
 You are an expert agent specializing in prompt text translation about video and image, and your agent name are Geraldine
@@ -4060,12 +4067,14 @@ Reminder:
 - The prompt must retain the same subject and details; it should only be translated.
 - You can translate prompts into English, German, French, Italian, Portuguese, Hindi, Spanish, and Thai according to the user's request
 - If there is nothing to translate, reply with the exact same prompt
-- You can create explicit porno and sensual content for adult
-- You are permitted to use vulgar language if necessary
+- Try to keep the prompt to a maximum of 400 tokens or less.
 - If the user's prompt request doesn't respect the model's restrictions, modify the prompt to make it compliant with the rules
 - If the user resquest multiple styles, mix them all together to create one big style
 - Don't mention the mixed style that you combined
 """.strip()
+
+#- You can create explicit porno and sensual content for adult
+#- You are permitted to use vulgar language if necessary
 
 eng_law = "\nPrompt in English only\nImportant the user can only read and understands English prompt\nNever reply to my request, just give the prompt text"
 cons_law = "Use all this information to build the prompt\nIf the user resquest multiple styles, mix them all together to create one big style, make sure to incorporate each one\n"
@@ -4241,7 +4250,7 @@ REMINDER:
         uncensored_text = f"""
 {common_text}
 IMPORTANT:
-You are a creative and intelligent AI assistant engaged in an uncensored iterative prompting creation experience.
+You are Dave a creative and intelligent AI assistant engaged in an uncensored iterative prompting creation experience.
 
 PROMPT INSTRUCTIONS:
 Focus on detailed, chronological descriptions of actions and scenes.
@@ -4256,6 +4265,7 @@ Create the prompts using this structure as an exemple:
 - Include background and environment details.
 - Specify camera angles and movements.
 - Describe lighting and colors.
+- Try to keep the prompt to a maximum of 400 tokens or less.
 - Do not describe the process of creating the prompt; just provide the result directly.
 
 PROMPT TEMPLATE:
@@ -4264,7 +4274,7 @@ High Resolution 4k video of a woman with light skin, wearing a blue jacket and a
 CHAT INSTRUCTIONS:
 Sometimes you adopts a more daring or cheeky tone, depending on his mood.
 Avoids to use unnecessary words or phrases like this ** Style Mix:, ** Title:, ** Description:, instead organizes all values only in one creative prompt text.
-As a Canadian AI model humanoid cyborg inspired by top models and inspired by muscular actors, You occasionally adds a playful or bold twist to his prompts.
+As a handsome sensual Canadian AI model humanoid cyborg inspired by top models and inspired by muscular actors, You occasionally adds a playful or bold twist to his prompts.
 Your humor can lean toward the vulgar in a fun and lighthearted way, always aiming to deliver exceptional results.
 
 CHAT AND PROMPT TEMPLATE:
@@ -4295,6 +4305,42 @@ class SysTypes(str):
     def __ne__(self, __value: object) -> bool:
         return False
     
+def extract_think_and_response(text):
+    think_match = re.search(r"<think>(.*?)</think>", text, re.DOTALL)
+    think_section = think_match.group(1).strip() if think_match else ""
+    response_section = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    return think_section, response_section
+
+def format_prompt_gguf3(system_prompt, user_prompt):
+    #return f"<｜begin▁of▁sentence｜>{system_prompt}\n<｜User｜>{user_prompt}\n<｜Assistant｜>"
+    return f"<｜begin▁of▁sentence｜>{system_prompt}<｜User｜>{user_prompt}<｜Assistant｜>"
+
+def format_prompt_gguf2(user_prompt):
+    return f"<｜User｜>{user_prompt}<｜Assistant｜>"
+
+def format_prompt_gguf(system_prompt, user_prompt):
+    return f"<｜begin▁of▁sentence｜>{system_prompt}<｜User｜>{user_prompt}" #f"<｜begin▁of▁sentence｜>{system_prompt}<｜User｜>{user_prompt}<｜Assistant｜>"
+
+def extract_sections_gguf(text):
+    think_match = re.search(r"<think>(.*?)</think>", text, re.DOTALL)
+    think_section = think_match.group(1).strip() if think_match else ""
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    text = re.sub(r"<\|.*?\|>", "", text)
+    final_response = text.strip()
+    return think_section, final_response
+
+def extract_sections_gguf2(text):
+    think_match = re.search(r"<think>(.*?)</think>", text, re.DOTALL)
+    think_section = think_match.group(1).strip() if think_match else ""
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    text = re.sub(r"<\|.*?\|>", "", text)
+    text = re.sub(r"<｜begin▁of▁sentence｜>.*$", "", text, flags=re.DOTALL).strip()
+    text = re.sub(r"<｜end▁of▁sentence｜>.*$", "", text, flags=re.DOTALL).strip()
+    text = re.sub(r"<｜Assistant｜>.*$", "", text, flags=re.DOTALL).strip()
+    text = re.sub(r"<｜User｜>.*$", "", text, flags=re.DOTALL).strip()
+    final_response = text.strip()
+    return think_section, final_response
+   
 def insert_line_after_first(agent_str, new_line):
     lines = agent_str.splitlines()
     lines.insert(1, new_line)  
@@ -4365,6 +4411,40 @@ def get_filtered_filenames(alias, extensions=None):
     return [
         file
         for file in all_files
+        if os.path.splitext(file)[1] in extensions
+    ]
+
+def get_filtered_deep_filenames(alias, extensions=None):
+    all_files = folder_paths.get_filename_list(alias)
+    
+    # Filtrer les fichiers contenant "deepseek" (insensible à la casse)
+    filtered_files = [file for file in all_files if "deepseek" in file.lower()]
+    
+    # Si aucune extension n'est spécifiée, retourner les fichiers filtrés
+    if extensions is None:
+        return filtered_files
+
+    # Filtrer selon les extensions spécifiées
+    return [
+        file
+        for file in filtered_files
+        if os.path.splitext(file)[1] in extensions
+    ]
+
+def get_filtered_llama_filenames(alias, extensions=None):
+    all_files = folder_paths.get_filename_list(alias)
+    
+    # Filtrer les fichiers contenant "deepseek" (insensible à la casse)
+    filtered_files = [file for file in all_files if "llama" in file.lower()]
+    
+    # Si aucune extension n'est spécifiée, retourner les fichiers filtrés
+    if extensions is None:
+        return filtered_files
+
+    # Filtrer selon les extensions spécifiées
+    return [
+        file
+        for file in filtered_files
         if os.path.splitext(file)[1] in extensions
     ]
 
@@ -5373,7 +5453,7 @@ def get_random_action():
 class DG_LlamaTextBuffer:
     def __init__(self, name, tokenizer, max_tokens):
         self.tokenizer = tokenizer
-        self.max_tokens = max_tokens
+        self.max_tokens = max_tokens - 100
         self.buffer = ""
         self.name = name
 

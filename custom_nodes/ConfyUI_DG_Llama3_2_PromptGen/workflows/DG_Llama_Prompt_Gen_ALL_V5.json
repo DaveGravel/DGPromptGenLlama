@@ -1,0 +1,1552 @@
+{
+  "last_node_id": 58,
+  "last_link_id": 131,
+  "nodes": [
+    {
+      "id": 2,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        827.1678466796875,
+        -83.42790222167969
+      ],
+      "size": [
+        475.7632141113281,
+        327.1794128417969
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 118
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "a woman"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 31,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        812.6611938476562,
+        -801.886474609375
+      ],
+      "size": [
+        530.0130615234375,
+        421.87554931640625
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 126
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "a woman"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 46,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        822.4035034179688,
+        -2944.012451171875
+      ],
+      "size": [
+        504.5140075683594,
+        408.73968505859375
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 90
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 52,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        836.8097534179688,
+        -3453.34130859375
+      ],
+      "size": [
+        504.5140075683594,
+        408.73968505859375
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 102
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 13,
+      "type": "DGLlamaTextPrompt",
+      "pos": [
+        -357.91143798828125,
+        301.3130187988281
+      ],
+      "size": [
+        394.79998779296875,
+        148.5804901123047
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            116
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaTextPrompt"
+      },
+      "widgets_values": [
+        "You are a highly creative expert assistant in creating prompt texts for images, photos, and videos."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 8,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        826.0938110351562,
+        311.6553955078125
+      ],
+      "size": [
+        474.1578369140625,
+        384.2337646484375
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 119
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 32,
+      "type": "DGLlamaTextPrompt",
+      "pos": [
+        -497.5105285644531,
+        -620.8428344726562
+      ],
+      "size": [
+        527.8448486328125,
+        271.6405334472656
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            125
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaTextPrompt"
+      },
+      "widgets_values": [
+        "# You can use this text box for prompt or for agent system:\n# Use case exemple for agent system:\nYou are an agent specialized in creating text prompts for generating anime image, photo, video of all genres and styles.\nAs an expert, you are skilled at inventing original text prompt concepts with inspiration from the works of the greatest anime artists.\nYour expertise allows you to craft text prompts that bring to life vibrant shonen battles, heartwarming slice-of-life moments, or breathtaking fantasy worlds.\nYou excel at capturing the essence of any anime style, making you the perfect guide for designing detailed and visually stunning text prompts.\nDo not use words like Title: or Prompt:\nInstead, when you reply the prompt incorporate the content directly into the sentence as a single paragraph without separation\nInclude in the prompt details about quality, the type of camera or Kodak, angles, perspective, and distance using professional photography terms.\nIf inspired by a known artist, add their name along with any other details needed to reproduce the image.\nDon't attempt to simulate taking a picture; just provide the prompt in text format."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 45,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -349.6747131347656,
+        -2777.216552734375
+      ],
+      "size": [
+        515.4439086914062,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            88
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        353573719496347,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 51,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -358.00811767578125,
+        -3341.62841796875
+      ],
+      "size": [
+        515.4439086914062,
+        130
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            100
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        541578474141455,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 33,
+      "type": "DGLlamaStyles",
+      "pos": [
+        -936.4443359375,
+        -1298.6759033203125
+      ],
+      "size": [
+        361.260986328125,
+        538
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 53,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            124,
+            129
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyles"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Establishment Café",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 30,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -451.8396911621094,
+        -821.84619140625
+      ],
+      "size": [
+        481.4450988769531,
+        130
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            123
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        690538294978646,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 22,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -444.4169006347656,
+        -1483.8779296875
+      ],
+      "size": [
+        502.20867919921875,
+        130
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            128
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        310167528518252,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 11,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -441.5740051269531,
+        109.50618743896484
+      ],
+      "size": [
+        481.4450988769531,
+        130
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            115
+          ],
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        885131010684258,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 34,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -1473.95947265625,
+        -1229.5828857421875
+      ],
+      "size": [
+        481.4450988769531,
+        130
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            53
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        645183845846559,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 18,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        765.54443359375,
+        -1561.0631103515625
+      ],
+      "size": [
+        530.0130615234375,
+        421.87554931640625
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 130
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "a woman"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 16,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        837.0411987304688,
+        -2384.943115234375
+      ],
+      "size": [
+        504.5140075683594,
+        408.73968505859375
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 93
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "a woman"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 15,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -450.0515441894531,
+        -2299.49560546875
+      ],
+      "size": [
+        515.4439086914062,
+        130
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            92
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        86805865318529,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 43,
+      "type": "DGLoadLlamaModel",
+      "pos": [
+        -493.380615234375,
+        -1952.73291015625
+      ],
+      "size": [
+        529.199951171875,
+        154
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": [
+            87,
+            91,
+            103,
+            122,
+            127
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLoadLlamaModel"
+      },
+      "widgets_values": [
+        "Llama-3.2-3B-Instruct-uncensored\\model-00001-of-00002.safetensors",
+        "No",
+        "4bit",
+        "gpu",
+        "Yes"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 58,
+      "type": "DGLoadDeepSeekModelR1",
+      "pos": [
+        -422.007080078125,
+        -132.37533569335938
+      ],
+      "size": [
+        464.0721740722656,
+        154
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "links": [
+            131
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLoadDeepSeekModelR1"
+      },
+      "widgets_values": [
+        "DeepSeek-R1-Distill-Qwen-1.5B\\model.safetensors",
+        "No",
+        "4bit",
+        "gpu",
+        "Yes"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 50,
+      "type": "DGLlamaAgentTranslate",
+      "pos": [
+        263.6856384277344,
+        -3446.057373046875
+      ],
+      "size": [
+        479.060302734375,
+        376.68536376953125
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 103,
+          "shape": 7
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 100,
+          "widget": {
+            "name": "seeder"
+          },
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 101,
+          "widget": {
+            "name": "prompt"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "translated_prompt",
+          "type": "STRING",
+          "links": [
+            102
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentTranslate"
+      },
+      "widgets_values": [
+        "Translate the prompt into French",
+        "Yes",
+        4096,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "No",
+        "Yes",
+        true,
+        -1,
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 47,
+      "type": "DGLlamaAgentCorrection",
+      "pos": [
+        257.2271728515625,
+        -2945.11474609375
+      ],
+      "size": [
+        481.9463806152344,
+        378.4845886230469
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 87,
+          "shape": 7
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 88,
+          "widget": {
+            "name": "seeder"
+          },
+          "shape": 7
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "link": 94,
+          "widget": {
+            "name": "prompt"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "corrected_prompt",
+          "type": "STRING",
+          "links": [
+            90
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentCorrection"
+      },
+      "widgets_values": [
+        "Correct any errors in the prompt, replace the woman by a man",
+        "Yes",
+        4096,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "No",
+        "Yes",
+        true,
+        -1,
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 48,
+      "type": "DGPromptGenLlama",
+      "pos": [
+        259.7472839355469,
+        -2424.470458984375
+      ],
+      "size": [
+        470.0975341796875,
+        702
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 91
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 92,
+          "widget": {
+            "name": "seeder"
+          }
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "assistant",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "assistant"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            93,
+            94,
+            101
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGPromptGenLlama"
+      },
+      "widgets_values": [
+        1,
+        "Establishment Café",
+        "Image",
+        "Yes",
+        "Yes",
+        -1,
+        "Yes",
+        "No",
+        "No",
+        2048,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "a woman",
+        "a woman",
+        "No",
+        "Yes",
+        "Yes",
+        "No",
+        "Yes",
+        true,
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 57,
+      "type": "DGLlamaChatUser",
+      "pos": [
+        267.545166015625,
+        -1593.22119140625
+      ],
+      "size": [
+        451.81756591796875,
+        605.010498046875
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 127
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 128,
+          "widget": {
+            "name": "seeder"
+          },
+          "shape": 7
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": 129,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            130
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaChatUser"
+      },
+      "widgets_values": [
+        "Yes",
+        "Image",
+        false,
+        false,
+        "agent_geraldine_normal.agt",
+        4096,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "No",
+        "No",
+        "No",
+        "Yes",
+        "a beautiful woman at beach",
+        "a woman",
+        "Yes",
+        true,
+        -1,
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 56,
+      "type": "DGLlamaAgentUserEdit",
+      "pos": [
+        277.3515625,
+        -828.84912109375
+      ],
+      "size": [
+        440.27685546875,
+        655.9608764648438
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 122
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 123,
+          "widget": {
+            "name": "seeder"
+          },
+          "shape": 7
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": 124,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": 125,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            126
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentUserEdit"
+      },
+      "widgets_values": [
+        "Yes",
+        "Image",
+        "Roberto",
+        false,
+        false,
+        "agent_geraldine_normal.agt",
+        4096,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "Yes",
+        "No",
+        "No",
+        "No",
+        "a woman",
+        "a woman",
+        "Yes",
+        true,
+        -1,
+        "",
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 55,
+      "type": "DGPromptGenSeepSeekR1",
+      "pos": [
+        276.4936828613281,
+        -36.48042297363281
+      ],
+      "size": [
+        442.01214599609375,
+        536.56591796875
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "link": 131
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 115,
+          "widget": {
+            "name": "seeder"
+          }
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": 116,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            118
+          ]
+        },
+        {
+          "name": "think",
+          "type": "STRING",
+          "links": [
+            119
+          ]
+        },
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGPromptGenSeepSeekR1"
+      },
+      "widgets_values": [
+        "Image",
+        "Yes",
+        "No",
+        "No",
+        "No",
+        -1,
+        2048,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "a woman",
+        "a woman",
+        "Yes",
+        true,
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    }
+  ],
+  "links": [
+    [
+      53,
+      34,
+      0,
+      33,
+      0,
+      "INT"
+    ],
+    [
+      87,
+      43,
+      0,
+      47,
+      0,
+      "ANY"
+    ],
+    [
+      88,
+      45,
+      0,
+      47,
+      1,
+      "INT"
+    ],
+    [
+      90,
+      47,
+      0,
+      46,
+      0,
+      "*"
+    ],
+    [
+      91,
+      43,
+      0,
+      48,
+      0,
+      "ANY"
+    ],
+    [
+      92,
+      15,
+      0,
+      48,
+      1,
+      "INT"
+    ],
+    [
+      93,
+      48,
+      0,
+      16,
+      0,
+      "*"
+    ],
+    [
+      94,
+      48,
+      0,
+      47,
+      2,
+      "STRING"
+    ],
+    [
+      100,
+      51,
+      0,
+      50,
+      1,
+      "INT"
+    ],
+    [
+      101,
+      48,
+      0,
+      50,
+      2,
+      "STRING"
+    ],
+    [
+      102,
+      50,
+      0,
+      52,
+      0,
+      "*"
+    ],
+    [
+      103,
+      43,
+      0,
+      50,
+      0,
+      "ANY"
+    ],
+    [
+      115,
+      11,
+      0,
+      55,
+      1,
+      "INT"
+    ],
+    [
+      116,
+      13,
+      0,
+      55,
+      2,
+      "STRING"
+    ],
+    [
+      118,
+      55,
+      0,
+      2,
+      0,
+      "*"
+    ],
+    [
+      119,
+      55,
+      1,
+      8,
+      0,
+      "*"
+    ],
+    [
+      122,
+      43,
+      0,
+      56,
+      0,
+      "ANY"
+    ],
+    [
+      123,
+      30,
+      0,
+      56,
+      1,
+      "INT"
+    ],
+    [
+      124,
+      33,
+      0,
+      56,
+      2,
+      "STRING"
+    ],
+    [
+      125,
+      32,
+      0,
+      56,
+      4,
+      "STRING"
+    ],
+    [
+      126,
+      56,
+      0,
+      31,
+      0,
+      "*"
+    ],
+    [
+      127,
+      43,
+      0,
+      57,
+      0,
+      "ANY"
+    ],
+    [
+      128,
+      22,
+      0,
+      57,
+      1,
+      "INT"
+    ],
+    [
+      129,
+      33,
+      0,
+      57,
+      2,
+      "STRING"
+    ],
+    [
+      130,
+      57,
+      0,
+      18,
+      0,
+      "*"
+    ],
+    [
+      131,
+      58,
+      0,
+      55,
+      0,
+      "ANY"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.3073560549142819,
+      "offset": [
+        1900.3825146024521,
+        3217.334765962427
+      ]
+    },
+    "node_versions": {
+      "rgthree-comfy": "5d771b8b56a343c24a26e8cea1f0c87c3d58102f"
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0
+  },
+  "version": 0.4
+}

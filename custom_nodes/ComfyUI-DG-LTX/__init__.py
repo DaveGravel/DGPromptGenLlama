@@ -51,7 +51,7 @@ sys.path.append(target_dir)
 
 print(f"OrionX3D ComfyUI Folder: {target_dir}")
 
-version_code = [0, 0, 1]
+version_code = [0, 0, 2]
 version_str = f"V{version_code[0]}.{version_code[1]}" + (f'.{version_code[2]}' if len(version_code) > 2 else '')
 print(f"### Loading: ConfyUI_DG_LTX_PLUS ({version_str})")
 

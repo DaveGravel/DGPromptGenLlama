@@ -1,8 +1,8 @@
 gc
 re
+torch
 itertools
 typing
-torch
 json
 gguf>=0.10.0
 transformers

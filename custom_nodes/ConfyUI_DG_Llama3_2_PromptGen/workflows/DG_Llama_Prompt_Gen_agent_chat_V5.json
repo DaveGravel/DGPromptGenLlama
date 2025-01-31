@@ -1,0 +1,514 @@
+{
+  "last_node_id": 64,
+  "last_link_id": 132,
+  "nodes": [
+    {
+      "id": 56,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        1438.2034912109375,
+        -1687.9017333984375
+      ],
+      "size": [
+        530.0130615234375,
+        421.87554931640625
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 132
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "I'm standing in front of a worn wooden desk, with the faint glow of a setting sun casting a warm orange hue on my face, slightly illuminated by a softbox light above, 3/4 view from a 24MP Sony A7R IV mirrorless camera, 50mm f1.4 lens, aperture set to f2.8, shutter speed of 1/125s, ISO 100, depth of field blurred in the background to separate me from the environment, my eyes gazing straight ahead with a hint of introspection, facial features slightly angled towards the viewer, with a subtle furrowed brow, hands clasped behind my back, dressed in a simple white button-down shirt and dark jeans, exuding an air of quiet contemplation, with a faint hint of mystery in my expression, as if pondering the weight of one's own identity, against a minimalist gray wall behind me, with a few scattered notes and old books, conveying a sense of neglect and abandonment, in a dimly lit room, with only a single flickering fluorescent light overhead, casting long shadows on the floor, adding to the overall atmosphere of introspection and self-doubt."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 60,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        1426.5689697265625,
+        -2397.547119140625
+      ],
+      "size": [
+        530.0130615234375,
+        421.87554931640625
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 126
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "A stunning woman with long, curly dark brown hair and bright hazel eyes, looking directly at the camera with a mixture of determination and caution, standing in a dimly lit alleyway with graffiti-covered brick walls and trash scattered around her feet; she's dressed in a black leather jacket and ripped jeans, with a confident air about her; the camera captures every subtle movement of her hand gesturing towards the surrounding environment."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 59,
+      "type": "DGLlamaTextPrompt",
+      "pos": [
+        351.6231384277344,
+        -1399.4696044921875
+      ],
+      "size": [
+        527.8448486328125,
+        271.6405334472656
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            131
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaTextPrompt"
+      },
+      "widgets_values": [
+        "# You can use this text box for prompt or for agent system:\n# Use case exemple for agent system:\nYou are an agent specialized in creating text prompts for generating anime image, photo, video of all genres and styles.\nAs an expert, you are skilled at inventing original text prompt concepts with inspiration from the works of the greatest anime artists.\nYour expertise allows you to craft text prompts that bring to life vibrant shonen battles, heartwarming slice-of-life moments, or breathtaking fantasy worlds.\nYou excel at capturing the essence of any anime style, making you the perfect guide for designing detailed and visually stunning text prompts.\nDo not use words like Title: or Prompt:\nInstead, when you reply the prompt incorporate the content directly into the sentence as a single paragraph without separation\nInclude in the prompt details about quality, the type of camera or Kodak, angles, perspective, and distance using professional photography terms.\nIf inspired by a known artist, add their name along with any other details needed to reproduce the image.\nDon't attempt to simulate taking a picture; just provide the prompt in text format."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 64,
+      "type": "DGLlamaAgentUserEdit",
+      "pos": [
+        924.6744384765625,
+        -1715.096435546875
+      ],
+      "size": [
+        437.4399719238281,
+        641.9859008789062
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 129
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 130,
+          "widget": {
+            "name": "seeder"
+          },
+          "shape": 7
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": 131,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            132
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaAgentUserEdit"
+      },
+      "widgets_values": [
+        "Yes",
+        "Image",
+        "Roberto",
+        false,
+        false,
+        "agent_Roberto_normal.agt",
+        4096,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "No",
+        "No",
+        "No",
+        "No",
+        "what is your name?",
+        "a woman",
+        "Yes",
+        true,
+        -1,
+        "",
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 61,
+      "type": "DGLlamaChatUser",
+      "pos": [
+        916.1624755859375,
+        -2433.314697265625
+      ],
+      "size": [
+        450.7275695800781,
+        604.2288208007812
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "link": 127
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 128,
+          "widget": {
+            "name": "seeder"
+          },
+          "shape": 7
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        },
+        {
+          "name": "remove_from_prompt",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "remove_from_prompt"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            126
+          ]
+        },
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaChatUser"
+      },
+      "widgets_values": [
+        "Yes",
+        "Other",
+        false,
+        false,
+        "agent_dave_normal.agt",
+        4096,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "No",
+        "No",
+        "No",
+        "No",
+        "a woman",
+        "a woman",
+        "Yes",
+        true,
+        -1,
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 58,
+      "type": "Seed (rgthree)",
+      "pos": [
+        564.1190185546875,
+        -1610.0902099609375
+      ],
+      "size": [
+        303.8008728027344,
+        130
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            130
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        49263493713514,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 62,
+      "type": "Seed (rgthree)",
+      "pos": [
+        465.32342529296875,
+        -2421.61181640625
+      ],
+      "size": [
+        324.5644836425781,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            128
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        451991455823104,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 63,
+      "type": "DGLoadLlamaModel",
+      "pos": [
+        249.14620971679688,
+        -2079.063720703125
+      ],
+      "size": [
+        529.199951171875,
+        154
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "llama3_pipe",
+          "type": "ANY",
+          "links": [
+            127,
+            129
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLoadLlamaModel"
+      },
+      "widgets_values": [
+        "Llama-3.2-3B-Instruct-uncensored\\model-00001-of-00002.safetensors",
+        "No",
+        "4bit",
+        "gpu",
+        "Yes"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    }
+  ],
+  "links": [
+    [
+      126,
+      61,
+      0,
+      60,
+      0,
+      "*"
+    ],
+    [
+      127,
+      63,
+      0,
+      61,
+      0,
+      "ANY"
+    ],
+    [
+      128,
+      62,
+      0,
+      61,
+      1,
+      "INT"
+    ],
+    [
+      129,
+      63,
+      0,
+      64,
+      0,
+      "ANY"
+    ],
+    [
+      130,
+      58,
+      0,
+      64,
+      1,
+      "INT"
+    ],
+    [
+      131,
+      59,
+      0,
+      64,
+      4,
+      "STRING"
+    ],
+    [
+      132,
+      64,
+      0,
+      56,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5989500000000004,
+      "offset": [
+        -113.94685711416656,
+        2636.194854905909
+      ]
+    },
+    "node_versions": {
+      "rgthree-comfy": "5d771b8b56a343c24a26e8cea1f0c87c3d58102f"
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0
+  },
+  "version": 0.4
+}

@@ -1,5 +1,14 @@
-Updated Workflow V4 Release
-I'm excited to share the updated version of my workflow (V4)!
+Updated Workflow V5 Release
+
+What's New:
+
+I have made a lot of fixes and changes.
+I have added DeepSeek R1 support.
+I have created a Llama model loader and a DeepSeek model loader.
+I have fixed some issues when using GGUF models; it should now work better.
+I have added more individual options for better configuration of all nodes.
+
+I'm excited to share the updated version of my workflow (V5)!
 It using my llama prompt gen node + my sampler refiner.
 
 Key Features:
@@ -20,7 +29,7 @@ Custom Nodes Installation:
 
 Updating the old version:
 Copy the custom_nodes folder into ComfyUI/custom_nodes.
-Restart ComfyUI and load the updated V4 workflow.
+Restart ComfyUI and load the updated V5 workflow.
 
 Installing LLama prompt gen and my samplers Node:
 
@@ -41,11 +50,26 @@ git clone https://huggingface.co/chuanli11/Llama-3.2-3B-Instruct-uncensored
 
 or for the original model
 
+git clone https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct
+
 git clone https://huggingface.co/meta-llama/Llama-3.2-3B
 
+https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF
+
+DeepSeek R1
+
+git clone https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+
+https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-1.5B-GGUF/tree/main
+
 It is supposed to look like this:
-custom_nodes/ConfyUI_DG_Llama3_2_PromptGen/Models/Llama-3.2-3B-Instruct-uncensored
-custom_nodes/ConfyUI_DG_Llama3_2_PromptGen/Models/Llama-3.2-3B
+custom_nodes/ConfyUI_DG_Llama3_2_PromptGen/Models/Llama-3.2-3B-Instruct-uncensored/model-00001-of-00002.safetensors
+
+custom_nodes/ConfyUI_DG_Llama3_2_PromptGen/Models/Llama-3.2-3B-Instruct/model-00001-of-00002.safetensors
+custom_nodes/ConfyUI_DG_Llama3_2_PromptGen/Models/DeepSeek-R1-Distill-Qwen-1.5B/model.safetensors
+custom_nodes/ConfyUI_DG_Llama3_2_PromptGen/Models/DeepSeek-R1-Distill-Qwen-1.5B_GGUF/DeepSeek-R1-Distill-Qwen-1.5B-Q8_0.gguf or an other gguf version.
+
+When you place your models in the Models folder, make sure that if you're loading a Llama model, the name 'llama' is included either in the folder name or the model file name. The same applies to DeepSeek models—ensure that 'deepseek' is present in either the folder name or the model file name. At least one of the two must contain the name. This is necessary for the Llama and DeepSeek loaders to recognize their respective files.
 
 For GGUF Models
 
