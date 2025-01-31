@@ -9,6 +9,9 @@ I have created a Llama model loader and a DeepSeek model loader.
 I have fixed some issues when using GGUF models; it should now work better.
 I have added more individual options for better configuration of all nodes.
 
+NEW Video:
+https://www.youtube.com/watch?v=17MqXAp4gg8
+
 OLD Video:
 https://www.youtube.com/watch?v=Pdb8dWybHy8
 
