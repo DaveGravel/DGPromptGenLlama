@@ -260,13 +260,17 @@ class DGLlamaChatAgent:
         
         formatted_history = self._build_formatted_history()
 
-        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+        cuda_auto = self.llama3_pipe.device_name
+        if cuda_auto == "auto":
+            cuda_auto = "cuda" 
+
+        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(cuda_auto)
         input_token_count = input_ids.shape[-1]
 
         if input_token_count > maxtokens:
             self._trim_history(maxtokens)
             formatted_history = self._build_formatted_history()
-            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(cuda_auto)
 
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -342,7 +346,10 @@ class DGLlamaChatAgent:
     def _trim_history(self, max_tokens: int):
         while True:
             formatted_history = self._build_formatted_history()
-            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+            cuda_auto = self.llama3_pipe.device_name
+            if cuda_auto == "auto":
+                cuda_auto = "cuda"             
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(cuda_auto)
             input_token_count = input_ids.shape[-1]
 
             if input_token_count <= max_tokens:
@@ -372,6 +379,17 @@ class DGLlamaChatAgent:
         file_path = os.path.join(current_dir, file_name)
         with open(file_path, 'w', encoding='utf-8') as file:
             json.dump(self.chat_history, file, ensure_ascii=False, indent=4)
+
+    def delete_file(self, file_name: str):
+        file_path = os.path.join(current_dir, file_name)
+        if not os.path.exists(file_path):
+            print(f"File {file_path} does not exist. Skipping delete.")
+            return 
+        try:
+            os.remove(file_path)
+            print(f"File {file_path} has been deleted.")
+        except OSError as e:
+            print(f"Error deleting file {file_path}: {e}")            
 
     def load_history(self, file_name: str):
         file_path = os.path.join(current_dir, file_name)
@@ -438,13 +456,17 @@ class DGDeepSeekChatAgent:
         
         formatted_history = self._build_formatted_history()
 
-        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.deepseek_pipe.device_name)
+        cuda_auto = self.deepseek_pipe.device_name
+        if cuda_auto == "auto":
+            cuda_auto = "cuda"         
+
+        input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(cuda_auto)
         input_token_count = input_ids.shape[-1]
 
         if input_token_count > max_new_tokens:
             self._trim_history(max_new_tokens)
             formatted_history = self._build_formatted_history()
-            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.deepseek_pipe.device_name)
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(cuda_auto)
 
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -519,7 +541,10 @@ class DGDeepSeekChatAgent:
     def _trim_history(self, max_tokens: int):
         while True:
             formatted_history = self._build_formatted_history()
-            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(self.deepseek_pipe.device_name)
+            cuda_auto = self.deepseek_pipe.device_name
+            if cuda_auto == "auto":
+                cuda_auto = "cuda"             
+            input_ids = self.tokenizer(formatted_history, return_tensors="pt").input_ids.to(cuda_auto)
             input_token_count = input_ids.shape[-1]
 
             if input_token_count <= max_tokens:
@@ -4454,7 +4479,11 @@ class DGLlamaAgentCorrection:
                 if self.model.config.pad_token_id is None:
                     self.model.config.pad_token_id = self.model.config.eos_token_id 
 
-                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+                cuda_auto = self.llama3_pipe.device_name
+                if cuda_auto == "auto":
+                    cuda_auto = "cuda" 
+
+                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to(cuda_auto)
                 generated_ids = self.model.generate(input_ids, max_new_tokens=max_token, top_k=top_k, top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=True, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id
                 self.response = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
          
@@ -4570,9 +4599,13 @@ class DGLlamaAgentTranslate:
                 if self.tokenizer.pad_token_id is None:
                     self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
                 if self.model.config.pad_token_id is None:
-                    self.model.config.pad_token_id = self.model.config.eos_token_id                  
+                    self.model.config.pad_token_id = self.model.config.eos_token_id 
 
-                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to(self.llama3_pipe.device_name)
+                cuda_auto = self.llama3_pipe.device_name
+                if cuda_auto == "auto":
+                    cuda_auto = "cuda"                 
+
+                input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to(cuda_auto)
                 generated_ids = self.model.generate(input_ids, max_new_tokens=max_token, top_k=top_k, top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=True, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id
                 self.response = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
          
@@ -4698,7 +4731,12 @@ class DGLlamaChatUser:
             self.old_name = pname
             reset_agent = True
             if self.agentchat is not None:
-                self.agentchat._update_agent_name(pname)          
+                if self.agentchat.agent_mode_restriction == "uncensored":
+                    self.agentchat.delete_file(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json")
+                else:
+                    self.agentchat.delete_file(f"ox3d_llama_{self.agentchat.agent_name}_chat_history.json")                
+                #self.agentchat._update_agent_name(pname)  
+                self.agentchat = None           
 
         if seeder is not None:
             nseed = seeder
@@ -4726,18 +4764,28 @@ class DGLlamaChatUser:
                 #    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json", False)
                 #else:
                 #    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_history.json", False)
-                
-                self.agentchat._update_agent_name(pname)
-            #
-            self.agentchat = None
+
+                # temporary for avoid a bug
+                if self.agentchat.agent_mode_restriction == "uncensored":
+                    self.agentchat.delete_file(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json")
+                else:
+                    self.agentchat.delete_file(f"ox3d_llama_{self.agentchat.agent_name}_chat_history.json") 
+
+                #self.agentchat._update_agent_name(pname)
+                #
+                self.agentchat = None
             #self.agent = None
 
         if llama3_agent_clear_history == True:
             if self.agentchat is not None:
                 if self.agentchat.agent_mode_restriction == "uncensored":
-                    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json", True)
-                else: 
-                    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_history.json", True)
+                    self.agentchat.delete_file(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json")
+                else:
+                    self.agentchat.delete_file(f"ox3d_llama_{self.agentchat.agent_name}_chat_history.json") 
+                #if self.agentchat.agent_mode_restriction == "uncensored":
+                #    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json", True)
+                #else: 
+                #    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_history.json", True)
 
         #if self.max_tokens < 512:
         #    self.max_tokens = 512
@@ -4746,7 +4794,7 @@ class DGLlamaChatUser:
            self.old_agent_mode = self.agent_mode_restriction 
            if self.agentchat is not None:
                self.agentchat._update_agent_mode(self.agent_mode_restriction) 
-               self.agentchat = None      
+               #self.agentchat = None      
         
         if pause_generation == True and always_unpaused == "No":
             print(f"OX3D Llama pause generation - enabled")
@@ -4985,12 +5033,16 @@ class DGLlamaAgentUserEdit:
                 #    self.new_agent.reset_history(f"ox3d_llama_{self.new_agent.agent_name}_chat_uncensored_history.json", False)
                 #else:
                 #    self.new_agent.reset_history(f"ox3d_llama_{self.new_agent.agent_name}_chat_history.json", False)
-                
-                self.new_agent._update_agent_name(pname)
-            #
-            self.new_agent = None    
-            #self.old_agent = None   
-            self.default_agent_name = ""        
+                if self.new_agent.agent_mode_restriction == "uncensored":
+                    self.new_agent.delete_file(f"ox3d_llama_{self.new_agent.agent_name}_chat_uncensored_history.json")
+                else:
+                    self.new_agent.delete_file(f"ox3d_llama_{self.new_agent.agent_name}_chat_history.json")   
+
+                #self.new_agent._update_agent_name(pname)
+                #
+                self.new_agent = None    
+                #self.old_agent = None   
+                self.default_agent_name = ""        
         #DGLlamaChatAgent
         #AgentGeraldine
         #self.default_agent_name = 
@@ -5017,9 +5069,13 @@ class DGLlamaAgentUserEdit:
         if llama3_agent_clear_history == True:
             if self.new_agent is not None:
                 if self.new_agent.agent_mode_restriction == "uncensored":
-                    self.new_agent.reset_history(f"ox3d_llama_{self.new_agent.agent_name}_chat_uncensored_history.json", True)
-                else: 
-                    self.new_agent.reset_history(f"ox3d_llama_{self.new_agent.agent_name}_chat_history.json", True)        
+                    self.new_agent.delete_file(f"ox3d_llama_{self.new_agent.agent_name}_chat_uncensored_history.json")
+                else:
+                    self.new_agent.delete_file(f"ox3d_llama_{self.new_agent.agent_name}_chat_history.json")                 
+                #if self.new_agent.agent_mode_restriction == "uncensored":
+                #    self.new_agent.reset_history(f"ox3d_llama_{self.new_agent.agent_name}_chat_uncensored_history.json", True)
+                #else: 
+                #    self.new_agent.reset_history(f"ox3d_llama_{self.new_agent.agent_name}_chat_history.json", True)        
 
         #if self.old_agent is None:
         #    self.old_agent = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, llama3_pipe.max_new_tokens)
@@ -5490,7 +5546,8 @@ class DGLoadDeepSeekModelR1:
                 "model_file": (get_filtered_deep_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model deepseek r1."}), 
                 "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),          
                 "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),
-                "device_mode": (["gpu", "cpu"],),
+                "device_mode": (["auto", "gpu", "cpu"],),
+                #"low_cpu_mem_usage":  ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}),  
                 "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}),
             }
         }
@@ -5503,6 +5560,7 @@ class DGLoadDeepSeekModelR1:
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
     TITLE = "DGLoadDeepSeekModelR1 (DeepSeek R1 - OX3D)" 
 
+    #low_cpu_mem_usage
     def load_deepseek(self, model_file, device_mode, reset_model, clear_extra_mem_gpu, use_bit_mode):
         self.clear_extra_mem_gpu = clear_extra_mem_gpu
         print(f"OrionX3D deepseek r1 Model: {model_file}")
@@ -5546,9 +5604,12 @@ class DGLoadDeepSeekModelR1:
             if device_mode == "cpu":
                 self.offload_device = torch.device('cpu')
                 self.device_name = "cpu"
-            else:
+            elif device_mode == "cuda":
                 self.offload_device = torch.device('cuda')
                 self.device_name = "cuda"
+            elif device_mode == "auto":
+                self.offload_device = "auto"
+                self.device_name = "auto"             
             #
             if self.model_check == 1:
                 self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
@@ -5556,8 +5617,9 @@ class DGLoadDeepSeekModelR1:
                                                                 trust_remote_code=True)                    
                 self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
                                                                   gguf_file=self.model_name, 
-                                                                  low_cpu_mem_usage=True,
-                                                                  return_dict=True,
+                                                                  #low_cpu_mem_usage=low_cpu_mem_usage,
+                                                                  return_dict=False,
+                                                                  trust_remote_code=True,
                                                                   torch_dtype=torch.float16, 
                                                                   device_map=self.offload_device,
                                                                   local_files_only=True)  
@@ -5565,6 +5627,8 @@ class DGLoadDeepSeekModelR1:
                 self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
                                                                 trust_remote_code=True)                    
                 self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
+                                                                  trust_remote_code=True,
+                                                                  #low_cpu_mem_usage=low_cpu_mem_usage,
                                                                   torch_dtype=torch.float16,
                                                                   device_map=self.offload_device,
                                                                   load_in_8bit=load_in_8bit,
@@ -5806,7 +5870,10 @@ class DGPromptGenSeepSeekR1:
                 if not isinstance(text, str):
                     raise TypeError(f"OX3D error apply_chat_template() a renvoyé {type(text)} au lieu de str.")
 
-                input_ids = tokenizer([text], return_tensors="pt").input_ids.to(deepseek_pipe.device_name)
+                cuda_auto = deepseek_pipe.device_name
+                if cuda_auto == "auto":
+                    cuda_auto = "cuda"  
+                input_ids = tokenizer([text], return_tensors="pt").input_ids.to(cuda_auto)
 
                 if self.tokenizer.pad_token_id is None:
                     self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -5887,7 +5954,8 @@ class DGLoadLlamaModel3_x:
                 "model_file": (get_filtered_llama_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model llama 3.1 too."}),
                 "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),
                 "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),           
-                "device_mode": (["gpu", "cpu"],),
+                "device_mode": (["auto", "gpu", "cpu"],),
+                #"low_cpu_mem_usage":  ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}), 
                 "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}), 
             }
         }
@@ -5899,7 +5967,7 @@ class DGLoadLlamaModel3_x:
 
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
     TITLE = "DGLoadLlamaModel3 (Llama 3.1 & 3.2 - OX3D)" 
-    
+    #low_cpu_mem_usage
     def load_llama3(self, model_file, device_mode, reset_model, use_bit_mode, clear_extra_mem_gpu):
         print(f"OrionX3D llama Model: {model_file}")
         self.clear_extra_mem_gpu = clear_extra_mem_gpu
@@ -5987,9 +6055,12 @@ class DGLoadLlamaModel3_x:
             if device_mode == "cpu":
                 self.offload_device = torch.device('cpu')
                 self.device_name = "cpu"
-            else:
-                self.offload_device = torch.device('cuda')  
-                self.device_name = "cuda"          
+            elif device_mode == "cuda":
+                self.offload_device = torch.device('cuda')
+                self.device_name = "cuda"
+            elif device_mode == "auto":
+                self.offload_device = "auto"
+                self.device_name = "auto"         
    
             if model_check == 1:
                 self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
@@ -5997,8 +6068,9 @@ class DGLoadLlamaModel3_x:
                                                                trust_remote_code=True)                    
                 self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
                                                                   gguf_file=self.model_name, 
-                                                                  low_cpu_mem_usage=True,
-                                                                  return_dict=True,
+                                                                  #low_cpu_mem_usage=low_cpu_mem_usage,
+                                                                  return_dict=False,
+                                                                  trust_remote_code=True,
                                                                   torch_dtype=torch.float16, 
                                                                   device_map=self.offload_device,
                                                                   local_files_only=True)
@@ -6007,10 +6079,12 @@ class DGLoadLlamaModel3_x:
                                                                trust_remote_code=True)    
 
                 self.model = LlamaForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
+                                                              #low_cpu_mem_usage=low_cpu_mem_usage,
                                                               torch_dtype=torch.float16,
                                                               device_map=self.offload_device,
                                                               load_in_8bit=load_in_8bit,
                                                               load_in_4bit=load_in_4bit,
+                                                              trust_remote_code=True,
                                                               local_files_only=True,
                                                               use_flash_attention_2=False)  
             if model_check == 0:      
@@ -6404,7 +6478,10 @@ class DGPromptGenLlama3_2:
                 
                 #, padding=True, truncation=True
                 #self.prompts 
-                input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(llama3_pipe.device_name)
+                cuda_auto = llama3_pipe.device_name
+                if cuda_auto == "auto":
+                    cuda_auto = "cuda"                  
+                input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(cuda_auto)
                 generated_ids = None
 
                 if self.tokenizer.pad_token_id is None:
