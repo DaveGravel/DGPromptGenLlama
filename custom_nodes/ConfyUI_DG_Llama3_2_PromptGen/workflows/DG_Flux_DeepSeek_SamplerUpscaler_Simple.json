@@ -1,0 +1,1585 @@
+{
+  "last_node_id": 30,
+  "last_link_id": 41,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "DGLoadDeepSeekModelR1",
+      "pos": [
+        -249.09938049316406,
+        1070.310791015625
+      ],
+      "size": [
+        422,
+        154
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLoadDeepSeekModelR1"
+      },
+      "widgets_values": [
+        "DeepSeek-R1-Distill-Qwen-1.5B\\model.safetensors",
+        "No",
+        "4bit",
+        "auto",
+        "Yes"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 12,
+      "type": "INTConstant",
+      "pos": [
+        1339.6556396484375,
+        930.6060180664062
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links": [
+            13,
+            20
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Image Width",
+      "properties": {
+        "Node name for S&R": "INTConstant"
+      },
+      "widgets_values": [
+        1280
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 11,
+      "type": "INTConstant",
+      "pos": [
+        1339.1917724609375,
+        1048.55322265625
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links": [
+            14,
+            21
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Image Height",
+      "properties": {
+        "Node name for S&R": "INTConstant"
+      },
+      "widgets_values": [
+        1024
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 18,
+      "type": "EmptyLatentImage",
+      "pos": [
+        1339.94580078125,
+        1488.2210693359375
+      ],
+      "size": [
+        212.79217529296875,
+        78
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 13,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 14,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            31
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        512,
+        512,
+        1
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 9,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        1266.280029296875,
+        775.5792236328125
+      ],
+      "size": [
+        284.5342102050781,
+        82
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            24,
+            25
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoaderModelOnly"
+      },
+      "widgets_values": [
+        "schnell_v1.0.safetensors",
+        1
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 13,
+      "type": "VAELoader",
+      "pos": [
+        1337.5009765625,
+        655.9846801757812
+      ],
+      "size": [
+        210,
+        58
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            26,
+            32
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ae.sft"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 19,
+      "type": "SaveImage",
+      "pos": [
+        1970.5982666015625,
+        349.9649963378906
+      ],
+      "size": [
+        731.2647705078125,
+        713.8206176757812
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 34
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "DeepDeekR1\\dg_deeps"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 23,
+      "type": "SaveImage",
+      "pos": [
+        1970.71728515625,
+        1118.767578125
+      ],
+      "size": [
+        731.2647705078125,
+        713.8206176757812
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 35
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "DeepDeekR1\\dg_deeps"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 22,
+      "type": "UpscaleModelLoader",
+      "pos": [
+        1268.46533203125,
+        1623.0264892578125
+      ],
+      "size": [
+        284.98565673828125,
+        58
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "UPSCALE_MODEL",
+          "type": "UPSCALE_MODEL",
+          "links": [
+            23
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UpscaleModelLoader"
+      },
+      "widgets_values": [
+        "4xPurePhoto-Span.pth"
+      ],
+      "color": "#9f4514",
+      "bgcolor": "#8b3100"
+    },
+    {
+      "id": 14,
+      "type": "CLIPTextEncodeFlux",
+      "pos": [
+        1339.392333984375,
+        1326.626953125
+      ],
+      "size": [
+        210,
+        98
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 10
+        },
+        {
+          "name": "clip_l",
+          "type": "STRING",
+          "link": 8,
+          "widget": {
+            "name": "clip_l"
+          }
+        },
+        {
+          "name": "t5xxl",
+          "type": "STRING",
+          "link": 9,
+          "widget": {
+            "name": "t5xxl"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            27,
+            28,
+            29,
+            30
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncodeFlux"
+      },
+      "widgets_values": [
+        "",
+        "",
+        3.5
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 10,
+      "type": "DualCLIPLoaderGGUF",
+      "pos": [
+        1284.224365234375,
+        1161.470458984375
+      ],
+      "size": [
+        261.81396484375,
+        106
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            10
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DualCLIPLoaderGGUF"
+      },
+      "widgets_values": [
+        "clip_l.safetensors",
+        "t5xxl_fp8_e4m3fn.safetensors",
+        "flux"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 8,
+      "type": "ModelSamplingFlux",
+      "pos": [
+        1014.1904296875,
+        673.0570068359375
+      ],
+      "size": [
+        224.78790283203125,
+        122
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 6
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 20,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 21,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            7
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ModelSamplingFlux"
+      },
+      "widgets_values": [
+        1.1500000000000001,
+        0.5,
+        1024,
+        1024
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 7,
+      "type": "UnetLoaderGGUFAdvanced",
+      "pos": [
+        651.3287963867188,
+        665.4033813476562
+      ],
+      "size": [
+        336.632568359375,
+        130
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            6
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UnetLoaderGGUFAdvanced"
+      },
+      "widgets_values": [
+        "flux1-dev-Q4_K_M.gguf",
+        "default",
+        "default",
+        false
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 5,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        759.7515258789062,
+        1736.596435546875
+      ],
+      "size": [
+        479.0073547363281,
+        547.8161010742188
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 4
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "Okay, so I need to create an image prompt using the ORIONX AI model based on the user's request. The main topic is a woman with a beach sunset style, involving waves crashing, and a Chinese national identity with dynamic energy. Let me break down how I approached this.\n\nFirst, I started by understanding the key elements the user provided: a woman, beach sunset style, waves crashing, Chinese nationality, and dynamic energy. I wanted to make sure each element was clearly included without being too vague.\n\nI decided to use \"ORIONX\" as the main topic because it's specific and likely to yield accurate results. Next, I thought about the structure. The user mentioned starting with the main action, which would be the woman, but since she's part of a larger scene (beach, sunset, etc.), maybe starting with her presence could help set the context better.\n\nFor the beach sunset style, I considered including details like water color, golden hues, and the setting sun casting shadows. These visual elements can make the scene more vivid. Then, adding waves crashing involved specifying the direction (right side), size, and speed. This helps in conveying the movement and intensity of the scene.\n\nChinese national identity with dynamic energy required some creativity. I thought of incorporating elements like traditional clothing, perhaps a necklace or bracelet, and a bustling atmosphere around her. Dynamic energy suggests lively interactions, so I added people moving around her, making the scene more engaging.\n\nI also made sure to specify the camera angle. Since the beach has a natural feel, a slightly tilted angle might give that authentic look. Including lighting effects, like warm tones against the sand, adds depth to the image.\n\nI kept the language precise to avoid any ambiguity, focusing on details such as colors, textures, and movements. I structured the paragraph to flow naturally from one scene detail to another, ensuring each element fits seamlessly into the overall picture.\n\nFinally, I reviewed the prompt to ensure it meets the word limit and effectively captures all the requested elements. It should be both descriptive enough for clarity and creative enough to stand out when generated."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 6,
+      "type": "DGLlamaTextPrompt",
+      "pos": [
+        -234.28298950195312,
+        1471.33740234375
+      ],
+      "size": [
+        399.2154846191406,
+        257.8626708984375
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            5
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaTextPrompt"
+      },
+      "widgets_values": [
+        "You are a highly creative expert assistant in crafting prompts for images, photos, and videos.\n\nWhen writing prompts, focus on detailed. Use a single flowing paragraph to describe the scene, appearances, camera angles, and environmental details. Start directly with the main action and keep descriptions literal and precise, as if creating a cinematographer’s shot.\n\nFollow this structure for your prompts:\nDescribe character or object appearances precisely.\nInclude background and environmental details.\nSpecify camera angles.\nDescribe lighting and colors.\nKeep the description immersive, clear, and within 300 to 400 words for best results."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 3,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -233.1000213623047,
+        1281.5277099609375
+      ],
+      "size": [
+        400.63665771484375,
+        130
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            2
+          ],
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "title": "DeepSeek Seed (rgthree)",
+      "properties": {},
+      "widgets_values": [
+        288362602317182,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 27,
+      "type": "DGLlamaStyles",
+      "pos": [
+        416.48101806640625,
+        2015.0836181640625
+      ],
+      "size": [
+        319.20001220703125,
+        538
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 40,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            37
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyles"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 2,
+      "type": "DGPromptGenSeepSeekR1",
+      "pos": [
+        208.8777618408203,
+        1268.49951171875
+      ],
+      "size": [
+        516.5999755859375,
+        526
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "link": 1
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 2,
+          "widget": {
+            "name": "seeder"
+          }
+        },
+        {
+          "name": "agent",
+          "type": "STRING",
+          "link": 5,
+          "widget": {
+            "name": "agent"
+          },
+          "shape": 7
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "link": 38,
+          "widget": {
+            "name": "mix_styles"
+          },
+          "shape": 7
+        },
+        {
+          "name": "external_subject",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "external_subject"
+          },
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "think",
+          "type": "STRING",
+          "links": [
+            4
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "deepseek_pipe",
+          "type": "ANY",
+          "links": null
+        },
+        {
+          "name": "mix_styles",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGPromptGenSeepSeekR1"
+      },
+      "widgets_values": [
+        "Image",
+        "Yes",
+        "Yes",
+        "No",
+        "No",
+        -1,
+        2048,
+        0.9,
+        50,
+        0.6,
+        1.1,
+        "a woman",
+        "",
+        "Yes",
+        true,
+        "",
+        "",
+        ""
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 26,
+      "type": "DGLlamaStyles",
+      "pos": [
+        58.521610260009766,
+        2013.7486572265625
+      ],
+      "size": [
+        319.20001220703125,
+        538
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 39,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "style_mix",
+          "type": "STRING",
+          "links": [
+            36
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaStyles"
+      },
+      "widgets_values": [
+        0,
+        "Image",
+        1,
+        "Beach at Sunset",
+        1,
+        "Nationality Chinese",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 29,
+      "type": "DGLlamaMixStylesMulti",
+      "pos": [
+        210.43711853027344,
+        1851.9254150390625
+      ],
+      "size": [
+        509.8159484863281,
+        102
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "style_1",
+          "type": "STRING",
+          "link": 36,
+          "widget": {
+            "name": "style_1"
+          }
+        },
+        {
+          "name": "style_2",
+          "type": "STRING",
+          "link": 37,
+          "widget": {
+            "name": "style_2"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "styles",
+          "type": "STRING",
+          "links": [
+            38
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaMixStylesMulti"
+      },
+      "widgets_values": [
+        2,
+        "",
+        "",
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 4,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        758.7666625976562,
+        1268.6705322265625
+      ],
+      "size": [
+        476,
+        415.2000427246094
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "**Prompt:**  \n\"Create a vibrant and immersive image centered around a stunning woman with a unique beach sunset style. Her appearance should include striking waves crashing, accompanied by a serene beach setting. Incorporate elements of Chinese national identity, particularly dynamic energy, to enhance the scene. The woman should appear with soft, pastel-colored skin, complemented by golden hues in the sunlight, while her hair is styled in a flowing wave. Include dramatic waves rolling to the right, with varying sizes and speeds. Add reflections in the water and a gentle hue of pink under the light. Focus on a medium-sized woman, slightly tilted at eye level, with a confident smile. Enhance the scene with waves interacting with the sand, resulting in a gradient effect. Introduce dynamic energy, such as people walking around her, with vibrant outfits and a bustling vibe. Use warm lighting to highlight her presence, emphasizing the contrast between the warm tones and the cool, tan sky. Ensure the composition is balanced, with the woman at the center, surrounded by waves and a peaceful beach backdrop."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 15,
+      "type": "DGLlamaTextPrompt",
+      "pos": [
+        678.8335571289062,
+        857.6484985351562
+      ],
+      "size": [
+        563.4996337890625,
+        346.8134460449219
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            8,
+            9
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLlamaTextPrompt"
+      },
+      "widgets_values": [
+        "Create a vibrant and immersive image centered around a stunning woman with a unique beach sunset style. Her appearance should include striking waves crashing, accompanied by a serene beach setting. Incorporate elements of Chinese national identity, particularly dynamic energy, to enhance the scene. The woman should appear with soft, pastel-colored skin, complemented by golden hues in the sunlight, while her hair is styled in a flowing wave. Include dramatic waves rolling to the right, with varying sizes and speeds. Add reflections in the water and a gentle hue of pink under the light. Focus on a medium-sized woman, slightly tilted at eye level, with a confident smile. Enhance the scene with waves interacting with the sand, resulting in a gradient effect. Introduce dynamic energy, such as people walking around her, with vibrant outfits and a bustling vibe. Use warm lighting to highlight her presence, emphasizing the contrast between the warm tones and the cool, tan sky. Ensure the composition is balanced, with the woman at the center, surrounded by waves and a peaceful beach backdrop."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 30,
+      "type": "Seed (rgthree)",
+      "pos": [
+        1604.093017578125,
+        1768.7030029296875
+      ],
+      "size": [
+        343.2783508300781,
+        131.1912841796875
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            41
+          ],
+          "shape": 3,
+          "dir": 4,
+          "slot_index": 0
+        }
+      ],
+      "title": "Refiner Seed (rgthree)",
+      "properties": {},
+      "widgets_values": [
+        718029367733451,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 21,
+      "type": "OX3DKSamplerAdv",
+      "pos": [
+        1586.8017578125,
+        351.3586730957031
+      ],
+      "size": [
+        354.0032958984375,
+        870
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "ltx_model",
+          "type": "MODEL",
+          "link": 24
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 26
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 27
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 28
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 31
+        },
+        {
+          "name": "refiner_positive",
+          "type": "CONDITIONING",
+          "link": 29
+        },
+        {
+          "name": "refiner_negative",
+          "type": "CONDITIONING",
+          "link": 30
+        },
+        {
+          "name": "refiner_vae",
+          "type": "VAE",
+          "link": 32
+        },
+        {
+          "name": "refiner_model",
+          "type": "MODEL",
+          "link": 25,
+          "shape": 7
+        },
+        {
+          "name": "upscale_model",
+          "type": "UPSCALE_MODEL",
+          "link": 23,
+          "shape": 7
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": 22,
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "name": "refiner_seed",
+          "type": "INT",
+          "link": 41,
+          "widget": {
+            "name": "refiner_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "latent_out",
+          "type": "LATENT",
+          "links": null
+        },
+        {
+          "name": "latent_start",
+          "type": "LATENT",
+          "links": null
+        },
+        {
+          "name": "positive_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "negative_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "ref_positive_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "ref_negative_prompt",
+          "type": "CONDITIONING",
+          "links": null
+        },
+        {
+          "name": "video_image_out",
+          "type": "IMAGE",
+          "links": [],
+          "slot_index": 6
+        },
+        {
+          "name": "last_image_out",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "vae_out",
+          "type": "VAE",
+          "links": null
+        },
+        {
+          "name": "ltx_model_out",
+          "type": "MODEL",
+          "links": null
+        },
+        {
+          "name": "first_image_out",
+          "type": "IMAGE",
+          "links": [
+            35
+          ],
+          "slot_index": 10
+        },
+        {
+          "name": "vae_refiner_out",
+          "type": "VAE",
+          "links": null
+        },
+        {
+          "name": "ref_model_out",
+          "type": "MODEL",
+          "links": null
+        },
+        {
+          "name": "first_pass_img",
+          "type": "IMAGE",
+          "links": [
+            34
+          ],
+          "slot_index": 13
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OX3DKSamplerAdv"
+      },
+      "widgets_values": [
+        1082590244589996,
+        "randomize",
+        6,
+        5,
+        "euler",
+        "normal",
+        1,
+        "euler",
+        "sgm_uniform",
+        0,
+        5,
+        8,
+        1,
+        "Yes",
+        "nearest-exact",
+        1.5,
+        0.53,
+        "Yes",
+        512,
+        64,
+        64,
+        8,
+        1.2,
+        "mkl",
+        true,
+        false
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 20,
+      "type": "Seed (rgthree)",
+      "pos": [
+        1602.22412109375,
+        1575.6031494140625
+      ],
+      "size": [
+        343.2783508300781,
+        131.1912841796875
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            22,
+            39,
+            40
+          ],
+          "shape": 3,
+          "dir": 4,
+          "slot_index": 0
+        }
+      ],
+      "title": "Sampler Seed (rgthree)",
+      "properties": {},
+      "widgets_values": [
+        125407747001569,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 25,
+      "type": "Note",
+      "pos": [
+        1590.4556884765625,
+        1268.527587890625
+      ],
+      "size": [
+        357.0940246582031,
+        245.61065673828125
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Refiner value infos",
+      "properties": {},
+      "widgets_values": [
+        "To upscale the image, keep your seed and set auto_reset_cache to Disable and refiner_count to 1. Once the upscaled image is generated, if you want to apply different settings to the upscale pass, keep the cache disabled, adjust the options, and regenerate the image. When the cache is disabled, the first image remains unchanged. After finalizing your settings, set auto_reset_cache back to Enable and refiner_count to 0.\n\nYou can try a higher value for refiner_count, but it adds more passes, making the process longer, and the result may become excessive. Normally, 1 is a good value. You can adjust steps and refiner_steps to fine-tune the final quality. Experiment with different values for refiner_rescale_method—lanczos generally provides a more polished look. You can also adjust the fix_color setting for the refined upscaled image. If you only need the refiner pass, you can disable the upscale."
+      ],
+      "color": "#891414",
+      "bgcolor": "#750000"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "ANY"
+    ],
+    [
+      2,
+      3,
+      0,
+      2,
+      1,
+      "INT"
+    ],
+    [
+      3,
+      2,
+      0,
+      4,
+      0,
+      "*"
+    ],
+    [
+      4,
+      2,
+      1,
+      5,
+      0,
+      "*"
+    ],
+    [
+      5,
+      6,
+      0,
+      2,
+      2,
+      "STRING"
+    ],
+    [
+      6,
+      7,
+      0,
+      8,
+      0,
+      "MODEL"
+    ],
+    [
+      7,
+      8,
+      0,
+      9,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      15,
+      0,
+      14,
+      1,
+      "STRING"
+    ],
+    [
+      9,
+      15,
+      0,
+      14,
+      2,
+      "STRING"
+    ],
+    [
+      10,
+      10,
+      0,
+      14,
+      0,
+      "CLIP"
+    ],
+    [
+      13,
+      12,
+      0,
+      18,
+      0,
+      "INT"
+    ],
+    [
+      14,
+      11,
+      0,
+      18,
+      1,
+      "INT"
+    ],
+    [
+      20,
+      12,
+      0,
+      8,
+      1,
+      "INT"
+    ],
+    [
+      21,
+      11,
+      0,
+      8,
+      2,
+      "INT"
+    ],
+    [
+      22,
+      20,
+      0,
+      21,
+      10,
+      "INT"
+    ],
+    [
+      23,
+      22,
+      0,
+      21,
+      9,
+      "UPSCALE_MODEL"
+    ],
+    [
+      24,
+      9,
+      0,
+      21,
+      0,
+      "MODEL"
+    ],
+    [
+      25,
+      9,
+      0,
+      21,
+      8,
+      "MODEL"
+    ],
+    [
+      26,
+      13,
+      0,
+      21,
+      1,
+      "VAE"
+    ],
+    [
+      27,
+      14,
+      0,
+      21,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      28,
+      14,
+      0,
+      21,
+      3,
+      "CONDITIONING"
+    ],
+    [
+      29,
+      14,
+      0,
+      21,
+      5,
+      "CONDITIONING"
+    ],
+    [
+      30,
+      14,
+      0,
+      21,
+      6,
+      "CONDITIONING"
+    ],
+    [
+      31,
+      18,
+      0,
+      21,
+      4,
+      "LATENT"
+    ],
+    [
+      32,
+      13,
+      0,
+      21,
+      7,
+      "VAE"
+    ],
+    [
+      34,
+      21,
+      13,
+      19,
+      0,
+      "IMAGE"
+    ],
+    [
+      35,
+      21,
+      10,
+      23,
+      0,
+      "IMAGE"
+    ],
+    [
+      36,
+      26,
+      0,
+      29,
+      0,
+      "STRING"
+    ],
+    [
+      37,
+      27,
+      0,
+      29,
+      1,
+      "STRING"
+    ],
+    [
+      38,
+      29,
+      0,
+      2,
+      3,
+      "STRING"
+    ],
+    [
+      39,
+      20,
+      0,
+      26,
+      0,
+      "INT"
+    ],
+    [
+      40,
+      20,
+      0,
+      27,
+      0,
+      "INT"
+    ],
+    [
+      41,
+      30,
+      0,
+      21,
+      11,
+      "INT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5445000000000014,
+      "offset": [
+        -1.844471915434116,
+        -600.918783850456
+      ]
+    },
+    "node_versions": {
+      "ComfyUI-KJNodes": "2abf557e3d6ae6618456a190044a85a52f2a585a",
+      "comfy-core": "0.3.13",
+      "ComfyUI-GGUF": "5875c52f59baca3a9372d68c43a3775e21846fe0",
+      "rgthree-comfy": "5d771b8b56a343c24a26e8cea1f0c87c3d58102f"
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0
+  },
+  "version": 0.4
+}
