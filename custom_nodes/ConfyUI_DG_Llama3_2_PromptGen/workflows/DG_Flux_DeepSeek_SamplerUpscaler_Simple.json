@@ -561,7 +561,7 @@
         "Node name for S&R": "DGLlamaPromptViewer"
       },
       "widgets_values": [
-        "Okay, so I need to create an image prompt using the ORIONX AI model based on the user's request. The main topic is a woman with a beach sunset style, involving waves crashing, and a Chinese national identity with dynamic energy. Let me break down how I approached this.\n\nFirst, I started by understanding the key elements the user provided: a woman, beach sunset style, waves crashing, Chinese nationality, and dynamic energy. I wanted to make sure each element was clearly included without being too vague.\n\nI decided to use \"ORIONX\" as the main topic because it's specific and likely to yield accurate results. Next, I thought about the structure. The user mentioned starting with the main action, which would be the woman, but since she's part of a larger scene (beach, sunset, etc.), maybe starting with her presence could help set the context better.\n\nFor the beach sunset style, I considered including details like water color, golden hues, and the setting sun casting shadows. These visual elements can make the scene more vivid. Then, adding waves crashing involved specifying the direction (right side), size, and speed. This helps in conveying the movement and intensity of the scene.\n\nChinese national identity with dynamic energy required some creativity. I thought of incorporating elements like traditional clothing, perhaps a necklace or bracelet, and a bustling atmosphere around her. Dynamic energy suggests lively interactions, so I added people moving around her, making the scene more engaging.\n\nI also made sure to specify the camera angle. Since the beach has a natural feel, a slightly tilted angle might give that authentic look. Including lighting effects, like warm tones against the sand, adds depth to the image.\n\nI kept the language precise to avoid any ambiguity, focusing on details such as colors, textures, and movements. I structured the paragraph to flow naturally from one scene detail to another, ensuring each element fits seamlessly into the overall picture.\n\nFinally, I reviewed the prompt to ensure it meets the word limit and effectively captures all the requested elements. It should be both descriptive enough for clarity and creative enough to stand out when generated."
+        "Okay, so I need to create an image prompt based on the user's request. The main topic is a woman styled in Chinese nationalistic fashion, with elements like a beach at sunset and her nationality. The user provided some specific styles: beach at sunset and Chinese nationalistic. They also mentioned adding these elements and choosing the right style if they're similar.\n\nFirst, I should break down the user's query. They want a prompt that includes a woman, beach at sunset, and Chinese nationalistic style. So, I need to include all these elements but perhaps weigh them differently based on their strengths. Chinese nationalistic might emphasize elegance, while beach at sunset could bring a sense of calm and relaxation. Maybe combining both would make it more vivid.\n\nI'll start by setting the scene: a serene beach at sunset, which can evoke peace and tranquility. Then, introduce a woman styled in a refined, Chinese nationalistic manner—perhaps her clothing and demeanor reflect that style. Adding details like her hair tied back, her eyes ranging from deep blue to a softer hue, and maybe her presence in the sunlight could enhance the image.\n\nI should specify the camera angle to be wide to capture depth and perspective. Including lighting soft but warm, which complements the sunset, will give a balanced look. Environmental details like the sand, water, and the horizon should be included to set the scene fully. I need to ensure the tone is descriptive without being too wordy, keeping it within 500 tokens.\n\nLet me draft a few sentences, mixing the different styles. First, mention the beach at sunset, then describe the woman's appearance in Chinese terms. Add details about her hair, eyes, and how she interacts with the beach. Mention the lighting and color palette to tie everything together. That seems to cover all aspects without being repetitive.\n\nWait, maybe I can combine the nationalistic style into the beach scene. Perhaps using phrases like \"refined elegance\" or \"reflected beauty.\" Let me see how that flows naturally. Also, check if any keywords overlap between the styles to avoid redundancy. \n\nI think the key here is balancing both styles—beach at sunset (calmness) and Chinese nationalistic (elegance). Maybe using terms like \"refined,\" \"reflected,\" and \"soft light\" could help. Also, ensuring that each element contributes to the overall image without overshadowing other parts.\n\nI should read through my draft again to make sure it's concise but descriptive enough to paint a clear picture. Let me count the words quickly to stay under 500. It looks good. Now, let me present it clearly, starting with the main action and moving into details step by step."
       ],
       "color": "#a84814",
       "bgcolor": "#943400"
@@ -633,70 +633,6 @@
         null,
         null,
         null
-      ],
-      "color": "#a84814",
-      "bgcolor": "#943400"
-    },
-    {
-      "id": 27,
-      "type": "DGLlamaStyles",
-      "pos": [
-        416.48101806640625,
-        2015.0836181640625
-      ],
-      "size": [
-        319.20001220703125,
-        538
-      ],
-      "flags": {},
-      "order": 17,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "style_seed",
-          "type": "INT",
-          "link": 40,
-          "widget": {
-            "name": "style_seed"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "style_mix",
-          "type": "STRING",
-          "links": [
-            37
-          ],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "DGLlamaStyles"
-      },
-      "widgets_values": [
-        0,
-        "Image",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other",
-        1,
-        "Other"
       ],
       "color": "#a84814",
       "bgcolor": "#943400"
@@ -955,7 +891,7 @@
         "Node name for S&R": "DGLlamaPromptViewer"
       },
       "widgets_values": [
-        "**Prompt:**  \n\"Create a vibrant and immersive image centered around a stunning woman with a unique beach sunset style. Her appearance should include striking waves crashing, accompanied by a serene beach setting. Incorporate elements of Chinese national identity, particularly dynamic energy, to enhance the scene. The woman should appear with soft, pastel-colored skin, complemented by golden hues in the sunlight, while her hair is styled in a flowing wave. Include dramatic waves rolling to the right, with varying sizes and speeds. Add reflections in the water and a gentle hue of pink under the light. Focus on a medium-sized woman, slightly tilted at eye level, with a confident smile. Enhance the scene with waves interacting with the sand, resulting in a gradient effect. Introduce dynamic energy, such as people walking around her, with vibrant outfits and a bustling vibe. Use warm lighting to highlight her presence, emphasizing the contrast between the warm tones and the cool, tan sky. Ensure the composition is balanced, with the woman at the center, surrounded by waves and a peaceful beach backdrop."
+        "**Image Prompt:**\n\n\"A serene beach at sunset, framed by lush greenery, features a woman styled in a refined, Chinese nationalistic manner, wearing a dress that reflects elegance. Her hair, glistening in the sunlight, is tied back with a subtle bow, while her eyes range from deep blue to a softer hue, reflecting the calmness of her presence. A beach ball rests near her feet, adding a playful touch. The soft, warm light filters gently through the water, casting a perfect blend of warmth and reflection. The landscape around her—a narrow path leading to the ocean—contributes to the tranquil yet vibrant composition, where every detail invites attention and appreciation.\""
       ],
       "color": "#a84814",
       "bgcolor": "#943400"
@@ -1026,6 +962,70 @@
       "properties": {},
       "widgets_values": [
         718029367733451,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 25,
+      "type": "Note",
+      "pos": [
+        1590.4556884765625,
+        1268.527587890625
+      ],
+      "size": [
+        357.0940246582031,
+        245.61065673828125
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Refiner value infos",
+      "properties": {},
+      "widgets_values": [
+        "To upscale the image, keep your seed and set auto_reset_cache to Disable and refiner_count to 1. Once the upscaled image is generated, if you want to apply different settings to the upscale pass, keep the cache disabled, adjust the options, and regenerate the image. When the cache is disabled, the first image remains unchanged. After finalizing your settings, set auto_reset_cache back to Enable and refiner_count to 0.\n\nYou can try a higher value for refiner_count, but it adds more passes, making the process longer, and the result may become excessive. Normally, 1 is a good value. You can adjust steps and refiner_steps to fine-tune the final quality. Experiment with different values for refiner_rescale_method—lanczos generally provides a more polished look. You can also adjust the fix_color setting for the refined upscaled image. If you only need the refiner pass, you can disable the upscale."
+      ],
+      "color": "#891414",
+      "bgcolor": "#750000"
+    },
+    {
+      "id": 20,
+      "type": "Seed (rgthree)",
+      "pos": [
+        1602.22412109375,
+        1575.6031494140625
+      ],
+      "size": [
+        343.2783508300781,
+        131.1912841796875
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            22,
+            39,
+            40
+          ],
+          "shape": 3,
+          "dir": 4,
+          "slot_index": 0
+        }
+      ],
+      "title": "Sampler Seed (rgthree)",
+      "properties": {},
+      "widgets_values": [
+        448527135236409,
         null,
         null,
         null
@@ -1200,7 +1200,7 @@
         "Node name for S&R": "OX3DKSamplerAdv"
       },
       "widgets_values": [
-        1082590244589996,
+        761990519137899,
         "randomize",
         6,
         5,
@@ -1212,7 +1212,7 @@
         0,
         5,
         8,
-        1,
+        0,
         "Yes",
         "nearest-exact",
         1.5,
@@ -1225,74 +1225,74 @@
         1.2,
         "mkl",
         true,
-        false
+        true
       ],
       "color": "#a84814",
       "bgcolor": "#943400"
     },
     {
-      "id": 20,
-      "type": "Seed (rgthree)",
+      "id": 27,
+      "type": "DGLlamaStyles",
       "pos": [
-        1602.22412109375,
-        1575.6031494140625
+        416.48101806640625,
+        2015.0836181640625
       ],
       "size": [
-        343.2783508300781,
-        131.1912841796875
+        319.20001220703125,
+        538
       ],
       "flags": {},
-      "order": 11,
+      "order": 17,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "style_seed",
+          "type": "INT",
+          "link": 40,
+          "widget": {
+            "name": "style_seed"
+          }
+        }
+      ],
       "outputs": [
         {
-          "name": "SEED",
-          "type": "INT",
+          "name": "style_mix",
+          "type": "STRING",
           "links": [
-            22,
-            39,
-            40
+            37
           ],
-          "shape": 3,
-          "dir": 4,
           "slot_index": 0
         }
       ],
-      "title": "Sampler Seed (rgthree)",
-      "properties": {},
+      "properties": {
+        "Node name for S&R": "DGLlamaStyles"
+      },
       "widgets_values": [
-        125407747001569,
-        null,
-        null,
-        null
+        0,
+        "Image",
+        2,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other",
+        1,
+        "Other"
       ],
       "color": "#a84814",
       "bgcolor": "#943400"
-    },
-    {
-      "id": 25,
-      "type": "Note",
-      "pos": [
-        1590.4556884765625,
-        1268.527587890625
-      ],
-      "size": [
-        357.0940246582031,
-        245.61065673828125
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [],
-      "title": "Refiner value infos",
-      "properties": {},
-      "widgets_values": [
-        "To upscale the image, keep your seed and set auto_reset_cache to Disable and refiner_count to 1. Once the upscaled image is generated, if you want to apply different settings to the upscale pass, keep the cache disabled, adjust the options, and regenerate the image. When the cache is disabled, the first image remains unchanged. After finalizing your settings, set auto_reset_cache back to Enable and refiner_count to 0.\n\nYou can try a higher value for refiner_count, but it adds more passes, making the process longer, and the result may become excessive. Normally, 1 is a good value. You can adjust steps and refiner_steps to fine-tune the final quality. Experiment with different values for refiner_rescale_method—lanczos generally provides a more polished look. You can also adjust the fix_color setting for the refined upscaled image. If you only need the refiner pass, you can disable the upscale."
-      ],
-      "color": "#891414",
-      "bgcolor": "#750000"
     }
   ],
   "links": [
@@ -1565,10 +1565,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5445000000000014,
+      "scale": 0.5445000000000015,
       "offset": [
-        -1.844471915434116,
-        -600.918783850456
+        184.06092175083882,
+        -327.2093077641167
       ]
     },
     "node_versions": {
