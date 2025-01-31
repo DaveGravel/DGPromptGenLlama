@@ -1,5 +1,15 @@
 # INFORMATION UPDATED:
-Video:
+Updated Workflow V5 Release
+
+What's New:
+
+I have made a lot of fixes and changes.
+I have added DeepSeek R1 support.
+I have created a Llama model loader and a DeepSeek model loader.
+I have fixed some issues when using GGUF models; it should now work better.
+I have added more individual options for better configuration of all nodes.
+
+OLD Video:
 https://www.youtube.com/watch?v=Pdb8dWybHy8
 
 I will soon upload a YouTube video to demonstrate how it works and how I use my Llama prompt, sampler, refiner, and upscaler.
