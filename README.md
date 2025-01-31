@@ -12,6 +12,9 @@ I have added more individual options for better configuration of all nodes.
 NEW Video:
 https://www.youtube.com/watch?v=17MqXAp4gg8
 
+ATTENTION:
+If you have already downloaded version 5, I had to update a file a few minutes after uploading it. If you're not sure you have the correct modified version, please update again. Sorry about this! The next update will likely be a major cleanup of the code, which may take a few days.
+
 OLD Video:
 https://www.youtube.com/watch?v=Pdb8dWybHy8
 
