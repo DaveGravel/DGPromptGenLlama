@@ -17,6 +17,8 @@ If you have already downloaded version 5, I had to update a file a few minutes a
 
 If you get a 4-bit error or something similar with the workflow, just recreate the model loader node to fix it. If the error continues, try using nobit.
 
+I have added three more workflows that use Flux and my sampler upscaler. These three workflows are simpler; I removed some extra elements that are in my larger workflow.
+
 ABOUT DEEPSEEK:
 
 Use this agent text with the DeepSeek R1 approach to generate high-quality prompt results:
