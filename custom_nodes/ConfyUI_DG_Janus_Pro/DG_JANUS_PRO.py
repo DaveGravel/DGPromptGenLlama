@@ -234,7 +234,10 @@ class DGLoadJanusProModel:
                 self.device_name = "cuda"
             elif device_mode == "auto":
                 self.offload_device = "auto"
-                self.device_name = "auto"                       
+                self.device_name = "auto"    
+
+            # forcing the mode auto for now, I have make a mistake somewhere I need to find where...
+            self.offload_device = "auto"                             
 
             if device_mode == "auto":
                 device = "cuda" 
