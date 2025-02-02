@@ -68,8 +68,8 @@ from .lib.cache import cleanGPUUsedForce, remove_cache, update_cache
 #sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 #print(f"OrionX3D lib path: {sys.path}")
 #
-import json
-import configparser
+#import json
+#import configparser
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoProcessor
 
@@ -86,8 +86,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 current_modeldir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Models")
 print(f"OrionX3D Répertoire actuel DG Janus Pro nodes : {current_dir}")
 
-config = configparser.ConfigParser()
-config.read(os.path.join(current_dir, "dg_llama_managers.cfg"))
+#config = configparser.ConfigParser()
+#config.read(os.path.join(current_dir, "dg_llama_managers.cfg"))
 
 if not os.path.exists(current_modeldir):
     os.makedirs(current_modeldir)
