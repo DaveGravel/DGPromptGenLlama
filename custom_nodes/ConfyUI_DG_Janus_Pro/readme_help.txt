@@ -6,6 +6,7 @@ git clone ComfyUI\custom_nodes\ConfyUI_DG_Janus_Pro\Models>git clone https://hug
 
 git clone ComfyUI\custom_nodes\ConfyUI_DG_Janus_Pro\Models>git clone https://huggingface.co/deepseek-ai/Janus-Pro-7B
 
+
 The model Janus 1.3b doesn't seem to be working for now. The Safetensors file appears to require flash_attn2, which, if I'm not mistaken, is only compatible with Linux. Windows might need a prebuilt library, but I'm not sure if version 2 is built for Windows.
 
 The JanusFlow model also doesn't seem to be working at the moment. The Safetensors file appears to require flash_attn2, which, if I'm not wrong, is only compatible with Linux. Windows might need a prebuilt library, but I'm not sure if version 2 is available for Windows.
