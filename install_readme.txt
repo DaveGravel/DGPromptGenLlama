@@ -36,6 +36,10 @@ Installing LLama prompt gen and my samplers Node:
 Open a terminal or command prompt and execute the following:
 Don't forget to update the folder paths to match your ComfyUI installation.
 
+E:\New_comfy_ui\python_embeded\python.exe -m pip install -r E:\New_comfy_ui\ComfyUI\custom_nodes\ComfyUI-DG-LTX\requirements-windows.txt
+
+E:\New_comfy_ui\python_embeded\python.exe -m pip install -r E:\New_comfy_ui\ComfyUI\custom_nodes\ConfyUI_DG_Janus_Pro\requirements-windows.txt
+
 E:\New_comfy_ui\python_embeded\python.exe -m pip install -r E:\New_comfy_ui\ComfyUI\custom_nodes\ConfyUI_DG_Llama3_2_PromptGen\requirements-windows.txt
 
 Restart ComfyUI.
