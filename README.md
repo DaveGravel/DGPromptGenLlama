@@ -1,4 +1,6 @@
 # INFORMATION UPDATED:
+last update: I have made some small updates and added nodes for the DeepSeek Janus Pro 1B and 7B models.
+
 Updated Workflow V5 Release
 
 What's New:
