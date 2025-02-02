@@ -1,0 +1,7 @@
+git+https://github.com/deepseek-ai/Janus.git
+torch
+typing
+gguf>=0.10.0
+transformers
+configparser
+bitsandbytes

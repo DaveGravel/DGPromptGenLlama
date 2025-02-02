@@ -1,0 +1,367 @@
+{
+  "last_node_id": 43,
+  "last_link_id": 97,
+  "nodes": [
+    {
+      "id": 7,
+      "type": "PreviewImage",
+      "pos": [
+        621.0654296875,
+        503.6399230957031
+      ],
+      "size": [
+        368.1996154785156,
+        369.38787841796875
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 97
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": [],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        -198.4147491455078,
+        364.1451721191406
+      ],
+      "size": [
+        346.161376953125,
+        316.9384765625
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            67
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "dg_deeps_00067_.png",
+        "image"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 36,
+      "type": "DGJanusProImageVision",
+      "pos": [
+        205.34869384765625,
+        128.17041015625
+      ],
+      "size": [
+        377.1929016113281,
+        334.06585693359375
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "janus_pipe",
+          "type": "ANY",
+          "link": 82
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 67
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 68,
+          "widget": {
+            "name": "seeder"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": [
+            69
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGJanusProImageVision"
+      },
+      "widgets_values": [
+        "Provide a detailed descriptive text prompt for this image.",
+        "Yes",
+        0,
+        0.1,
+        0.95,
+        512
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 40,
+      "type": "DGLoadJanusProModel",
+      "pos": [
+        -203.8790283203125,
+        138.46119689941406
+      ],
+      "size": [
+        349.64837646484375,
+        154
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "janus_pipe",
+          "type": "ANY",
+          "links": [
+            82,
+            95
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGLoadJanusProModel"
+      },
+      "widgets_values": [
+        "Janus-Pro-1B\\pytorch_model.bin",
+        "No",
+        "4bit",
+        "auto",
+        "Yes"
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 4,
+      "type": "Seed (rgthree)",
+      "pos": [
+        -191.81454467773438,
+        750.3546752929688
+      ],
+      "size": [
+        337.71392822265625,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SEED",
+          "type": "INT",
+          "links": [
+            68,
+            96
+          ],
+          "slot_index": 0,
+          "shape": 3,
+          "dir": 4
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        293198949026349,
+        null,
+        null,
+        null
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 5,
+      "type": "DGLlamaPromptViewer",
+      "pos": [
+        619.9171142578125,
+        131.94705200195312
+      ],
+      "size": [
+        379.99566650390625,
+        298.6501159667969
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 69
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "DGLlamaPromptViewer"
+      },
+      "widgets_values": [
+        "In the image, a futuristic character stands on a beach at sunset, with the sun casting a warm, orange glow over the scene. The character has a sleek, metallic outfit that includes a futuristic bikini top and a high-tech choker. Their hair is styled in a high ponytail, and their arm is adorned with a metallic, high-tech prosthetic or enhancement. The beach is serene, with the ocean gently lapping at the shore and a few buildings visible in the distance. The overall atmosphere is one of a blend of nature and technology, with the character appearing both grounded and otherworldly. The scene is bathed in the soft, warm light of the setting sun, creating a captivating and somewhat mysterious ambiance."
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    },
+    {
+      "id": 43,
+      "type": "DGJanusProImageGenerator",
+      "pos": [
+        205.9709930419922,
+        541.6928100585938
+      ],
+      "size": [
+        372.7178649902344,
+        319.6730651855469
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "janus_pipe",
+          "type": "ANY",
+          "link": 95
+        },
+        {
+          "name": "seeder",
+          "type": "INT",
+          "link": 96,
+          "widget": {
+            "name": "seeder"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            97
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DGJanusProImageGenerator"
+      },
+      "widgets_values": [
+        "A stunning princess from kabul in red, white traditional clothing, blue eyes, brown hair.",
+        "Yes",
+        0,
+        1,
+        5,
+        1
+      ],
+      "color": "#a84814",
+      "bgcolor": "#943400"
+    }
+  ],
+  "links": [
+    [
+      67,
+      3,
+      0,
+      36,
+      1,
+      "IMAGE"
+    ],
+    [
+      68,
+      4,
+      0,
+      36,
+      2,
+      "INT"
+    ],
+    [
+      69,
+      36,
+      0,
+      5,
+      0,
+      "*"
+    ],
+    [
+      82,
+      40,
+      0,
+      36,
+      0,
+      "ANY"
+    ],
+    [
+      95,
+      40,
+      0,
+      43,
+      0,
+      "ANY"
+    ],
+    [
+      96,
+      4,
+      0,
+      43,
+      1,
+      "INT"
+    ],
+    [
+      97,
+      43,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8769226950000005,
+      "offset": [
+        681.8251066522203,
+        24.89513627796328
+      ]
+    },
+    "node_versions": {
+      "comfy-core": "0.3.13",
+      "rgthree-comfy": "5d771b8b56a343c24a26e8cea1f0c87c3d58102f"
+    },
+    "ue_links": [],
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0
+  },
+  "version": 0.4
+}
