@@ -288,31 +288,6 @@ class DGLlamaChatAgent:
             num_return_sequences=1
         ) #, eos_token_id=self.tokenizer.eos_token_id
 
-        """
-        if self.llama3_pipe.useseed == True:
-            generated_ids = self.model.generate(
-                input_ids,
-                max_new_tokens=max_new_tokens,
-                top_k=top_k,
-                top_p=top_p,
-                temperature=temperature,
-                repetition_penalty=repetition_penalty,
-                do_sample=self.llama3_pipe.useseed,
-                num_return_sequences=1
-            ) #, eos_token_id=self.tokenizer.eos_token_id
-        else:
-            generated_ids = self.model.generate(
-                input_ids,
-                max_new_tokens=max_new_tokens,
-                top_k=top_k,
-                top_p=top_p,
-                temperature=temperature,
-                repetition_penalty=repetition_penalty,
-                do_sample=self.llama3_pipe.useseed,
-                num_return_sequences=1
-            ) #, eos_token_id=self.tokenizer.eos_token_id    
-        """
-
         # add_special_tokens=False,
         outputs = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
     
@@ -484,30 +459,7 @@ class DGDeepSeekChatAgent:
             do_sample=True, #self.llama3_pipe.useseed,
             num_return_sequences=1
         ) #, eos_token_id=self.tokenizer.eos_token_id                      
-        """
-        if self.llama3_pipe.useseed == True:
-            generated_ids = self.model.generate(
-                input_ids,
-                max_new_tokens=max_new_tokens,
-                top_k=top_k,
-                top_p=top_p,
-                temperature=temperature,
-                repetition_penalty=repetition_penalty,
-                do_sample=True, #self.llama3_pipe.useseed,
-                num_return_sequences=1
-            ) #, eos_token_id=self.tokenizer.eos_token_id
-        else:
-            generated_ids = self.model.generate(
-                input_ids,
-                max_new_tokens=max_new_tokens,
-                top_k=top_k,
-                top_p=top_p,
-                temperature=temperature,
-                repetition_penalty=repetition_penalty,
-                do_sample=False, #self.llama3_pipe.useseed,
-                num_return_sequences=1
-            ) #, eos_token_id=self.tokenizer.eos_token_id            
-        """
+
         #add_special_tokens=False,
         outputs = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
     
@@ -4472,8 +4424,6 @@ class DGLlamaAgentCorrection:
                 else:
                     self.prompts = self.code_format_prompt(correction + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the corrected prompt", prompt_corrections, "") 
 
-                #print(f"OrionX3D Llama 3.x prompt correction: {self.prompts}")
-
                 if self.tokenizer.pad_token_id is None:
                     self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
                 if self.model.config.pad_token_id is None:
@@ -4593,8 +4543,6 @@ class DGLlamaAgentTranslate:
                     self.prompts = self.code_format_prompt(translate + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the translated prompt", prompt_translationExp, "")  
                 else:
                     self.prompts = self.code_format_prompt(translate + "\n\n" + "prompt: (" + prompt + ")" + "\n\nNever reply to my request, just give the translated prompt", prompt_translation, "") 
-               
-                #print(f"OrionX3D Llama 3.x prompt translation: {self.prompts}")
 
                 if self.tokenizer.pad_token_id is None:
                     self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -4656,10 +4604,6 @@ class DGLlamaChatUser:
         self.oldseed = -1
         self.useseed = True
         self.seed = -1            
-        #self.dave_normal_text = ""
-        #self.dave_uncensored_text = ""
-        #self.geraldine_normal_text = ""
-        #self.geraldine_uncensored_text = ""        
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -4680,7 +4624,6 @@ class DGLlamaChatUser:
             "use_custom_prompt": (["No", "Yes"], {"tooltip": "This option disable the llama model and use the text subject directly."}),
             "use_external_subject": (["No", "Yes"], {"tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
             "use_mix_styles": (["No", "Yes"],),
-            #"user_name": ("STRING", {"default": "God", "tooltip": "Just a name for interacting with Orion agent."}),
             "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}), 
             "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
             "always_unpaused": (["Yes", "No"],),
@@ -4689,7 +4632,6 @@ class DGLlamaChatUser:
             "optional": {            
                 "seeder": ("INT", {"forceInput": True, "default": -1, "min": 0, "max": 0xffffffffffffffff}),   
                 "mix_styles": ("STRING", {"forceInput": True, "multiline": True}), 
-                #"agent": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent, "tooltip": "The agent text to describe the Llama agent."}),
                 "external_subject": ("STRING", {"forceInput": True, "multiline": True, "tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
                 "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}), 
             }            
@@ -4786,9 +4728,6 @@ class DGLlamaChatUser:
                 #    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_uncensored_history.json", True)
                 #else: 
                 #    self.agentchat.reset_history(f"ox3d_llama_{self.agentchat.agent_name}_chat_history.json", True)
-
-        #if self.max_tokens < 512:
-        #    self.max_tokens = 512
 
         if self.old_agent_mode != self.agent_mode_restriction:
            self.old_agent_mode = self.agent_mode_restriction 
@@ -4918,17 +4857,9 @@ class DGLlamaAgentUserEdit:
         self.prompts = ""
         self.old_prompts = ""
         self.response = ""
-        self.old_response = ""  
-        #self.text_buffer = None   
+        self.old_response = ""    
         self.max_tokens = 4096 
-        #self.old_agent = None
         self.new_agent = None
-        #self.agent1 = None # AgentGeraldine(ox3d_user_name, current_dir)
-        #self.agent2 = None # AgentDave(ox3d_user_name, current_dir)
-        #self.dave_normal_text = ""
-        #self.dave_uncensored_text = ""
-        #self.geraldine_normal_text = ""
-        #self.geraldine_uncensored_text = "" 
         self.current_text_buffer = None
         self.agent_mode_restriction = "normal"
         self.default_agent_name = ""
@@ -4941,12 +4872,8 @@ class DGLlamaAgentUserEdit:
     def INPUT_TYPES(cls):
         return { 
             "required": {
-            #"user_name": ("STRING", {"default": "God", "tooltip": "Just a name for interacting with Orion agent."}),
             "llama3_pipe": ("ANY",),
-            "use_seeder": (["Yes", "No"],),
-            #"llama_agent_type": (extract_person_name(get_filtered_filenames("dg_llama_agents", extensions=['.agt'])), {"tooltip": "agent files."}),
-            #"llama_agent_type": (["Geraldine", "Dave"],),
-            #"llama_reset": (["No", "Yes"],), 
+            "use_seeder": (["Yes", "No"],), 
             "prompt_mode": (["Other", "Image", "Video", "Chat"], {"tooltip": "Just a quick guidance for the agent."}),
             "custom_agent_name": ('STRING', {"multiline": False, "default": "Roberto", "tooltip": "Your custom agent name: If you create a new agent, refresh the ComfyUI window after the first generation to see the agent file in the list."}),
             "llama3_reset": ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}),
@@ -4963,8 +4890,6 @@ class DGLlamaAgentUserEdit:
             "use_remove_from_manager": (["No", "Yes"],),
             "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}), 
             "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
-            #"disable_generation": (["No", "Yes"],),
-            #"agent_mode": (["Prompt", "Chat"],),
             "always_unpaused": (["Yes", "No"],),
             "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),
             },
@@ -4984,7 +4909,7 @@ class DGLlamaAgentUserEdit:
 
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
     TITLE = "DGLlamaAgentUserEdit (Llama 3.1 & 3.2 - OX3D)"
-    #agent_mode, #llama_agent_type, #llama_reset, #disable_generation
+   
     def generate_prompt(self, subject, use_custom_prompt, custom_prompt, prompt_mode, max_token, top_p, top_k, temperature, repetition_penalty, use_seeder, llama3_pipe, custom_agent_name, always_unpaused, llama3_reset, llama3_agent_clear_history, pause_generation, llama3_agent_type, use_remove_from_manager, use_mix_styles, use_external_subject, seeder=None, mix_styles=None, external_subject=None, remove_from_prompt=None, agent = None):
         self.prompts = subject #subject #f"User {ox3d_user_name} Chat: " + subject
         self.tokenizer = llama3_pipe.tokenizer
@@ -5091,74 +5016,6 @@ class DGLlamaAgentUserEdit:
         if self.new_agent is None:
             self.new_agent = DGLlamaChatAgent(llama3_pipe, self.default_agent_name, self.agent_mode_restriction, agent_str)
 
-        #self.current_text_buffer = ""
-
-        #geraldine_agent_text = ""
-        #dave_agent_text = ""
-
-        #if llama_reset == "Yes":
-        #    #self.text_buffer = None  
-        #    self.agent1 = None  
-        #    self.agent2 = None 
-        #    self.current_text_buffer = None
-
-        #if self.agent1 is None:
-        #    self.agent1 = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, self.max_tokens)
-        #    self.agent1.save_agent_text('agent_geraldine_normal.agt', uncensored=False)
-        #    self.agent1.save_agent_text('agent_geraldine_uncensored.agt', uncensored=True)
-
-        #if self.agent2 is None:    
-        #    self.agent2 = AgentDave(ox3d_user_name, current_dir, self.tokenizer, self.max_tokens)           
-        #    self.agent2.save_agent_text('agent_dave_normal.agt', uncensored=False)
-        #    self.agent2.save_agent_text('agent_dave_uncensored.agt', uncensored=True)  
-
-        #if llama_agent_type is not None:
-        #    self.current_normal_text = ""
-        #    self.current_uncensored_text = ""  
-        #if self.agent1 is not None:
-        #    try:
-        #        self.geraldine_normal_text = self.agent1.load_agent_text('agent_geraldine_normal.agt')
-        #        self.geraldine_uncensored_text = self.agent1.load_agent_text('agent_geraldine_uncensored.agt')                     
-        #    except FileNotFoundError as e:
-        #        print(e)   
-
-        #if self.agent2 is not None:
-        #    try:           
-        #        self.dave_normal_text = self.agent2.load_agent_text('agent_dave_normal.agt')
-        #        self.dave_uncensored_text = self.agent2.load_agent_text('agent_dave_uncensored.agt')          
-        #    except FileNotFoundError as e:
-        #        print(e)     
-                
-        #print("Geraldine Normal Version:\n", self.geraldine_normal_text)
-        #print("\nGeraldine Uncensored Version:\n", self.geraldine_uncensored_text)
-        #print("Dave Normal Version:\n", self.dave_normal_text)
-        #print("\nDave Uncensored Version:\n", self.dave_uncensored_text)                  
-
-        #if llama3_pipe.use_uncensored_agent == "Yes":
-        #    geraldine_agent_text = self.geraldine_uncensored_text
-        #    dave_agent_text = self.dave_uncensored_text
-        #else:
-        #    geraldine_agent_text = self.geraldine_normal_text
-        #    dave_agent_text = self.dave_normal_text
-
-        #if llama_agent_type == "Geraldine":
-        #    self.current_text_buffer = self.agent1.text_buffer
-        #if llama_agent_type == "Dave":
-        #    self.current_text_buffer = self.agent2.text_buffer              
-
-        #if llama3_pipe.agent is not None:
-        #    agent_str = llama3_pipe.agent
-        #if agent is not None:
-        #    if llama_agent_type == "Geraldine":
-        #        agent_str = f"The user's name is {ox3d_user_name}. follow his directives as you work for him. If {ox3d_user_name} doesn't give you an agent name, your name is Geraldine\n"+agent
-        #    if llama_agent_type == "Dave":
-        #        agent_str = f"The user's name is {ox3d_user_name}. follow his directives as you work for him. If {ox3d_user_name} doesn't give you an agent name, your name is Dave\n"+agent                
-        #else: # some default agent just for fun...
-        #    if llama_agent_type == "Geraldine":
-        #        agent_str = geraldine_agent_text
-        #    if llama_agent_type == "Dave":
-        #        agent_str = dave_agent_text
-
         prompt_only = self.prompts
 
         #chat_str = subject
@@ -5217,35 +5074,6 @@ class DGLlamaAgentUserEdit:
             #u_prompts = "user: " + self.prompts
             #if self.current_text_buffer is not None:
             #    self.current_text_buffer.add_to_buffer(user_input=prompt_only)
-
-            """
-            input_ids = self.tokenizer(buffer_text + "\n" + full_prompt, return_tensors="pt").input_ids.to("cuda")
-            #input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to("cuda")
-
-            if llama3_pipe.useseed == True:
-                generated_ids = self.model.generate(input_ids, max_new_tokens=llama3_pipe.max_new_tokens, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, temperature=llama3_pipe.temperature, repetition_penalty=llama3_pipe.repetition_penalty, do_sample=True, eos_token_id=self.tokenizer.eos_token_id)
-            else:
-                generated_ids = self.model.generate(input_ids, max_new_tokens=llama3_pipe.max_new_tokens, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, temperature=llama3_pipe.temperature, repetition_penalty=llama3_pipe.repetition_penalty, do_sample=False, eos_token_id=self.tokenizer.eos_token_id)
-        
-            self.response = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
-          
-            self.response = clean_prompt_regex(self.response)
-
-            if remove_from_prompt is not None:
-                if use_remove_from_manager == "Yes":
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
-                else:
-                    self.response = process_prompt_v2(self.response, remove_from_prompt)
-            else:
-                if use_remove_from_manager == "Yes":
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt)
-                else:
-                    self.response = process_prompt_v2(self.response, "")
-
-            self.response = remove_leading_spaces(self.response)
-
-            self.response = self.response.replace('\n', ' ').replace('\r', ' ').replace('"', '').replace('(', '').replace(')', '')
-            """
             #
             #buffer_text + "\n" + 
             if self.new_agent is not None: #top_p, top_k, temperature, repetition_penalty,
@@ -5303,226 +5131,6 @@ class DGLlamaAgentUserEdit:
             astyle = mix_styles            
 
         return (self.response, llama3_pipe, astyle) 
-    
-"""
-# OLD USER DEPRECATED
-class DGLlamaUser:    
-    def __init__(self):
-        self.tokenizer = None
-        self.model = None
-        self.prompts = ""
-        self.old_prompts = ""
-        self.response = ""
-        self.old_response = ""  
-        #self.text_buffer = None   
-        self.max_tokens = 4096 - 256 
-        self.agent1 = None # AgentGeraldine(ox3d_user_name, current_dir)
-        self.agent2 = None # AgentDave(ox3d_user_name, current_dir)
-        self.dave_normal_text = ""
-        self.dave_uncensored_text = ""
-        self.geraldine_normal_text = ""
-        self.geraldine_uncensored_text = "" 
-        self.current_text_buffer = None
-          
-    @classmethod
-    def INPUT_TYPES(cls):
-        return { 
-            "required": {
-            #"user_name": ("STRING", {"default": "God", "tooltip": "Just a name for interacting with Orion agent."}),
-            "llama3_pipe": ("ANY",),
-            #"llama_agent_type": (extract_person_name(get_filtered_filenames("dg_llama_agents", extensions=['.agt'])), {"tooltip": "agent files."}),
-            "llama_agent_type": (["Geraldine", "Dave"],),
-            "llama_reset": (["No", "Yes"],),
-            "use_mix_styles": (["No", "Yes"],),
-            "use_external_subject": (["No", "Yes"], {"tooltip": "This option is use for add an external subject, exemple from florence2 image to text caption."}),
-            "use_remove_from_manager": (["No", "Yes"],),
-            "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}), 
-            "disable_generation": (["No", "Yes"],),
-            "agent_mode": (["Prompt", "Chat"],),
-            },
-            "optional": {
-                "mix_styles": ("STRING", {"forceInput": True, "multiline": True}),
-                "external_subject": ("STRING", {"forceInput": True, "multiline": True}),  
-                "agent": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent, "tooltip": "The agent text to describe the Llama agent."}),
-                "remove_from_prompt": ('STRING', {"forceInput": True, "multiline": True, "default": str_agent_remove, "tooltip": "Use for remove or modify text in the prompt result.\nUse Exemple 1 [Replace:Create a -> A] 'Create a ' is replace by ' A'\nUse Exemple 2 [Replace:Here is -> ] 'Here is ' is replace by ' ' nothing."}), 
-            }
-        }
-    
-    RETURN_TYPES = ("STRING","ANY",)
-    RETURN_NAMES = ("Prompt","llama3_pipe",)    
-
-    FUNCTION = "generate_prompt"  
-
-    CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
-    TITLE = "DGLlamaUser (Llama 3.1 & 3.2 - OX3D)"
-
-    def generate_prompt(self, subject, agent_mode, llama3_pipe, llama_reset, disable_generation, use_remove_from_manager, llama_agent_type, use_mix_styles, use_external_subject, mix_styles=None, external_subject=None, remove_from_prompt=None, agent = None):
-        self.prompts = f"User {ox3d_user_name} Chat: " + subject #subject 
-        self.tokenizer = llama3_pipe.tokenizer
-        self.model = llama3_pipe.model  
-
-        geraldine_agent_text = ""
-        dave_agent_text = ""
-
-        if llama_reset == "Yes":
-            #self.text_buffer = None  
-            self.agent1 = None  
-            self.agent2 = None 
-            self.current_text_buffer = None
-
-        if self.agent1 is None:
-            self.agent1 = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, self.max_tokens)
-            self.agent1.save_agent_text('agent_geraldine_normal.agt', uncensored=False)
-            self.agent1.save_agent_text('agent_geraldine_uncensored.agt', uncensored=True)
-
-        if self.agent2 is None:    
-            self.agent2 = AgentDave(ox3d_user_name, current_dir, self.tokenizer, self.max_tokens)           
-            self.agent2.save_agent_text('agent_dave_normal.agt', uncensored=False)
-            self.agent2.save_agent_text('agent_dave_uncensored.agt', uncensored=True)  
-
-        #if llama_agent_type is not None:
-        #    self.current_normal_text = ""
-        #    self.current_uncensored_text = ""  
-        if self.agent1 is not None:
-            try:
-                self.geraldine_normal_text = self.agent1.load_agent_text('agent_geraldine_normal.agt')
-                self.geraldine_uncensored_text = self.agent1.load_agent_text('agent_geraldine_uncensored.agt')                     
-            except FileNotFoundError as e:
-                print(e)   
-
-        if self.agent2 is not None:
-            try:           
-                self.dave_normal_text = self.agent2.load_agent_text('agent_dave_normal.agt')
-                self.dave_uncensored_text = self.agent2.load_agent_text('agent_dave_uncensored.agt')          
-            except FileNotFoundError as e:
-                print(e)     
-                
-        #print("Geraldine Normal Version:\n", self.geraldine_normal_text)
-        #print("\nGeraldine Uncensored Version:\n", self.geraldine_uncensored_text)
-        #print("Dave Normal Version:\n", self.dave_normal_text)
-        #print("\nDave Uncensored Version:\n", self.dave_uncensored_text)                  
-
-        if llama3_pipe.use_uncensored_agent == "Yes":
-            geraldine_agent_text = self.geraldine_uncensored_text
-            dave_agent_text = self.dave_uncensored_text
-        else:
-            geraldine_agent_text = self.geraldine_normal_text
-            dave_agent_text = self.dave_normal_text
-
-        if llama_agent_type == "Geraldine":
-            self.current_text_buffer = self.agent1.text_buffer
-        if llama_agent_type == "Dave":
-            self.current_text_buffer = self.agent2.text_buffer              
-
-        agent_str = ""
-        #if llama3_pipe.agent is not None:
-        #    agent_str = llama3_pipe.agent
-        if agent is not None:
-            if llama_agent_type == "Geraldine":
-                agent_str = f"The user's name is {ox3d_user_name}. follow his directives as you work for him. If {ox3d_user_name} doesn't give you an agent name, your name is Geraldine\n"+agent
-            if llama_agent_type == "Dave":
-                agent_str = f"The user's name is {ox3d_user_name}. follow his directives as you work for him. If {ox3d_user_name} doesn't give you an agent name, your name is Dave\n"+agent                
-        else: # some default agent just for fun...
-            if llama_agent_type == "Geraldine":
-                agent_str = geraldine_agent_text
-            if llama_agent_type == "Dave":
-                agent_str = dave_agent_text
-
-        prompt_only = self.prompts
-
-        if agent_mode == "chat":
-            use_mix_styles_new = "No"
-        else:
-            use_mix_styles_new = use_mix_styles
-        #mix_text = mix_styles
-        #if self.old_prompts != ""
-        #if use_mix_styles == "Yes" and use_external_subject == "Yes":
-        if use_mix_styles_new == "Yes" and use_external_subject == "Yes":
-            if mix_styles is not None and external_subject is not None:
-                prompt_only = mix_styles + "\n\n" + prompt_only + "\n" + external_subject 
-            if mix_styles is not None and external_subject is None:
-                prompt_only = mix_styles + "\n\n" + prompt_only  
-            if mix_styles is None and external_subject is not None:
-                prompt_only = "\n\n" + prompt_only + "\n" + external_subject                                
-
-        if use_mix_styles_new == "Yes" and use_external_subject == "No":    
-            if mix_styles is not None:
-                prompt_only = mix_styles + "\n\n" + prompt_only
-
-        if use_mix_styles_new == "No" and use_external_subject == "Yes":    
-            if use_external_subject is not None:
-                prompt_only = "\n\n" + prompt_only + "\n" + external_subject              
-            #if mix_styles is not None and external_subject is not None:
-            #    prompt_only = mix_styles + "\n\nimportant to add this subject and actors: " + prompt_only + "\n" + external_subject            
-
-        if disable_generation == "No":
-            #if self.text_buffer is None:
-            #    self.text_buffer = DG_LlamaTextBuffer(ox3d_user_name, self.tokenizer, self.max_tokens)            
-
-            #if not self.prompts in self.text_buffer.get_buffer():
-            prompt_only = str(remove_spaces_lines_total(prompt_only))
-            print(f"TESTING PROMPT:\n{prompt_only}")
-
-            if self.current_text_buffer is not None:
-                buffer_text = self.current_text_buffer.get_buffer()  # This will now work since text_buffer is initialized
-            else: 
-                buffer_text = ""
-
-            full_prompt = llama3_pipe.code_format_prompt2(user_query=prompt_only, sprompt_text=agent_str, aprompt_text="")
-
-            #self.prompts = llama3_pipe.code_format_prompt(prompt_only, agent_str, "")
-            self.old_prompts = prompt_only#self.prompts
-
-            #u_prompts = "user: " + self.prompts
-            if self.current_text_buffer is not None:
-                self.current_text_buffer.add_to_buffer(user_input=prompt_only)
-
-            input_ids = self.tokenizer(buffer_text + "\n" + full_prompt, return_tensors="pt").input_ids.to("cuda")
-            #input_ids = self.tokenizer(self.prompts, return_tensors="pt").input_ids.to("cuda")
-
-            if llama3_pipe.useseed == True:
-                generated_ids = self.model.generate(input_ids, max_new_tokens=llama3_pipe.max_new_tokens, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, temperature=llama3_pipe.temperature, repetition_penalty=llama3_pipe.repetition_penalty, do_sample=True, eos_token_id=self.tokenizer.eos_token_id)
-            else:
-                generated_ids = self.model.generate(input_ids, max_new_tokens=llama3_pipe.max_new_tokens, top_k=llama3_pipe.top_k, top_p=llama3_pipe.top_p, temperature=llama3_pipe.temperature, repetition_penalty=llama3_pipe.repetition_penalty, do_sample=False, eos_token_id=self.tokenizer.eos_token_id)
-        
-            self.response = self.tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
-          
-            self.response = clean_prompt_regex(self.response)
-
-            if remove_from_prompt is not None:
-                if use_remove_from_manager == "Yes":
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt + "\n" + remove_from_prompt)
-                else:
-                    self.response = process_prompt_v2(self.response, remove_from_prompt)
-            else:
-                if use_remove_from_manager == "Yes":
-                    self.response = process_prompt_v2(self.response, llama3_pipe.remove_from_prompt)
-                else:
-                    self.response = process_prompt_v2(self.response, "")
-
-            self.response = remove_leading_spaces(self.response)
-
-            self.response = self.response.replace('\n', ' ').replace('\r', ' ').replace('"', '').replace('(', '').replace(')', '')
-
-            #self.prompts = "user: " + self.prompts
-            #self.response = "agent: " + self.response
-            if self.current_text_buffer is not None:
-                self.current_text_buffer.add_to_buffer(user_input=prompt_only, assistant_response=self.response)
-
-            #print("Contenu actuel du buffer :")
-            #print("[BEGIN]===================================================================================")
-            #print(self.text_buffer.get_buffer())
-            #print(" ")
-            #print(f"Buffer size tokens : {self.text_buffer.get_token_count()}") 
-            #print("[END]=====================================================================================")      
-        
-        if self.response == "":
-            self.response = self.old_response
-
-        self.old_response = self.response
-
-        return (self.response, llama3_pipe)    
-"""
 
 #####################################################################################################################
 # DGLoadDeepSeekModelR1 #############################################################################################
@@ -5546,8 +5154,7 @@ class DGLoadDeepSeekModelR1:
                 "model_file": (get_filtered_deep_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model deepseek r1."}), 
                 "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),          
                 "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),
-                "device_mode": (["auto", "gpu", "cpu"],),
-                #"low_cpu_mem_usage":  ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}),  
+                "device_mode": (["auto", "gpu", "cpu"],),  
                 "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}),
             }
         }
@@ -5609,7 +5216,10 @@ class DGLoadDeepSeekModelR1:
                 self.device_name = "cuda"
             elif device_mode == "auto":
                 self.offload_device = "auto"
-                self.device_name = "auto"             
+                self.device_name = "auto" 
+            #
+            # forcing the mode auto for now, I have make a mistake somewhere I need to find where...
+            self.offload_device = "auto"            
             #
             if self.model_check == 1:
                 self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
@@ -5659,14 +5269,12 @@ class DGPromptGenSeepSeekR1:
         self.top_p = 0.9000
         self.top_k = 1
         self.repetition_penalty = 1.1   
-#        self.offload_device = torch.device('cpu')
         random.seed(time.time())     
 
     @classmethod
     def INPUT_TYPES(cls): # pylint: disable = invalid-name, missing-function-docstring
         return { 
-            "required": {
-#                "model_file": (get_filtered_deep_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model deepseek r1."}),            
+            "required": {           
                 "deepseek_pipe": ("ANY",),
                 "prompt_mode": (["Image", "Video", "Chat", "Other"],{"tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
                 "use_seeder": (["Yes", "No"],),
@@ -5681,7 +5289,6 @@ class DGPromptGenSeepSeekR1:
                 "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),                
                 "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}),
                 "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
-                #"device_mode": (["gpu", "cpu"],), # device_mode gpu = cuda, because the most compatible video cards are from nvidia and the most used gpu tool egal cuda.
                 "always_unpaused": (["Yes", "No"],),
                 "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),                
             },
@@ -5700,7 +5307,6 @@ class DGPromptGenSeepSeekR1:
     CATEGORY = "OrionX3D/PromptGenerator (💫🅞🅧3🅓)"
     TITLE = "DGPromptGenDeepSeekR1 (DeepSeekR1 - OX3D)" 
 
-    # device_mode, model_file,
     def generate_prompt(self, deepseek_pipe, always_unpaused, use_custom_prompt, custom_prompt, pause_generation, subject, prompt_mode, use_mix_styles, use_external_subject, max_token, seeder, use_seeder, top_p, top_k, temperature, repetition_penalty, agent=None, mix_styles=None, external_subject=None):
         
         self.tokenizer = deepseek_pipe.tokenizer
@@ -5727,56 +5333,7 @@ class DGPromptGenSeepSeekR1:
 
             rand_seeder(nseed - (nseed // 9999999) * 9999999)
         else:
-            self.useseed = False    
-        
-        """
-        print(f"OrionX3D deepseek r1 Model: {model_file}")
-        self.model_name = os.path.basename(model_file)
-
-        if self.model_file != model_file: 
-            self.model_file = model_file
-            self.tokenizer = None
-            self.model = None         
-
-        model_check = 0
-        # Check the file extension
-        if self.model_file.endswith(".gguf"):
-            print("The Model deepseek r1 is a .gguf file.")
-            model_check = 1
-        elif self.model_file.endswith(".safetensors"):
-            print("The Model deepseek r1 is a .safetensors file.")
-            model_check = 2
-        else:
-            print("The Model deepseek r1 has a different extension.")  
-            model_check = 0         
-
-        if self.tokenizer is None and self.model is None:
-            #
-            if device_mode == "cpu":
-                self.offload_device = torch.device('cpu')
-            else:
-                self.offload_device = torch.device('cuda')
-            #
-            if model_check == 1:
-                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
-                                                                gguf_file=self.model_name, 
-                                                                trust_remote_code=True)                    
-                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)), 
-                                                                  gguf_file=self.model_name, 
-                                                                  torch_dtype=torch.float16, 
-                                                                  device_map=self.offload_device,
-                                                                  local_files_only=True)  
-            elif model_check == 2:
-                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
-                                                                trust_remote_code=True)                    
-                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(self.model_file)),  
-                                                                  torch_dtype=torch.float16,
-                                                                  device_map=self.offload_device,
-                                                                  local_files_only=True)  
-            else:
-                self.tokenizer = None
-                self.model = None    
-        """                        
+            self.useseed = False                           
         #    
         if use_custom_prompt == "No" and (pause_generation == False or always_unpaused == "Yes"):  
             if self.tokenizer is not None and self.model is not None:
@@ -5885,28 +5442,22 @@ class DGPromptGenSeepSeekR1:
                 else:
                     generated_ids = self.model.generate(input_ids, max_new_tokens=max_token, top_p=top_p, top_k=top_k, temperature=temperature, repetition_penalty=repetition_penalty, do_sample=False, num_return_sequences=1) #, eos_token_id=self.tokenizer.eos_token_id #        
             
-                #add_special_tokens=False,
-                #self.response = tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)    
-            
                 if deepseek_pipe.model_check == 1:
                     self.response = tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], add_special_tokens=True, skip_special_tokens=False, clean_up_tokenization_space=True)
                     #self.think_section = self.response
                     # The gguf version behaving differently.
                     # I personally prefered the original model with the chat template...
                     # I have try to add a better way to deal with the gguf token method, it look to work but surely need a better implementation.
-
                     self.response = "<think>\n" + self.response
                     self.think_section, self.final_response = extract_sections_gguf2(self.response)
-
                     #self.think_section, self.final_response = extract_think_and_response(self.response)
-
                     #self.think_section, self.final_response = extract_think_and_response(self.response)  
                     #self.think_section = self.response
 
                 if deepseek_pipe.model_check == 2:
                     self.response = tokenizer.decode(generated_ids[0][input_ids.shape[-1]:], skip_special_tokens=True, clean_up_tokenization_space=True)
                     self.think_section, self.final_response = extract_think_and_response(self.response)            
-            #extract_think_and_response
+            
             self.oldseed = nseed
 
             if deepseek_pipe.clear_extra_mem_gpu == "Yes":  
@@ -5949,13 +5500,11 @@ class DGLoadLlamaModel3_x:
     @classmethod
     def INPUT_TYPES(cls): # pylint: disable = invalid-name, missing-function-docstring
         return { 
-                "required": {
-                #get_filtered_filenames    
+                "required": {  
                 "model_file": (get_filtered_llama_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model llama 3.1 too."}),
                 "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),
                 "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),           
                 "device_mode": (["auto", "gpu", "cpu"],),
-                #"low_cpu_mem_usage":  ("BOOLEAN", {"default": False, "label_on": "True", "label_off": "False"}), 
                 "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}), 
             }
         }
@@ -6005,18 +5554,6 @@ class DGLoadLlamaModel3_x:
 
         remove_from_promptN = load_text_from_file(filepath)
 
-        """
-        if remove_from_prompt is None:
-            if use_internal_remove == "Yes":
-                remove_from_prompt = remove_from_promptN
-            else:
-                remove_from_prompt = ""
-        else:
-            if use_internal_remove == "Yes":
-                remove_from_prompt = remove_from_promptN + "\n" + remove_from_prompt
-            else:
-                remove_from_prompt = ""
-        """
         remove_from_prompt = remove_from_promptN
 
         self.remove_from_prompt = remove_from_prompt                      
@@ -6060,7 +5597,10 @@ class DGLoadLlamaModel3_x:
                 self.device_name = "cuda"
             elif device_mode == "auto":
                 self.offload_device = "auto"
-                self.device_name = "auto"         
+                self.device_name = "auto" 
+
+            # forcing the mode auto for now, I have make a mistake somewhere I need to find where...
+            self.offload_device = "auto"            
    
             if model_check == 1:
                 self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
@@ -6093,21 +5633,15 @@ class DGLoadLlamaModel3_x:
 
         if self.tokenizer is not None and self.model is not None:
             # Just use for create the file if it not exist, I can change this later with a better implementation
-            #if self.agent1 is None:
-            #if self.agent1 is None:
             self.agent1 = AgentGeraldine(ox3d_user_name, current_dir, self.tokenizer, 4096)
-
             self.agent1.save_agent_text("agent_geraldine_normal.agt", False, create_agent_geraldine_text(False))
             self.agent1.save_agent_text("agent_geraldine_uncensored.agt", True, create_agent_geraldine_text(True))
             self.current_agent = self.agent1 # yes I know it look strange, but it is ok for now...
-            # Just use for create the file if it not exist, I can change this later with a better implementation
-            #if self.agent2 is None:
-            #if self.agent2 is None:
-            self.agent2 = AgentDave(ox3d_user_name, current_dir, self.tokenizer, 4096)
 
+            # Just use for create the file if it not exist, I can change this later with a better implementation
+            self.agent2 = AgentDave(ox3d_user_name, current_dir, self.tokenizer, 4096)
             self.agent2.save_agent_text("agent_dave_normal.agt", False, create_agent_dave_text(False))
-            self.agent2.save_agent_text("agent_dave_uncensored.agt", True, create_agent_dave_text(True)) 
-            #self.current_agent = self.agent2 # yes I know it look strange, but it is ok for now...                             
+            self.agent2.save_agent_text("agent_dave_uncensored.agt", True, create_agent_dave_text(True))                              
 
         return (self,)
                     
@@ -6128,10 +5662,6 @@ class DGPromptGenLlama3_2:
         self.agent = ""
         self.internal_agent = ""
         self.max_new_tokens = 4096
-#        self.codeA = "<|begin_of_text|>"
-#        self.codeB = "<|start_header_id|>"
-#        self.codeC = "<|end_header_id|>"
-#        self.codeD = "<|eot_id|>"
         self.llama3_pipe = None             
         self.remove_from_prompt = ""
         self.use_uncensored_agent = "Yes"
@@ -6141,12 +5671,7 @@ class DGPromptGenLlama3_2:
         self.repetition_penalty = 1.1
         self.useseed = True
         self.seed = -1
-        self.full_mix_styles = ""
-#        self.agent1 = None
-#        self.agent2 = None
-#        self.current_agent = None
-#        self.clear_extra_mem_gpu = "Yes" 
-        #self.offload_device = torch.device('cpu')        
+        self.full_mix_styles = ""        
         random.seed(time.time())    
 
     @classmethod
@@ -6154,11 +5679,8 @@ class DGPromptGenLlama3_2:
         return { 
             "required": {
                 "llama3_pipe": ("ANY",),
-#                "model_file": (get_filtered_filenames("dg_llama3_2", extensions=['.gguf', '.safetensors']), {"tooltip": "The node is compatible with the model llama 3.1 too."}),
                 "styles_variation": ("INT", {"default": 1, "min": 1, "max": 10, "step": 1, "tooltip": "Adding more or less words about the topic."}),
                 "prompt_styles": (get_prompt_styles(), {"default": "Other", "tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
-#                "reset_model": (["No", "Yes"], {"tooltip": "When you reset the model by selecting 'Yes' Press Queue Prompt to reset the model, remember to set it back to 'No' afterward."}),
-#                "use_bit_mode": (["4bit","8bit", "nobit"], {"tooltip": "This option don't work with GGUF Model because GGUF model already use an other type of compression."}),
                 "prompt_mode": (["Image", "Video", "Other"],{"tooltip": "If you use Other it don't apply any styles, it only use the user subject."}),
                 "only_english": (["Yes", "No"], {"tooltip": "This option try to force English only but it can depend a lot from the model too."}),
                 "use_seeder": (["Yes", "No"],),
@@ -6171,17 +5693,12 @@ class DGPromptGenLlama3_2:
                 "top_k": ("INT", {"default": 50, "min": 1, "max": 50, "step": 1, "tooltip": "Limits the AI to choose from the top 'k' most probable words. Lower values make responses more focused; higher values introduce more variety and potential surprises."}),
                 "temperature": ("FLOAT", {"default": 0.6000, "min": 0.0000, "max": 5.0000, "step": 0.0001, "round": 0.0001, "tooltip": "Controls the randomness of the output; higher values produce more random results."}),
                 "repetition_penalty": ("FLOAT", {"default": 1.1, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Penalty for repeated tokens; higher values discourage repetition."}),
-                #"frequency_penalty": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Decreases the likelihood of the model repeating the same lines verbatim."}),
-                #"presence_penalty": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.1, "round": 0.1, "tooltip": "Increases the likelihood of the model introducing new topics."}),
-#                "device_mode": (["gpu", "cpu"],),
-#                "clear_extra_mem_gpu": (["Yes", "No"], {"tooltip": "Try to clean a bit a vram when processing text."}), 
                 "subject": ('STRING', {"multiline": True, "default": "", "tooltip": "The user text to direct Llama to generate the prompt."}),                      
                 "custom_prompt": ('STRING', {"multiline": True, "default": "", "tooltip": "Disable the llama generation and une the custom prompt."}),
                 "use_uncensored_agent": (["No", "Yes"],), 
                 "use_internal_agent": (["Yes", "No"],),  
                 "use_internal_remove": (["Yes", "No"],),
                 "use_assistant": (["No", "Yes"],),
-#                "disable_generation": (["No", "Yes"],),
                 "always_unpaused": (["Yes", "No"],),
                 "pause_generation": ("BOOLEAN", {"default": True, "label_on": "Pause", "label_off": "Unpause"}),                 
             },
@@ -6216,32 +5733,6 @@ class DGPromptGenLlama3_2:
 
         self.use_uncensored_agent = use_uncensored_agent
         #self.max_tokens = max_token - 256 
-        """
-        config_file = os.path.join(current_dir, "dg_llama_managers.cfg")
-        #
-        if os.path.exists(config_file):
-            config = configparser.ConfigParser()
-            config.read(config_file)
-            try:
-                # I use this code system because some fine-tuned Llama models no longer use the original system code.
-                # With this method, I can change the code through a configuration.
-                # It needs an update later to add the possibility of loading multiple configuration files.
-                # Currently, it only works with the original model code.
-                self.codeA = config.get('prompts', 'codeA')
-                self.codeB = config.get('prompts', 'codeB')
-                self.codeC = config.get('prompts', 'codeC')
-                self.codeD = config.get('prompts', 'codeD')
-                self.modeA = config.get('modes', 'modeA')
-                self.modeB = config.get('modes', 'modeB')
-                self.modeC = config.get('modes', 'modeC')                
-                #print(f"OrionX3D llama 3.x Configurations loaded: \n- Prompt codeA: {self.codeA}\n- Prompt codeB: {self.codeB}\n- Prompt codeC: {self.codeC}\n- Prompt codeD: {self.codeD}\n- Mode modeA: {self.modeA}\n- Mode modeB: {self.modeB}\n- Mode modeC: {self.modeC}")
-            except configparser.NoSectionError as e:
-                print(f"OrionX3D llama 3.x Missing section in configuration file: {e}")
-            except configparser.NoOptionError as e:
-                print(f"OrionX3D llama 3.x Missing option in configuration file: {e}")
-        else:
-            print(f"OrionX3D llama 3.x Configuration file '{config_file}' not found. Please ensure it exists or provide default configurations.")
-        """
         #
         self.agent = agent
 
@@ -6259,26 +5750,10 @@ class DGPromptGenLlama3_2:
         else:
             self.internal_agent = f"""{strA}\n{strB}\n\n{strC}\n{strD}\n{strE}\n{strF}\n{strG}\n{strH}\n{prompt_instructions}"""
 
-        #self.max_new_tokens = max_token
-        # Currently forcing the maximum for using styles and external subjects.
-        # This works fine for Llama 3B and larger models.
-        # With Llama 1B, it could potentially cause problems.
-        # Llama 1B is not very good with prompts and translations; it's better to use the 3B model or larger.
         self.max_new_tokens = max_token
 
-        """
-        if self.model_file != model_file: 
-            self.model_file = model_file
-            self.tokenizer = None
-            self.model = None 
-        """
         #
-        """
-        if reset_model == "Yes":
-            self.tokenizer = None
-            self.model = None 
-        """
-        #
+
         nseed = seeder
         if nseed <= 0:
             nseed = random.randint(1, 100)
@@ -6293,72 +5768,10 @@ class DGPromptGenLlama3_2:
 
             rand_seeder(nseed - (nseed // 9999999) * 9999999)
         else:
-            self.useseed = False              
+            self.useseed = False 
+
         #
-        #if self.tokenizer is None and self.model is None:
-            """
-            load_in_4bit = False
-            load_in_8bit = False
-            model_check = 0
-            # Check the file extension
-            if model_file.endswith(".gguf"):
-                print("The Model llama 3.x is a .gguf file.")
-                model_check = 1
-            elif model_file.endswith(".safetensors"):
-                print("The Model llama 3.x is a .safetensors file.")
-                model_check = 2
-            else:
-                print("The Model llama 3.x has a different extension.")  
-                model_check = 0 
-            """
 
-            """
-            if use_bit_mode == "4bit":
-                load_in_4bit = True
-                load_in_8bit = False
-            if use_bit_mode == "8bit":
-                load_in_4bit = False
-                load_in_8bit = True   
-            if use_bit_mode == "nobit":
-                load_in_4bit = False
-                load_in_8bit = False                               
-            """
-            
-            """
-            self.model_name = os.path.basename(model_file)
-
-            if device_mode == "cpu":
-                self.offload_device = torch.device('cpu')
-            else:
-                self.offload_device = torch.device('cuda')            
-   
-            if model_check == 1:
-                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
-                                                               gguf_file=self.model_name, 
-                                                               trust_remote_code=True)                    
-                self.model = AutoModelForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
-                                                                  gguf_file=self.model_name, 
-                                                                  low_cpu_mem_usage=True,
-                                                                  return_dict=True,
-                                                                  torch_dtype=torch.float16, 
-                                                                  device_map=self.offload_device,
-                                                                  local_files_only=True)
-            if model_check == 2:
-                self.tokenizer = AutoTokenizer.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
-                                                               trust_remote_code=True)    
-
-                self.model = LlamaForCausalLM.from_pretrained(os.path.join(current_modeldir, os.path.dirname(model_file)), 
-                                                              torch_dtype=torch.float16,
-                                                              device_map=self.offload_device,
-                                                              load_in_8bit=load_in_8bit,
-                                                              load_in_4bit=load_in_4bit,
-                                                              local_files_only=True,
-                                                              use_flash_attention_2=False)  
-            if model_check == 0:      
-                self.model = None   
-                self.tokenizer = None   
-            """
-                
         pMode = ""
         pType = ""
 
@@ -6551,14 +5964,8 @@ class DGPromptGenLlama3_2:
                 self.response = clean_prompt_regex(self.response)
                 self.response = process_prompt_v2(self.response, self.remove_from_prompt)
                 self.response = str(remove_leading_spaces(self.response))
-        #else:
-        #    if use_custom_prompt == "No": 
-        #        self.response = "" 
-        #    else:
-        #        self.response = custom_prompt 
 
-
-        return(self.response, llama3_pipe, rf_mix_styles) #self.full_mix_styles
+        return(self.response, llama3_pipe, rf_mix_styles)
     
     def code_format_prompt(self, user_query, sprompt_text, aprompt_text):
         if self.llama3_pipe is not None:
